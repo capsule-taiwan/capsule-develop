@@ -252,6 +252,7 @@
       <a href="#path">流程</a>
       <a href="#contract">契約</a>
       <a href="#deploy">上線</a>
+      <a href="#how">運作</a>
     </nav>
     <button class="toggle" id="themeBtn" aria-label="切換深色/淺色">◐</button>
   </div>
@@ -445,6 +446,19 @@
       <li class="reveal"><span><b>回收契約 CLAUDE.md</b>：Claude 每次都會讀，保證不長歪。</span></li>
       <li class="reveal"><span><b>已驗證可跑</b>：安裝、型別檢查、正式打包全部通過。</span></li>
     </ul>
+  </section>
+
+  <section id="how">
+    <div class="sec-head reveal">
+      <span class="eyebrow">這東西住在哪、怎麼來的</span>
+      <h2>運作方式</h2>
+      <p>整個工具箱放在公司自己的 GitHub，安裝就是從那裡拿一份到你電腦；之後有更新也從同一個地方來。你不用管細節，但想知道的話——</p>
+    </div>
+    <div class="grid g3">
+      <div class="card reveal"><div class="ic">📦</div><h3>住在公司 GitHub</h3><p>工具箱本體在 <code style="font-family:var(--mono)">capsule-taiwan/capsule-develop</code>（公司的公開 repo）。技能、安全護欄、專案範本、還有你正在看的這頁，全都在裡面。</p></div>
+      <div class="card reveal"><div class="ic">⬇️</div><h3>安裝＝從那裡拿一份</h3><p>你打的那兩行指令，就是叫 Claude Code 去那個 repo 把工具箱抓一份到你電腦、把技能與護欄裝起來。</p></div>
+      <div class="card reveal"><div class="ic">🔄</div><h3>更新＝再抓一次</h3><p>平台團隊把新版推上 GitHub 後，你用 <code style="font-family:var(--mono)">/plugin</code> 更新一下就拿到最新的技能與範本；你已經做好的專案不受影響。</p></div>
+    </div>
   </section>
 
 </main>
