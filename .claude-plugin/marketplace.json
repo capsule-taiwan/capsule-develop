@@ -9,7 +9,7 @@
       "name": "capsule-develop",
       "source": "./plugins/capsule-develop",
       "description": "CAPSULE 星球孵化器工具箱：一鍵 scaffold 內部工具 MVP、引導式開發、品質檢查、Cloudflare 部署、畢業回收。給非工程師用 Claude Code 開發、成果可回收進母艦。",
-      "version": "0.4.0"
+      "version": "0.5.0"
     }
   ]
 }
