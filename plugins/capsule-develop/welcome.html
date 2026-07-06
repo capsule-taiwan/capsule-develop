@@ -1,0 +1,485 @@
+<!doctype html>
+<html lang="zh-Hant">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CAPSULE 開發指引</title>
+<style>
+  :root {
+    --bg: #FCFBF9; --panel: #FFFFFF; --panel-2: #F6F3EE; --line: #E9E5DE;
+    --ink: #1C1917; --muted: #6E6862; --accent: #E8590C; --accent-ink: #B5460A;
+    --go: #0D8C80; --go-ink: #0B6E64;
+    --term-bg: #1A1714; --term-ink: #EDE9E2; --term-muted: #9A948B; --term-line: #322D28;
+    --glow: rgba(232,89,12,.14);
+    --sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+    --mono: ui-monospace, "SF Mono", "Cascadia Code", "JetBrains Mono", "Segoe UI Mono", Menlo, Consolas, monospace;
+    --maxw: 1060px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #121110; --panel: #1A1815; --panel-2: #211E1A; --line: #2E2A25;
+      --ink: #F0EDE7; --muted: #A29B92; --accent: #FB7A33; --accent-ink: #FB7A33;
+      --go: #2DD4BF; --go-ink: #2DD4BF;
+      --term-bg: #0E0D0B; --term-ink: #EDE9E2; --term-muted: #928C83; --term-line: #262320;
+      --glow: rgba(251,122,51,.16);
+    }
+  }
+  :root[data-theme="light"] {
+    --bg: #FCFBF9; --panel: #FFFFFF; --panel-2: #F6F3EE; --line: #E9E5DE;
+    --ink: #1C1917; --muted: #6E6862; --accent: #E8590C; --accent-ink: #B5460A;
+    --go: #0D8C80; --go-ink: #0B6E64;
+    --term-bg: #1A1714; --term-ink: #EDE9E2; --term-muted: #9A948B; --term-line: #322D28;
+    --glow: rgba(232,89,12,.14);
+  }
+  :root[data-theme="dark"] {
+    --bg: #121110; --panel: #1A1815; --panel-2: #211E1A; --line: #2E2A25;
+    --ink: #F0EDE7; --muted: #A29B92; --accent: #FB7A33; --accent-ink: #FB7A33;
+    --go: #2DD4BF; --go-ink: #2DD4BF;
+    --term-bg: #0E0D0B; --term-ink: #EDE9E2; --term-muted: #928C83; --term-line: #262320;
+    --glow: rgba(251,122,51,.16);
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font-family: var(--sans); font-size: 16px; line-height: 1.65;
+    -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
+  }
+  .wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 22px; }
+  a { color: inherit; }
+  h1, h2, h3 { text-wrap: balance; margin: 0; }
+
+  .eyebrow {
+    font-family: var(--mono); font-size: .72rem; text-transform: uppercase;
+    letter-spacing: .18em; color: var(--accent-ink); font-weight: 600;
+  }
+
+  /* ---------- top bar ---------- */
+  .bar {
+    position: sticky; top: 0; z-index: 50;
+    backdrop-filter: saturate(1.1) blur(10px);
+    background: color-mix(in srgb, var(--bg) 86%, transparent);
+    border-bottom: 1px solid var(--line);
+  }
+  .bar-in { display: flex; align-items: center; gap: 18px; height: 58px; }
+  .brand { display: flex; align-items: center; gap: 9px; font-weight: 700; letter-spacing: -.01em; }
+  .brand .mk { font-size: 1.15rem; }
+  .brand .sub { font-family: var(--mono); font-size: .72rem; color: var(--muted); font-weight: 500; }
+  .bar nav { margin-left: auto; display: flex; gap: 4px; }
+  .bar nav a {
+    text-decoration: none; color: var(--muted); font-size: .86rem; font-weight: 550;
+    padding: 7px 11px; border-radius: 8px;
+  }
+  .bar nav a:hover { color: var(--ink); background: var(--panel-2); }
+  .toggle {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 34px; height: 34px; border-radius: 9px; cursor: pointer;
+    border: 1px solid var(--line); background: var(--panel); color: var(--ink);
+    font-size: .95rem;
+  }
+  .toggle:hover { border-color: var(--accent); }
+  @media (max-width: 720px) { .bar nav { display: none; } }
+
+  /* ---------- hero ---------- */
+  .hero { position: relative; padding: 74px 0 34px; overflow: hidden; }
+  .hero::before {
+    content: ""; position: absolute; inset: -20% 20% 40% 20%;
+    background: radial-gradient(60% 60% at 50% 30%, var(--glow), transparent 70%);
+    pointer-events: none;
+  }
+  .hero h1 {
+    font-size: clamp(2.35rem, 6vw, 4.1rem); font-weight: 800; letter-spacing: -.025em;
+    line-height: 1.03; margin: 16px 0 0; max-width: 15ch;
+  }
+  .hero .lede { font-size: clamp(1.02rem, 1.6vw, 1.2rem); color: var(--muted); margin: 20px 0 0; max-width: 52ch; }
+  .hero-cta { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-top: 28px; }
+
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px; text-decoration: none;
+    font-weight: 650; font-size: .92rem; padding: 11px 17px; border-radius: 10px;
+    border: 1px solid transparent; cursor: pointer;
+  }
+  .btn-primary { background: var(--accent); color: #fff; }
+  .btn-primary:hover { filter: brightness(1.06); transform: translateY(-1px); }
+  .btn-ghost { background: var(--panel); color: var(--ink); border-color: var(--line); }
+  .btn-ghost:hover { border-color: var(--accent); }
+
+  /* ---------- journey ---------- */
+  .journey {
+    margin-top: 46px; display: grid; grid-template-columns: 1fr auto 1fr auto 1fr; gap: 0;
+    align-items: stretch;
+  }
+  .stage {
+    background: var(--panel); border: 1px solid var(--line); border-radius: 16px;
+    padding: 22px 20px; position: relative;
+  }
+  .stage.mid { border-color: color-mix(in srgb, var(--accent) 45%, var(--line)); box-shadow: 0 8px 30px -18px var(--accent); }
+  .stage .cap { font-size: 1.5rem; }
+  .stage h3 { font-size: 1.02rem; margin-top: 10px; font-weight: 700; }
+  .stage p { margin: 6px 0 0; font-size: .86rem; color: var(--muted); line-height: 1.5; }
+  .stage .tag {
+    position: absolute; top: -10px; left: 20px; font-family: var(--mono); font-size: .64rem;
+    letter-spacing: .12em; text-transform: uppercase; padding: 3px 8px; border-radius: 20px;
+    background: var(--panel-2); border: 1px solid var(--line); color: var(--muted);
+  }
+  .stage.mid .tag { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .arrow { display: flex; align-items: center; justify-content: center; color: var(--accent); padding: 0 6px; font-size: 1.3rem; }
+  @media (max-width: 780px) {
+    .journey { grid-template-columns: 1fr; gap: 8px; }
+    .arrow { transform: rotate(90deg); padding: 2px 0; }
+  }
+
+  /* ---------- sections ---------- */
+  section { padding: 52px 0; border-top: 1px solid var(--line); }
+  .sec-head { max-width: 60ch; margin-bottom: 26px; }
+  .sec-head h2 { font-size: clamp(1.5rem, 3vw, 2.05rem); font-weight: 780; letter-spacing: -.015em; margin-top: 8px; }
+  .sec-head p { color: var(--muted); margin: 12px 0 0; }
+
+  .grid { display: grid; gap: 14px; }
+  .g3 { grid-template-columns: repeat(3, 1fr); }
+  .g2 { grid-template-columns: repeat(2, 1fr); }
+  .skills { grid-template-columns: repeat(auto-fill, minmax(232px, 1fr)); }
+  @media (max-width: 760px) { .g3, .g2 { grid-template-columns: 1fr; } }
+
+  .card {
+    background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 20px;
+  }
+  .card h3 { font-size: 1.02rem; font-weight: 700; }
+  .card p { color: var(--muted); font-size: .9rem; margin: 8px 0 0; line-height: 1.55; }
+  .card .ic { font-size: 1.35rem; }
+
+  .skill { transition: transform .16s ease, border-color .16s ease; }
+  .skill:hover { transform: translateY(-2px); border-color: color-mix(in srgb, var(--accent) 55%, var(--line)); }
+  .skill .cmd-name {
+    font-family: var(--mono); font-weight: 650; color: var(--accent-ink); font-size: .95rem;
+  }
+  .skill p { margin-top: 7px; }
+
+  /* ---------- terminal / command cards ---------- */
+  .term {
+    background: var(--term-bg); border: 1px solid var(--term-line); border-radius: 13px;
+    overflow: hidden; color: var(--term-ink); font-family: var(--mono);
+  }
+  .term-top { display: flex; align-items: center; gap: 7px; padding: 10px 14px; border-bottom: 1px solid var(--term-line); }
+  .dot { width: 10px; height: 10px; border-radius: 50%; background: #4a443d; }
+  .dot.r { background: #E8590C; } .dot.y { background: #d6a419; } .dot.g { background: #0D8C80; }
+  .term-title { margin-left: 6px; font-size: .72rem; color: var(--term-muted); letter-spacing: .04em; }
+  .cmd { display: flex; align-items: flex-start; gap: 10px; padding: 13px 14px; font-size: .88rem; line-height: 1.6; }
+  .cmd + .cmd { border-top: 1px solid var(--term-line); }
+  .cmd .prompt { color: var(--accent); user-select: none; }
+  .cmd code { color: var(--term-ink); white-space: pre-wrap; word-break: break-word; flex: 1; }
+  .cmd .cmt { color: var(--term-muted); }
+  .copy {
+    margin-left: auto; border: 1px solid var(--term-line); background: transparent; color: var(--term-muted);
+    font-family: var(--mono); font-size: .68rem; padding: 4px 9px; border-radius: 7px; cursor: pointer; flex: none;
+  }
+  .copy:hover { color: var(--term-ink); border-color: var(--accent); }
+
+  /* ---------- steps ---------- */
+  .steps { counter-reset: step; display: grid; gap: 2px; }
+  .step {
+    display: grid; grid-template-columns: 54px 1fr; gap: 18px; align-items: start;
+    padding: 18px 0; border-top: 1px dashed var(--line);
+  }
+  .step:first-child { border-top: none; }
+  .step .num {
+    counter-increment: step; font-family: var(--mono); font-size: 1.1rem; font-weight: 700;
+    color: var(--accent); padding-top: 2px;
+  }
+  .step .num::before { content: counter(step, decimal-leading-zero); }
+  .step h3 { font-size: 1rem; font-weight: 700; }
+  .step p { color: var(--muted); font-size: .9rem; margin: 5px 0 0; }
+  .step code { font-family: var(--mono); font-size: .84em; background: var(--panel-2); padding: 1px 6px; border-radius: 5px; color: var(--accent-ink); }
+
+  /* ---------- rules ---------- */
+  .rules { display: grid; gap: 10px; }
+  .rule {
+    display: grid; grid-template-columns: 26px 1fr; gap: 13px; align-items: start;
+    background: var(--panel); border: 1px solid var(--line); border-radius: 11px; padding: 14px 16px;
+  }
+  .rule .k { color: var(--go); font-weight: 800; padding-top: 1px; }
+  .rule b { font-weight: 650; }
+  .rule span { color: var(--muted); }
+
+  .guards { display: grid; gap: 12px; grid-template-columns: repeat(3,1fr); }
+  @media (max-width: 760px) { .guards { grid-template-columns: 1fr; } }
+  .guard { background: var(--panel-2); border: 1px solid var(--line); border-left: 3px solid var(--accent); border-radius: 10px; padding: 15px 16px; }
+  .guard h3 { font-family: var(--mono); font-size: .85rem; color: var(--ink); }
+  .guard p { color: var(--muted); font-size: .85rem; margin-top: 6px; }
+
+  .inside { display: grid; gap: 10px; grid-template-columns: repeat(2,1fr); }
+  @media (max-width: 700px) { .inside { grid-template-columns: 1fr; } }
+  .inside li { list-style: none; display: flex; gap: 10px; align-items: baseline; font-size: .92rem; color: var(--muted); }
+  .inside li b { color: var(--ink); font-weight: 600; }
+  .inside li::before { content: "▪"; color: var(--accent); }
+  ul.inside { padding: 0; margin: 0; }
+
+  .callout {
+    background: color-mix(in srgb, var(--go) 8%, var(--panel));
+    border: 1px solid color-mix(in srgb, var(--go) 32%, var(--line));
+    border-radius: 12px; padding: 16px 18px; font-size: .92rem;
+  }
+  .callout b { color: var(--go-ink); }
+
+  footer { border-top: 1px solid var(--line); padding: 34px 0 56px; color: var(--muted); font-size: .85rem; }
+  footer .fr { display: flex; flex-wrap: wrap; gap: 6px 18px; align-items: center; }
+  footer code { font-family: var(--mono); color: var(--accent-ink); }
+
+  .reveal { opacity: 0; transform: translateY(14px); transition: opacity .5s ease, transform .5s ease; }
+  .reveal.in { opacity: 1; transform: none; }
+  @media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; transition: none; } }
+
+  .toast {
+    position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%) translateY(20px);
+    background: var(--ink); color: var(--bg); font-size: .82rem; font-weight: 600;
+    padding: 9px 16px; border-radius: 20px; opacity: 0; pointer-events: none; transition: all .25s ease; z-index: 80;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+</style>
+
+<div class="bar">
+  <div class="wrap bar-in">
+    <span class="brand"><span class="mk">🧪</span> CAPSULE <span class="sub">develop</span></span>
+    <nav>
+      <a href="#what">是什麼</a>
+      <a href="#install">安裝</a>
+      <a href="#skills">技能</a>
+      <a href="#path">流程</a>
+      <a href="#contract">契約</a>
+      <a href="#deploy">上線</a>
+    </nav>
+    <button class="toggle" id="themeBtn" aria-label="切換深色/淺色">◐</button>
+  </div>
+</div>
+
+<header class="hero">
+  <div class="wrap">
+    <span class="eyebrow">CAPSULE MANAGE 孵化器</span>
+    <h1>不會寫程式，也能做出自己的內部工具。</h1>
+    <p class="lede">
+      裝上這個工具箱，你就能用 Claude Code 開發一個屬於自己的小系統——用你自己的免費資料庫、自己的免費網址，
+      跟公司正式系統完全隔離。用順了、證明有價值，再由 IT 把它「畢業」收進 CAPSULE MANAGE 大系統。
+    </p>
+    <div class="hero-cta">
+      <a class="btn btn-primary" href="#install">開始安裝 →</a>
+      <a class="btn btn-ghost" href="#path">看開發流程</a>
+    </div>
+
+    <div class="journey">
+      <div class="stage reveal">
+        <span class="tag">起點</span>
+        <div class="cap">🌱</div>
+        <h3>種子範本</h3>
+        <p>一個現成的最小專案：畫面、登入、權限、一個完整範例功能都已備好。</p>
+      </div>
+      <div class="arrow reveal" aria-hidden="true">→</div>
+      <div class="stage mid reveal">
+        <span class="tag">你在這裡</span>
+        <div class="cap">🧪</div>
+        <h3>你的膠囊 MVP</h3>
+        <p>用你自己的 Supabase + Cloudflare 獨立開發。做壞了只影響自己，碰不到公司系統。</p>
+      </div>
+      <div class="arrow reveal" aria-hidden="true">→</div>
+      <div class="stage reveal">
+        <span class="tag">畢業</span>
+        <div class="cap">🛰️</div>
+        <h3>回收進母艦</h3>
+        <p>穩定使用幾個月後，平台團隊把它整包搬進 CAPSULE MANAGE。</p>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section id="what">
+    <div class="sec-head reveal">
+      <span class="eyebrow">為什麼這樣設計</span>
+      <h2>你的沙盒，你的節奏</h2>
+      <p>你不需要懂伺服器、不需要碰公司正式機。你只要會描述「我想要一個可以⋯⋯的功能」，其餘交給 Claude。</p>
+    </div>
+    <div class="grid g3">
+      <div class="card reveal"><div class="ic">🧪</div><h3>完全獨立的沙盒</h3><p>每個 MVP 用自己的免費資料庫與網址。實驗、失敗、重來，都不影響任何人。</p></div>
+      <div class="card reveal"><div class="ic">🤖</div><h3>Claude 當你的工程師</h3><p>用業務語言講需求，Claude 照著已經備好的規則寫程式，不會長歪。</p></div>
+      <div class="card reveal"><div class="ic">🛰️</div><h3>成熟就能回收</h3><p>範本強制的慣例，讓你的成果天生就是「可以裝回大系統的形狀」。</p></div>
+    </div>
+  </section>
+
+  <section id="install">
+    <div class="sec-head reveal">
+      <span class="eyebrow">兩行指令</span>
+      <h2>安裝工具箱</h2>
+      <p>在 Claude Code 裡輸入這兩行。裝好後你會多出一組技能，還有自動生效的安全護欄。</p>
+    </div>
+    <div class="term reveal">
+      <div class="term-top"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="term-title">Claude Code</span></div>
+      <div class="cmd"><span class="prompt">&gt;</span><code>/plugin marketplace add capsule-taiwan/capsule-develop</code><button class="copy">複製</button></div>
+      <div class="cmd"><span class="prompt">&gt;</span><code>/plugin install capsule-develop@capsule-tools</code><button class="copy">複製</button></div>
+    </div>
+    <div class="callout reveal" style="margin-top:16px">
+      <b>給 IT：</b> 在共用 repo 的 <code style="font-family:var(--mono)">.claude/settings.json</code> 放入 <code style="font-family:var(--mono)">extraKnownMarketplaces</code> 與 <code style="font-family:var(--mono)">enabledPlugins</code>，同事 clone 後就會自動裝好，不用自己打指令。
+    </div>
+  </section>
+
+  <section id="start">
+    <div class="sec-head reveal">
+      <span class="eyebrow">第一步</span>
+      <h2>長出一個新專案</h2>
+      <p>在一個空資料夾開 Claude Code，輸入下面這行。它會問你專案名稱、帶你建立自己的免費 Supabase、把本地開發環境跑起來。</p>
+    </div>
+    <div class="term reveal">
+      <div class="term-top"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="term-title">在一個空資料夾</span></div>
+      <div class="cmd"><span class="prompt">&gt;</span><code>/new-project</code><button class="copy">複製</button></div>
+      <div class="cmd"><span class="cmt"># 之後：/task-brief 講需求 → /new-feature 做出來 → /check 檢查 → /deploy 上線</span></div>
+    </div>
+  </section>
+
+  <section id="skills">
+    <div class="sec-head reveal">
+      <span class="eyebrow">你會多出這些指令</span>
+      <h2>七個技能</h2>
+      <p>每一個都是一句話就能用。你不用記，跟 Claude 說你想做什麼，它會挑對的來用。</p>
+    </div>
+    <div class="grid skills">
+      <div class="card skill reveal"><div class="cmd-name">/new-project</div><p>從範本長出一個全新的 MVP 專案骨架。</p></div>
+      <div class="card skill reveal"><div class="cmd-name">/task-brief</div><p>用業務選擇題訪談你的需求，整理成規格。</p></div>
+      <div class="card skill reveal"><div class="cmd-name">/new-feature</div><p>照範例模組長出你要的新功能（列表／表單／權限／測試一整套）。</p></div>
+      <div class="card skill reveal"><div class="cmd-name">/next-migration</div><p>幫你建立資料庫變更檔，自動取號。</p></div>
+      <div class="card skill reveal"><div class="cmd-name">/check</div><p>跑測試＋型別＋契約檢查，全綠才算完成。</p></div>
+      <div class="card skill reveal"><div class="cmd-name">/deploy</div><p>部署到你自己的 Cloudflare Pages，並鎖成只有公司信箱能看。</p></div>
+      <div class="card skill reveal"><div class="cmd-name">/graduate</div><p>產生「畢業申請包」，交給 IT 評估是否收進大系統。</p></div>
+    </div>
+  </section>
+
+  <section id="path">
+    <div class="sec-head reveal">
+      <span class="eyebrow">每個新功能都走這條</span>
+      <h2>黃金路徑</h2>
+      <p>你只要描述想要什麼，Claude 會依序把每一步做完，並在每步後告訴你怎麼在畫面上驗收。</p>
+    </div>
+    <div class="steps">
+      <div class="step reveal"><div class="num"></div><div><h3>講清楚需求</h3><p><code>/task-brief</code>：用生活化的問題確認要記錄哪些資料、誰能看誰能改。</p></div></div>
+      <div class="step reveal"><div class="num"></div><div><h3>建立資料</h3><p><code>/next-migration</code> 建資料表，套進你自己的 Supabase。</p></div></div>
+      <div class="step reveal"><div class="num"></div><div><h3>做出畫面</h3><p>照 <code>items</code> 範例長出列表、表單、明細——全用現成的共用元件，不會長歪。</p></div></div>
+      <div class="step reveal"><div class="num"></div><div><h3>檢查</h3><p><code>/check</code> 全綠；再自己在畫面上點過一遍（新增／編輯／刪除）。</p></div></div>
+      <div class="step reveal"><div class="num"></div><div><h3>上線</h3><p><code>/deploy</code> 推上你自己的網址，同事用公司信箱就能登入使用。</p></div></div>
+    </div>
+  </section>
+
+  <section id="contract">
+    <div class="sec-head reveal">
+      <span class="eyebrow">為什麼未來能被回收</span>
+      <h2>回收契約：七條</h2>
+      <p>你不用背這些——Claude 會遵守，護欄會把關。它們讓你的獨立成果天生就能裝回 CAPSULE MANAGE。</p>
+    </div>
+    <div class="rules">
+      <div class="rule reveal"><span class="k">✓</span><div><b>業務資料表用專屬名稱</b> <span>— 未來整包搬進大系統不會撞名。</span></div></div>
+      <div class="rule reveal"><span class="k">✓</span><div><b>畫面只用現成的共用元件</b> <span>— 長相跟大系統一致，不自造設計。</span></div></div>
+      <div class="rule reveal"><span class="k">✓</span><div><b>資料存取走固定寫法</b> <span>— 回收時直接可插。</span></div></div>
+      <div class="rule reveal"><span class="k">✓</span><div><b>權限走內建平台</b> <span>— 管理員／主管／員工三種角色，回收即對接。</span></div></div>
+      <div class="rule reveal"><span class="k">✓</span><div><b>所有資料庫變更都是檔案</b> <span>— 在網站上手點的設定「視為不存在」。</span></div></div>
+      <div class="rule reveal"><span class="k">✓</span><div><b>不改平台共用的部分</b> <span>— 要改就開 issue 給 IT，讓所有人受惠。</span></div></div>
+      <div class="rule reveal"><span class="k">✓</span><div><b>秘密只放 .env</b> <span>— 程式碼裡永遠沒有金鑰。</span></div></div>
+    </div>
+  </section>
+
+  <section id="guards">
+    <div class="sec-head reveal">
+      <span class="eyebrow">安裝後自動生效</span>
+      <h2>三道護欄</h2>
+      <p>這些會擋在你（和 Claude）前面。被擋下來，就代表這件事該找 IT，而不是想辦法繞過。</p>
+    </div>
+    <div class="guards">
+      <div class="guard reveal"><h3>guard-prod</h3><p>任何碰到公司正式機或測試機的操作，一律硬擋——你的沙盒本來就摸不到。</p></div>
+      <div class="guard reveal"><h3>guard-platform-area</h3><p>擋掉改動共用元件、權限地基、設定檔——落實回收契約第六條。</p></div>
+      <div class="guard reveal"><h3>guard-git</h3><p>擋掉會覆蓋歷史、難以復原的危險 git 操作。</p></div>
+    </div>
+  </section>
+
+  <section id="deploy">
+    <div class="sec-head reveal">
+      <span class="eyebrow">全部免費</span>
+      <h2>上線到你自己的網址</h2>
+      <p>MVP 是純靜態網站，Cloudflare Pages 免費層綽綽有餘。每次更新自動重新部署。</p>
+    </div>
+    <div class="grid g2">
+      <div class="card reveal"><div class="ic">🌐</div><h3>Cloudflare Pages（免費）</h3><p>接上 GitHub 就自動部署；每個修改都有一個預覽網址。</p></div>
+      <div class="card reveal"><div class="ic">🔒</div><h3>只有公司信箱能看</h3><p>用 Zero Trust（50 人內免費）把網址鎖成只允許 <code style="font-family:var(--mono);color:var(--accent-ink)">@capsulecorporation.cc</code>，員工收驗證碼登入。</p></div>
+    </div>
+  </section>
+
+  <section id="inside">
+    <div class="sec-head reveal">
+      <span class="eyebrow">範本裡已經有什麼</span>
+      <h2>你不是從零開始</h2>
+      <p>新專案一長出來就是一個能跑的系統，附一個完整的範例功能 <code>items</code> 供你照抄。</p>
+    </div>
+    <ul class="inside">
+      <li class="reveal"><span><b>登入與權限</b>：email 註冊，第一個人自動是管理員，三種角色現成。</span></li>
+      <li class="reveal"><span><b>一整套 UI 元件</b>：表格、彈窗、表單、分頁、按鈕都備好了。</span></li>
+      <li class="reveal"><span><b>items 範例功能</b>：列表＋新增＋編輯＋刪除＋權限，完整可跑。</span></li>
+      <li class="reveal"><span><b>側邊選單自動聚合</b>：加一個新功能，選單自動出現，不用改共用檔。</span></li>
+      <li class="reveal"><span><b>回收契約 CLAUDE.md</b>：Claude 每次都會讀，保證不長歪。</span></li>
+      <li class="reveal"><span><b>已驗證可跑</b>：安裝、型別檢查、正式打包全部通過。</span></li>
+    </ul>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap fr">
+    <span>🧪 <b style="color:var(--ink)">CAPSULE develop</b></span>
+    <span>孵化器工具箱 · 給非工程師的 Claude Code 開發套件</span>
+    <span style="margin-left:auto">安裝：<code>/plugin install capsule-develop@capsule-tools</code></span>
+  </div>
+</footer>
+
+<div class="toast" id="toast">已複製到剪貼簿</div>
+
+<script>
+  (function () {
+    // theme toggle
+    var root = document.documentElement;
+    var btn = document.getElementById('themeBtn');
+    function current() {
+      var t = root.getAttribute('data-theme');
+      if (t) return t;
+      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    }
+    btn.addEventListener('click', function () {
+      var next = current() === 'dark' ? 'light' : 'dark';
+      root.setAttribute('data-theme', next);
+    });
+
+    // copy buttons
+    var toast = document.getElementById('toast'), tt;
+    document.querySelectorAll('.copy').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var code = b.parentElement.querySelector('code');
+        var text = code ? code.textContent : '';
+        navigator.clipboard && navigator.clipboard.writeText(text).then(function () {
+          toast.classList.add('show');
+          clearTimeout(tt); tt = setTimeout(function () { toast.classList.remove('show'); }, 1400);
+        });
+      });
+    });
+
+    // scroll reveal
+    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var els = document.querySelectorAll('.reveal');
+    if (reduce || !('IntersectionObserver' in window)) {
+      els.forEach(function (e) { e.classList.add('in'); });
+    } else {
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (en) {
+          if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); }
+        });
+      }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+      els.forEach(function (e) { io.observe(e); });
+    }
+  })();
+</script>
+</html>
