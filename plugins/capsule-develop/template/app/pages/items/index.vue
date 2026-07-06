@@ -85,7 +85,6 @@ const isEmpty = computed(() => !loading.value && !error.value && total.value ===
 
     <template #body>
       <div class="space-y-4">
-        <!-- 工具列：搜尋 + 新增（新增鈕也放這裡，確保一定看得到、點得到） -->
         <div class="flex items-center gap-2">
           <BaseInput v-model="search" icon="i-lucide-search" placeholder="搜尋名稱或說明" class="max-w-xs" />
           <BaseButton v-if="canCreate" icon="i-lucide-plus" class="ml-auto" @click="openCreate">新增項目</BaseButton>
@@ -127,17 +126,18 @@ const isEmpty = computed(() => !loading.value && !error.value && total.value ===
 
           <BasePagination :page="page" :total="total" :items-per-page="pageSize" @update:page="(p: number) => (page = p)" />
         </template>
+
+        <!-- 彈窗必須放在 #body 內；BaseDashboardPanel 只渲染具名 slot，放外面(default slot)不會 mount -->
+        <BaseModal v-model="showForm" :title="editing ? '編輯項目' : '新增項目'">
+          <ItemForm ref="formRef" :item="editing as any" @submit="onSubmit" />
+          <template #footer>
+            <BaseButton color="neutral" variant="ghost" @click="showForm = false">取消</BaseButton>
+            <BaseButton :loading="submitting" @click="formRef?.handleSubmit()">
+              {{ editing ? '儲存' : '建立' }}
+            </BaseButton>
+          </template>
+        </BaseModal>
       </div>
     </template>
-
-    <BaseModal v-model="showForm" :title="editing ? '編輯項目' : '新增項目'">
-      <ItemForm ref="formRef" :item="editing as any" @submit="onSubmit" />
-      <template #footer>
-        <BaseButton color="neutral" variant="ghost" @click="showForm = false">取消</BaseButton>
-        <BaseButton :loading="submitting" @click="formRef?.handleSubmit()">
-          {{ editing ? '儲存' : '建立' }}
-        </BaseButton>
-      </template>
-    </BaseModal>
   </BaseDashboardPanel>
 </template>

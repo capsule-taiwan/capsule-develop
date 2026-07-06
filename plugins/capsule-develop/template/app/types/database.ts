@@ -49,6 +49,7 @@ export interface Database {
     }
     Views: Record<string, never>
     Functions: {
+      soft_delete_items: { Args: { p_id: string }; Returns: undefined }
       list_items: {
         Args: { p_user_id: string; p_search?: string; p_filters?: Json; p_sort_key?: string; p_sort_dir?: string; p_page?: number; p_page_size?: number }
         Returns: Json

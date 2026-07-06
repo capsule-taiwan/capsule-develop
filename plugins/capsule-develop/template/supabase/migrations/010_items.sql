@@ -154,3 +154,15 @@ $$;
 comment on function public.list_items(uuid, text, jsonb, text, text, int, int)
   is 'Server-side items list: search / status filter / sort / paginate.';
 grant execute on function public.list_items(uuid, text, jsonb, text, text, int, int) to authenticated;
+
+-- 軟刪除走 SECURITY DEFINER RPC：直接 UPDATE deleted_at 會被 RLS with-check 擋下，
+-- 故用 definer 函式，內部自行檢查 owner 或 delete 權限。
+create or replace function public.soft_delete_items(p_id uuid)
+returns void language plpgsql security definer
+set search_path = public, pg_catalog as $$
+begin
+  update public.items set deleted_at = now()
+  where id = p_id and (owner_id = auth.uid() or public.has_permission('items','delete'));
+end;
+$$;
+grant execute on function public.soft_delete_items(uuid) to authenticated;

@@ -1,6 +1,7 @@
 /**
  * useItems - items 的 CRUD（範例；你的模組照抄成 use<Mod>）。
- * 每個 method 回 { data, error } 不 throw；insert 時蓋上 owner_id；刪除採軟刪（設 deleted_at）。
+ * 每個 method 回 { data, error } 不 throw；insert 時蓋上 owner_id。
+ * 刪除走 soft_delete_items RPC（SECURITY DEFINER）——直接 update deleted_at 會被 RLS 擋，必須用 RPC。
  */
 import type { ItemInsert, ItemUpdate } from '~/types/items'
 
@@ -35,7 +36,8 @@ export const useItems = () => {
 
   const deleteItem = async (id: string) => {
     if (!user.value) return { error: { message: '請先登入' } }
-    const { error } = await supabase.from('items').update({ deleted_at: new Date().toISOString() }).eq('id', id)
+    // 軟刪除走 RPC（definer）——直接 update deleted_at 會被 RLS with-check 擋下
+    const { error } = await supabase.rpc('soft_delete_items', { p_id: id })
     if (error) return { error: { message: error.message || '刪除項目失敗' } }
     return { error: null }
   }
