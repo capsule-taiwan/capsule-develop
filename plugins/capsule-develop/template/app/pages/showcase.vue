@@ -5,7 +5,7 @@ useHead({ title: '元件展示' })
 const toast = useToast()
 
 const text = ref('可以打字看看')
-const amount = ref<number | null>(100)
+const amount = ref<number | undefined>(100)
 const sel = ref('active')
 const sw = ref(true)
 const chk = ref(false)
