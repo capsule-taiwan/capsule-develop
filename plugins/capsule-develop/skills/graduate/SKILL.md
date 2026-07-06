@@ -1,13 +1,13 @@
 ---
 name: graduate
-description: 產生一份「畢業申請包」，評估這個 MVP 是否準備好被平台團隊收進 CAPSULE MANAGE 大系統。當使用者說「這個想正式化」「收進大系統」「畢業」「graduate」時使用。
+description: 產生一份「畢業申請包」，評估這個 MVP 是否準備好被平台團隊收進母艦。當使用者說「這個想正式化」「收進大系統」「畢業」「graduate」時使用。
 disable-model-invocation: true
 allowed-tools: Read, Grep, Glob, Write, Bash
 ---
 
 # 畢業申請包
 
-這個技能**不搬程式碼**（回收由平台團隊執行）。它產生一份評估報告，讓使用者交給 IT 判斷是否收進 CAPSULE MANAGE。
+這個技能**不搬程式碼**（回收由平台團隊執行）。它產生一份評估報告，讓使用者交給 IT 判斷是否收進母艦。
 
 ## 步驟
 1. 讀 `docs/GRADUATION.md` 的畢業資格與契約審查清單。

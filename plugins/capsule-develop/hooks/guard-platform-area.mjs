@@ -43,7 +43,7 @@ const PLATFORM = [
 
 for (const p of PLATFORM) {
   if (p.re.test(raw)) {
-    deny(`「${p.what}」屬於平台共用區，依回收契約第 6 條不可在 MVP 內修改（改了會讓未來回收進 CAPSULE MANAGE 變困難）。\n如果你覺得這個共用元件需要調整，請停下來，請使用者開一個 issue 給平台團隊（IT）來改進範本——這樣所有 MVP 都受惠。\n你自己模組的檔案（pages/<你的模組>/、components/<你的模組>/、你自己的 migration）不受此限。`)
+    deny(`「${p.what}」屬於平台共用區，依回收契約第 6 條不可在 MVP 內修改（改了會讓未來回收進母艦變困難）。\n如果你覺得這個共用元件需要調整，請停下來，請使用者開一個 issue 給平台團隊（IT）來改進範本——這樣所有 MVP 都受惠。\n你自己模組的檔案（pages/<你的模組>/、components/<你的模組>/、你自己的 migration）不受此限。`)
   }
 }
 

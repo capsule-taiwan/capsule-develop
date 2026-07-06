@@ -12,7 +12,7 @@ allowed-tools: Bash, Read
    - Linux：`xdg-open "${CLAUDE_PLUGIN_ROOT}/welcome.html"`
 
 2. 同時用**業務語言**跟使用者講重點（不要只丟網頁）：
-   - 這是一個孵化器工具箱：你用 Claude 開發一個自己的內部工具 MVP，用你自己的免費資料庫與網址，跟公司系統完全隔離；用順了、證明有價值，IT 再把它「畢業」收進 CAPSULE MANAGE。
+   - 這是一個孵化器工具箱：你用 Claude 開發一個自己的內部工具 MVP，用你自己的免費資料庫與網址，跟公司系統完全隔離；用順了、證明有價值，IT 再把它「畢業」收進母艦。
    - 三階段：種子範本 → 你的膠囊 MVP（你在這）→ 回收進母艦。
    - 你會用到的指令：/new-project（開新專案）、/task-brief（講需求）、/new-feature（做功能）、/check（檢查）、/deploy（上線）。
 

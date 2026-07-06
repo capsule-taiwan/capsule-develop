@@ -1,5 +1,5 @@
 -- 001: 身份與權限地基（平台區，請勿修改）
--- 精簡自 CAPSULE-CRM 的 RBAC：permissions / roles / role_permissions / user_roles / user_profiles
+-- 精簡自公司既有系統的 RBAC：permissions / roles / role_permissions / user_roles / user_profiles
 -- 身份主體用 Supabase 內建 auth.users；這裡只存角色綁定與啟用狀態。
 
 create table if not exists public.permissions (

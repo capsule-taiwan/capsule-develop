@@ -1,6 +1,6 @@
-# 畢業：把這個 MVP 收進 CAPSULE MANAGE
+# 畢業：把這個 MVP 收進母艦
 
-當這個 MVP 被穩定使用、證明有價值後，平台團隊（IT）可以把它「回收」進 CAPSULE MANAGE 大系統。
+當這個 MVP 被穩定使用、證明有價值後，平台團隊（IT）可以把它「回收」進母艦。
 因為你全程遵守了回收契約，這個過程會很順。以下是**平台團隊執行**的清單。
 
 ## 畢業資格
@@ -15,7 +15,7 @@
 - 所有 schema 變更都在 migration 檔裡（沒有只存在 dashboard 的設定）。
 
 ## 搬遷步驟（平台團隊）
-1. **Migrations**：把 `supabase/migrations/010+` 的業務 migration renumber 進 CAPSULE MANAGE 的模組號段，套 staging 驗證。（001–009 身份地基不搬，用大系統既有的。）
+1. **Migrations**：把 `supabase/migrations/010+` 的業務 migration renumber 進母艦的模組號段，套 staging 驗證。（001–009 身份地基不搬，用大系統既有的。）
 2. **權限**：把模組的 permissions resource 併入主 permissions 表、對映角色授權。
 3. **前端**：把 `app/{pages,components,composables,repositories,stores,middleware}/<模組>/` 與 `app/types/<模組>.ts`、`app/modules/<模組>.manifest.ts` 整包搬進主 repo。
 4. **身份切換**：MVP 用 email 登入；主平台用 Google OAuth。`useAuth`/`usePermissions` 介面同名，改動小。

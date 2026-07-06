@@ -28,8 +28,6 @@ const haystack = [ti.command, ti.file_path, ti.content, ti.new_string, ti.old_st
 
 // 公司正式機/測試機的識別字。MVP 完全不該碰到這些。
 const PROD_MARKERS = [
-  { re: /cszywctboqgnmzjqqdct/i, what: 'CAPSULE-CRM 正式機 Supabase 專案' },
-  { re: /dvuevcokxiokcjtjdruf/i, what: 'CAPSULE-CRM 測試機（staging）Supabase 專案' },
   { re: /PROD_DB_URL/, what: '正式機資料庫連線字串' },
   { re: /supabase_prod\b/i, what: '正式機 Supabase 連線設定' },
   { re: /\bsbp_[A-Za-z0-9]{20,}/, what: 'Supabase 個人存取權杖（不該出現在 MVP 專案）' },

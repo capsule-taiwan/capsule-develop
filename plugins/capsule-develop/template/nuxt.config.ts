@@ -8,7 +8,7 @@ export default defineNuxtConfig({
   ],
 
   // MVP 是內部工具，用 SPA 模式（無 SSR）：部署到 Cloudflare Pages 就是純靜態檔，
-  // 沒有伺服器運算成本，也避開所有 hydration 問題。畢業進 CAPSULE MANAGE 時才視需要開 SSR。
+  // 沒有伺服器運算成本，也避開所有 hydration 問題。畢業進母艦時才視需要開 SSR。
   ssr: false,
 
   devtools: { enabled: true },
