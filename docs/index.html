@@ -246,6 +246,7 @@
     <nav>
       <a href="#what">是什麼</a>
       <a href="#install">安裝</a>
+      <a href="#supabase">資料庫</a>
       <a href="#skills">技能</a>
       <a href="#path">流程</a>
       <a href="#contract">契約</a>
@@ -335,6 +336,20 @@
       <div class="cmd"><span class="prompt">&gt;</span><code>/new-project</code><button class="copy">複製</button></div>
       <div class="cmd"><span class="cmt"># 之後：/task-brief 講需求 → /new-feature 做出來 → /check 檢查 → /deploy 上線</span></div>
     </div>
+  </section>
+
+  <section id="supabase">
+    <div class="sec-head reveal">
+      <span class="eyebrow">你的資料存在哪</span>
+      <h2>接上免費的資料庫（約 3 分鐘）</h2>
+      <p>每個 MVP 用一個自己的免費雲端資料庫（Supabase），放資料、管登入，跟別人完全分開。你不用懂它——照下面做、把兩個值貼給 Claude 就好。</p>
+    </div>
+    <div class="steps">
+      <div class="step reveal"><div class="num"></div><div><h3>免費註冊</h3><p>打開 <a href="https://supabase.com" target="_blank" rel="noopener" style="color:var(--accent-ink);text-decoration:underline">supabase.com</a>，用 Google 或 email 免費登入。</p></div></div>
+      <div class="step reveal"><div class="num"></div><div><h3>New project</h3><p>按綠色的 <b style="color:var(--ink)">New project</b>，取個名字、區域選 <b style="color:var(--ink)">Southeast Asia (Singapore)</b>、設一組資料庫密碼（記起來）。等約 1 分鐘讓它建好。</p></div></div>
+      <div class="step reveal"><div class="num"></div><div><h3>複製兩個值貼給 Claude</h3><p>左下角齒輪 <b style="color:var(--ink)">Project Settings → API</b>，複製 <b style="color:var(--ink)">Project URL</b> 和 <b style="color:var(--ink)">anon public</b> 這兩個，貼回聊天視窗。Claude 會幫你填好設定、建好資料表、把畫面跑起來。</p></div></div>
+    </div>
+    <div class="callout reveal" style="margin-top:16px">這兩個值是「公開等級」的、不是密碼，貼出來沒關係。<b>提醒</b>：這是你的測試沙盒，只放假資料，別放真實客戶資料。</div>
   </section>
 
   <section id="skills">

@@ -35,7 +35,8 @@ cp -r "${CLAUDE_PLUGIN_ROOT}/template/." .
 逐句帶使用者做（他做，你等）：
 1. 到 https://supabase.com 用**自己的**帳號登入（沒有就免費註冊）。
 2. New project，隨便取名，選最近的區域，設一組資料庫密碼（記起來）。
-3. 專案建立後，到 Project Settings → API，複製 **Project URL** 與 **anon public key**。
+3. 專案建立後，到左下角齒輪 **Project Settings → API**，複製 **Project URL** 與 **anon public**。
+   - 若使用者只給你 Project URL（例如 `https://abcd.supabase.co`），從中取出 ref（`abcd`），直接把這個連結給他去拿 key：`https://supabase.com/dashboard/project/<ref>/settings/api`，請他複製「anon public」那一長串貼回來。
 4. 你（Claude）把這兩個值寫進 `.env`（照 `.env.example` 格式）。`.env` 已被 gitignore，不會進版控。
 
 > 提醒使用者：這個 Supabase 是他的沙盒，**只放測試假資料，不要放真實客戶個資**。等 MVP 有真實使用者要用真資料時，再請 IT 幫忙搬進公司帳號。
