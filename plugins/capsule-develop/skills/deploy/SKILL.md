@@ -1,27 +1,23 @@
 ---
 name: deploy
-description: 把這個 MVP 部署到使用者自己的 Cloudflare Pages（免費），並提醒鎖成只有公司信箱能看。當使用者說「上線」「部署」「deploy」「發布」時使用。
+description: 把這個 MVP 部署到使用者自己的 Cloudflare Pages（免費）。用「一次 token、其餘全自動」的方式：使用者產一次 Cloudflare API token，你用 wrangler 自動部署。當使用者說「上線」「部署」「deploy」「發布」時使用。
 disable-model-invocation: true
 allowed-tools: Bash, Read
 ---
 
-# 部署到 Cloudflare Pages
+# 部署到 Cloudflare Pages（wrangler 自動化）
 
-使用者是非工程師，全程用業務語言引導。部署前先跑 `/check` 確認沒壞。
+## 核心原則
+**只讓使用者產一次 Cloudflare API token，其餘全部你用 wrangler 自動做。** 部署前先跑 `/check`。
 
-## 首次部署（引導使用者做，你在旁邊帶）
-1. 先確認程式碼已 commit 並推上 GitHub（公司 org 下的 repo）。若還沒推：
-   - `git add -A && git commit -m "..."`（訊息用 ASCII+中日韓文字）
-   - 若還沒有遠端 repo：引導 `gh repo create capsule-taiwan/<專案代號> --private --source=. --push`
-2. 帶使用者到 Cloudflare Dashboard → Workers & Pages → Create → Pages → Connect to Git，選這個 repo。
-3. 建置設定（照 `docs/DEPLOY-CLOUDFLARE.md`）：
-   - Build command: `npm run generate`
-   - Build output directory: `dist`（若不對改 `.output/public`）
-   - 環境變數：`NUXT_PUBLIC_SUPABASE_URL`、`NUXT_PUBLIC_SUPABASE_ANON_KEY`、`NUXT_PUBLIC_APP_NAME`（用使用者自己的 Supabase 值）
-4. **同一天就開 Access policy**：Zero Trust（50 人內免費）→ Pages 專案啟用 Access → 只允許 `@capsulecorporation.cc` 信箱。否則預覽網址是公開的。
+## 步驟
+1. 打包：`npm run generate`（靜態檔輸出到 `dist`，或 `.output/public`）。
+2. 請使用者產一次 **Cloudflare API token**：Cloudflare → 右上頭像 → **My Profile → API Tokens → Create Token** → 用 **"Edit Cloudflare Pages"** 範本 → 建立 → 複製貼回聊天。也請他複製 **Account ID**（Workers & Pages 頁右側，或之後用 `wrangler whoami` 看）。
+3. 之後**全部你做**（`export CLOUDFLARE_API_TOKEN=<token>`、`export CLOUDFLARE_ACCOUNT_ID=<id>`）：
+   - 第一次：`npx --yes wrangler pages project create <專案代號> --production-branch main`
+   - 部署：`npx --yes wrangler pages deploy <輸出目錄> --project-name <專案代號>`
+   - 把回傳的 `*.pages.dev` 網址給使用者。
+4. **鎖公司信箱**：提醒到 Cloudflare Zero Trust（50 人內免費）幫這個 Pages 專案開 Access policy，只允許 `@capsulecorporation.cc`。（這步用 dashboard 最快；同事用公司信箱收驗證碼登入。）
+5. 之後每次更新：重跑 `npm run generate` + `wrangler pages deploy` 即可。
 
-## 之後
-- 每次 `git push` 就自動重新部署；每個 PR 有預覽網址。
-- 你的工作：確認 `/check` 綠 → commit → push。其餘 Cloudflare 自動處理。
-
-告訴使用者部署後的網址怎麼看、怎麼分享給同事（同事用公司信箱收驗證碼登入）。
+用非技術語言告訴使用者網址怎麼看、怎麼分享。

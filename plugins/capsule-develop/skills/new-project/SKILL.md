@@ -1,70 +1,44 @@
 ---
 name: new-project
-description: 建立一個新的 CAPSULE 內部工具 MVP 專案骨架。當使用者說「開新專案」「new project」「scaffold」「我想做一個新的內部工具」時使用。會從內建範本長出完整專案（Nuxt + Supabase + 內建 UI/權限/範例模組），並引導使用者建立自己的免費 Supabase、起本地開發。
+description: 建立一個新的 CAPSULE 內部工具 MVP 專案骨架。當使用者說「開新專案」「new project」「scaffold」「我想做一個新的內部工具」時使用。用「一次憑證、其餘全自動」的方式接上資料庫並跑起來。
 disable-model-invocation: true
 allowed-tools: Bash, Read, Write, Edit
 ---
 
 # 建立新的 MVP 專案
 
-你要幫一位**非工程師**從零長出一個獨立的內部工具 MVP。全程用**業務語言**、正體中文、一步一步帶。這個專案跟公司正式系統完全無關，用他自己的免費 Supabase + Cloudflare Pages。
+你要幫一位**非工程師**從零長出一個獨立的內部工具 MVP。全程用**業務語言**、正體中文、一步一步帶。
 
-## 步驟 0：環境與位置
-- **先確認環境**：跑 `node --version`（需 v20 以上）與 `git --version`。缺任何一個，先用 `/doctor` 幫使用者裝好（它會偵測作業系統並用 winget / Homebrew 安裝）再繼續。
-- 確認目前資料夾是空的（或使用者確認要在這裡建立）。若不空，問使用者要不要建一個子資料夾。
+## 核心原則（整個流程都遵守）
+**每個外部服務，只讓使用者做「產一次憑證（token/key）」與「用瀏覽器點幾下建立帳號」這種最必要的動作；其餘所有操作——建表、填設定、跑指令、部署——都由你用 CLI（supabase / gh / wrangler）或 API 自動完成。絕對不要叫使用者自己貼 SQL、手改設定檔、或在 dashboard 裡摸索。**
 
-## 步驟 1：訪談（用業務選擇題，不要問技術細節）
-問並記下：
-- **專案中文名**（例：設備借用系統）
-- **專案代號**（英文小寫、連字號，例：`equipment-loan`；當作 repo 名與資料夾名）
-- **第一個資料的代號**（英文小寫單數，例：`asset`；這會是資料表前綴與權限名稱。之後可以再加更多）
+## 步驟 0：環境
+- 跑 `node --version`（需 v20+）與 `git --version`。缺任何一個，先用 `/doctor` 幫使用者裝好再繼續。
+- 確認目前資料夾是空的（或請使用者確認要在這裡建）。
+
+## 步驟 1：訪談（業務選擇題）
+記下：專案中文名、專案代號（英文小寫連字號）、第一個資料的代號（英文小寫單數，當表前綴與權限名）。
 
 ## 步驟 2：複製範本
-把內建範本整包複製到專案資料夾：
-```bash
-cp -r "${CLAUDE_PLUGIN_ROOT}/template/." .
-```
-（Windows Git Bash 下 `cp -r` 可用。若目標是子資料夾，改成 `cp -r "${CLAUDE_PLUGIN_ROOT}/template/." ./<專案代號>` 並 `cd` 進去。）
+`cp -r "${CLAUDE_PLUGIN_ROOT}/template/." .`（要放子資料夾就 cp 到 ./<代號> 再 cd 進去）。**保留 items 範例別刪**。
 
 ## 步驟 3：填入專案資訊
-- `package.json`：把 `name` 改成專案代號。
-- `README.md`、根目錄 `CLAUDE.md` 的「專案資訊」區塊：填入專案中文名、代號。
-- **保留 `items` 範例模組原封不動**——它是你之後 `/new-feature` 照抄的活範本，不要刪。
+把 package.json 的 name、README、CLAUDE.md 的「專案資訊」填成專案代號 / 中文名。
 
-## 步驟 4：建立使用者自己的 Supabase（引導，不要幫他用公司帳號）
-逐句帶使用者做（他做，你等）：
-1. 到 https://supabase.com 用**自己的**帳號登入（沒有就免費註冊）。
-2. New project，隨便取名，選最近的區域，設一組資料庫密碼（記起來）。
-3. 專案建立後，到左下角齒輪 **Project Settings → API**，複製 **Project URL** 與 **anon public**。
-   - 若使用者只給你 Project URL（例如 `https://abcd.supabase.co`），從中取出 ref（`abcd`），直接把這個連結給他去拿 key：`https://supabase.com/dashboard/project/<ref>/settings/api`，請他複製「anon public」那一長串貼回來。
-4. 你（Claude）把這兩個值寫進 `.env`（照 `.env.example` 格式）。`.env` 已被 gitignore，不會進版控。
+## 步驟 4：接上 Supabase（一次 token，其餘你全自動）
+1. 請使用者到 https://supabase.com 免費登入，按 **New project** 建一個（取名、區域選 Southeast Asia (Singapore)、設一組 DB 密碼）。等約 1 分鐘。
+2. 請使用者產一個 **access token**（一次就好）：打開 https://supabase.com/dashboard/account/tokens → **Generate new token** → 複製貼回聊天。
+3. 之後**全部你做**（`export SUPABASE_ACCESS_TOKEN=<token>`）：
+   - 取專案 ref（從 URL `https://<ref>.supabase.co`，或 `GET https://api.supabase.com/v1/projects`）。
+   - 取 anon/publishable 金鑰：`GET https://api.supabase.com/v1/projects/<ref>/api-keys`，連同 URL 寫進 `.env`（照 `.env.example`）。
+   - 建資料表：把 `supabase/migrations/` 的每個 `.sql`（依檔名順序）用 `POST https://api.supabase.com/v1/projects/<ref>/database/query`（body `{"query": "<檔案內容>"}`、header `Authorization: Bearer $SUPABASE_ACCESS_TOKEN`）送出。或 `npx supabase db push`。
+   - 設定 Google 登入（本專案用**公司 Google 帳號**登入，限 @capsulecorporation.cc）：用 **IT 私下提供的共用 Google client id / secret**，呼叫 `PATCH https://api.supabase.com/v1/projects/<ref>/config/auth`（設 `external_google_enabled=true`、`external_google_client_id`、`external_google_secret`、`site_url`）。並提醒 IT 把本專案的 callback `https://<ref>.supabase.co/auth/v1/callback` 加進那組共用 Google OAuth app 的 redirect URIs。
+4. `.env` 已 gitignore。提醒使用者 token 用完可到 account/tokens 撤銷。
 
-> 提醒使用者：這個 Supabase 是他的沙盒，**只放測試假資料，不要放真實客戶個資**。等 MVP 有真實使用者要用真資料時，再請 IT 幫忙搬進公司帳號。
+## 步驟 5：安裝與啟動
+`npm install` → `npm run dev` → 請使用者開 http://localhost:3000 用**公司 Google 帳號登入**（**第一個登入者 = 管理員**），看到左側「項目（範例）」即成功。
 
-## 步驟 5：套用資料庫與啟動
-```bash
-npm install
-```
-用 Supabase CLI 把範本的 migrations 套進他的專案（引導使用者做 `npx supabase login` 與 `npx supabase link --project-ref <他的專案ref>`，然後）：
-```bash
-npx supabase db push
-```
-接著起本地伺服器並請使用者實際登入一次確認：
-```bash
-npm run dev
-```
-- 用 `/check` 或手動確認 `npm run dev` 起得來、能開到登入頁、註冊/登入後看得到範例的 items 頁。
+## 步驟 6：git 與交棒
+`git init && git add -A && git commit -m "chore: scaffold MVP"`。告訴使用者下一步：`/task-brief` → `/new-feature` 開發，`/check` 檢查，`/deploy` 上線。
 
-## 步驟 6：初始化 git 與首次 commit
-```bash
-git init && git add -A && git commit -m "chore: scaffold MVP from capsule-starter"
-```
-（若使用者要推到公司 GitHub org，引導 `gh repo create capsule-taiwan/<專案代號> --private --source=. --push`；沒有 gh 或還不想推就先跳過。）
-
-## 步驟 7：交棒
-用非技術語言告訴使用者：
-- 專案好了，左邊選單有個「items（範例）」可以點點看，那是給你參考長相的。
-- 下一步：輸入 `/task-brief` 把你想做的功能講清楚，我再用 `/new-feature` 幫你做出來。
-- 每次做完我會用 `/check` 檢查，通過就 `/deploy` 上線到你自己的網址。
-
-全程遵守專案根目錄 `CLAUDE.md` 的「回收契約」七條。
+全程遵守專案根目錄 `CLAUDE.md` 的回收契約。

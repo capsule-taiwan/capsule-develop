@@ -42,8 +42,9 @@ $$;
 grant execute on function public.has_permission(text, text) to authenticated;
 grant execute on function public.get_user_permissions(uuid) to authenticated;
 
--- 新使用者註冊時：建 user_profile，並指派角色。
--- 第一位註冊者自動成為「管理員」，其餘為「員工」。（MVP 便利設計）
+-- 新使用者（Google 登入）建立時：
+--   1) 硬擋：只允許公司網域 @capsulecorporation.cc（非公司帳號直接擋在資料庫層，登入失敗）
+--   2) 建 user_profile，並指派角色：第一位登入者=管理員，其餘=員工
 create or replace function public.handle_new_user()
 returns trigger language plpgsql security definer
 set search_path = public, pg_catalog
@@ -51,6 +52,10 @@ as $$
 declare
   v_is_first boolean;
 begin
+  if new.email is null or lower(new.email) not like '%@capsulecorporation.cc' then
+    raise exception '只允許 @capsulecorporation.cc 的公司帳號登入';
+  end if;
+
   select count(*) = 0 into v_is_first from public.user_profiles;
   insert into public.user_profiles(user_id) values (new.id) on conflict do nothing;
   insert into public.user_roles(user_id, role_id)

@@ -1,9 +1,11 @@
 /**
  * useAuth - 登入狀態與帳號操作（平台區）。
- * 用 Supabase Auth 的 email + 密碼。user 狀態存在 useState 共享，
- * 由 plugins/auth.client.ts 在啟動時 init（讀 session + 監聽變化）。
+ * 用公司 Google 帳號登入（Supabase Auth 的 Google provider），只允許 @capsulecorporation.cc。
+ * user 狀態存 useState 共享，由 plugins/auth.client.ts 在啟動時 init。
  */
 import type { User } from '@supabase/supabase-js'
+
+export const ALLOWED_DOMAIN = 'capsulecorporation.cc'
 
 export const useAuth = () => {
   const supabase = useSupabaseClient()
@@ -22,25 +24,19 @@ export const useAuth = () => {
     })
   }
 
-  const signInWithPassword = async (email: string, password: string) => {
+  const signInWithGoogle = async () => {
     loading.value = true
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({ email, password })
-      if (error) return { data: null, error: { message: error.message } }
-      user.value = data.user
-      return { data: data.user, error: null }
-    } finally {
-      loading.value = false
-    }
-  }
-
-  const signUp = async (email: string, password: string) => {
-    loading.value = true
-    try {
-      const { data, error } = await supabase.auth.signUp({ email, password })
-      if (error) return { data: null, error: { message: error.message } }
-      user.value = data.user
-      return { data: data.user, error: null }
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: window.location.origin,
+          // hd 只讓 Google 顯示公司網域的帳號；真正的硬擋在資料庫 trigger
+          queryParams: { hd: ALLOWED_DOMAIN, prompt: 'select_account' }
+        }
+      })
+      if (error) return { error: { message: error.message } }
+      return { error: null } // 成功會導去 Google，這裡不會再往下
     } finally {
       loading.value = false
     }
@@ -53,10 +49,9 @@ export const useAuth = () => {
     await navigateTo('/login')
   }
 
-  // 登入後等權限載入，讓首屏不會因權限未就緒而閃跳
   const waitForPostLoginSetup = async () => {
     await usePermissions().loadAll(true)
   }
 
-  return { user, loading, isAuthenticated, init, signInWithPassword, signUp, signOut, waitForPostLoginSetup }
+  return { user, loading, isAuthenticated, init, signInWithGoogle, signOut, waitForPostLoginSetup }
 }
