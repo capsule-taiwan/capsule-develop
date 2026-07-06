@@ -17,10 +17,5 @@
 ## 部署後一定要做：把線上網址加進 Supabase 登入白名單
 這個 MVP 用 Google 登入，登入後 Supabase 會導回網站自身網址。**新的 `*.pages.dev` 網址必須加進 Supabase 的 redirect 白名單，否則線上登入會被擋。** 跑 `/deploy` 會自動處理；手動部署的話，把網址帶去找 IT 用 `/enable-login` 補上（或自己在 Supabase 專案的 Authentication → URL Configuration 把 Site URL 與 Redirect URLs 加上該 `pages.dev` 網址）。
 
-## 鎖成只有公司員工能看（免費）
-1. Cloudflare Dashboard → Zero Trust（50 人內免費）。
-2. Pages 專案 → Settings → 啟用 Access policy。
-3. 新增 policy：只允許 email 結尾為 `@capsulecorporation.cc`。
-   員工用 email 一次性驗證碼登入，不需要 Cloudflare 帳號。
-
-**接上 repo 的當天就把 Access policy 開起來**，否則預覽網址是公開的。
+## 誰能連進來
+不用另外設定存取限制：這個 App 只有**公司 Google 帳號**（限 `@capsulecorporation.cc`）能登入，資料也逐筆受 RLS 保護。上線後只有公司同事登得進去、看得到資料。

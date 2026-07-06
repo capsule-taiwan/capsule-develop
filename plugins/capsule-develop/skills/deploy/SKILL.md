@@ -25,7 +25,7 @@ allowed-tools: Bash, Read
      - `PATCH .../config/auth`，body：`site_url` = `https://<專案代號>.pages.dev`；`uri_allow_list` = 既有值再 append `,https://<專案代號>.pages.dev,https://<專案代號>.pages.dev/**,https://*.<專案代號>.pages.dev/**`。
      - 用 `GET` 複驗白名單有含新網址。
    - 部署者不是 IT／沒有 Supabase token → 請使用者帶 pages.dev 網址找 IT，用 `/enable-login` 一併把網址加進白名單（與登入開通同一道人工關卡）。
-5. **鎖公司信箱（建議，多一層網路閘門）**：到 Cloudflare Zero Trust（50 人內免費）幫這個 Pages 專案開 Access policy，只允許 `@capsulecorporation.cc`（同事用公司信箱收一次性驗證碼，不需 Cloudflare 帳號）。資料層本來就有 Google 網域限制 + RLS 保護，這步是讓非公司的人連登入頁都看不到。
+5. **只有公司的人進得來**：上線後只有公司 Google 帳號登得進去（登入本來就限 `@capsulecorporation.cc`）、資料受 RLS 保護，不用再另外設定存取限制。
 6. 之後每次更新：重跑 `/check` → `npm run generate` → `npx --yes wrangler pages deploy .output/public --project-name <專案代號> --branch=main --commit-dirty=true`。網址不變。
 
 用非技術語言告訴使用者網址怎麼看、怎麼分享。
