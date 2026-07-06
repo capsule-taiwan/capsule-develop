@@ -17,7 +17,7 @@ npm test
 ```bash
 npm run test:integration
 ```
-（打的是使用者自己的 Supabase，安全。若沒設 `.env.test` 的 service key，就說「這項之後在部署前跑」。）
+（打的是使用者自己的 Supabase，安全。需要 `.env` 裡的 `SUPABASE_URL` 與 `SUPABASE_SERVICE_KEY`（service_role key，見 `.env.example`）。**沒設這兩個值時測試會自動 skip**——這時要如實回報「整合測試被略過（未設 service key），不是通過」，不可當綠燈。想真的驗資料庫就補上 key 再跑一次。）
 
 ## 3. 型別檢查
 ```bash

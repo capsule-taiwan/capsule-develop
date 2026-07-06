@@ -8,6 +8,7 @@
 
 | 技能 | 做什麼 |
 |---|---|
+| `/doctor` | 檢查並自動裝好 Node.js 與 git（新電腦第一次先跑這個） |
 | `/new-project` | 一鍵長出一個新專案骨架（Nuxt + Supabase + 內建 UI/權限/範例模組），自帶回收契約 |
 | `/task-brief` | 用業務語言訪談你的需求，寫成規格文件 |
 | `/new-feature` | 照著範例模組（items）長出你要的新功能（列表/表單/權限/測試一整套） |
@@ -17,6 +18,11 @@
 | `/graduate` | 產生「畢業申請包」，交給平台團隊審查是否收進母艦 |
 
 安裝後還會自動載入護欄（hooks），擋掉危險操作與「改到平台共用檔」。
+
+## 開始前你需要（Step 0）
+- **Claude Code** 裝好並用**付費方案**（Pro / Max，或 API 計費）登入——這整套工具是在 Claude Code 裡跑的。還沒有的話先到 Anthropic 官方裝好、登入，再回來。
+- **Windows 或 macOS**。Node.js 與 git **不用**先裝——第一次在新電腦，先在 Claude Code 裡打 `/doctor`，它會用 winget/brew 幫你把 Node 與 git 裝好（可能跳出系統權限視窗，按允許；公司電腦若被擋就找 IT）。
+- 裝不起來或不確定 → 找 IT。
 
 ## 安裝
 
@@ -47,6 +53,8 @@
 /new-project
 ```
 它會問你專案名稱、模組代號，然後長出骨架、引導你建立自己的免費 Supabase 專案、起本地開發伺服器。之後就用 `/task-brief` → `/new-feature` 迭代開發，`/check` 通過就 `/deploy`。
+
+> 登入採**公司 Google 帳號**（限 @capsulecorporation.cc）。跑完 `/new-project` 你會看到登入頁但一開始還登不進去——把你的 Supabase 網址給工程師（IT）跑 `/enable-login` 開通後即可登入，**第一個登入的人是管理員**。這是刻意的人工把關。
 
 ## 孵化器模型（為什麼這樣設計）
 

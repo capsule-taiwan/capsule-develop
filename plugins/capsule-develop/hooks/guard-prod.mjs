@@ -30,7 +30,9 @@ const haystack = [ti.command, ti.file_path, ti.content, ti.new_string, ti.old_st
 const PROD_MARKERS = [
   { re: /PROD_DB_URL/, what: '正式機資料庫連線字串' },
   { re: /supabase_prod\b/i, what: '正式機 Supabase 連線設定' },
-  { re: /\bsbp_[A-Za-z0-9]{20,}/, what: 'Supabase 個人存取權杖（不該出現在 MVP 專案）' },
+  // ⚠️ 不要用 /sbp_.../ 擋 Supabase 存取權杖：那正是每個 MVP 自己要用的個人 token
+  //（/new-project、/enable-login、/deploy 都靠它接自己的免費 Supabase）。擋它會把整個產品的
+  // 核心流程鎖死。這裡只擋「公司正式機」的識別字（上面兩條），不擋「有沒有 token」本身。
 ]
 
 for (const m of PROD_MARKERS) {

@@ -18,11 +18,12 @@
 6. **不改平台區**：`app/components/base/`、`app/components/common/`、`app/composables/`（核心那幾支）、`app/layouts/`、`supabase/migrations/001`–`009`、`.claude/`、建置設定、本檔。想改 → 請使用者開 issue 給平台團隊（IT）改進範本。（護欄會自動擋這些檔）
 7. **秘密只放 `.env`**（已 gitignore）。程式碼與版控裡永遠沒有金鑰。
 
-## 專案資訊（scaffold 時填）
-- 專案中文名：`＿＿＿＿`
-- 專案代號：`＿＿＿＿`
-- Supabase：你自己的免費專案（**只放測試假資料，不要放真實客戶個資**；要放真資料前先請 IT 幫忙搬進公司帳號）
-- 部署：Cloudflare Pages（見 `docs/DEPLOY-CLOUDFLARE.md`）
+## 專案資訊
+- 專案代號：見 `package.json` 的 `name`（英文小寫，同時是資料表前綴與權限 resource）。
+- 專案中文名：見 `.env` 的 `NUXT_PUBLIC_APP_NAME`。
+- （本檔屬平台維護區、受護欄保護，不用也不要手改；專案名稱由 `/new-project` 寫進 package.json 與 .env。）
+- Supabase：你自己的免費專案（**只放測試假資料，不要放真實客戶個資**；要放真資料前先請 IT 幫忙搬進公司帳號）。
+- 部署：Cloudflare Pages（見 `docs/DEPLOY-CLOUDFLARE.md`）。
 
 ## 你的地盤（可自由新增/修改）
 ```
@@ -46,15 +47,14 @@ docs/specs/*.md
 
 ## 黃金路徑（每個新功能）
 1. `/task-brief` 訪談需求 → 寫 `docs/specs/<功能>.md`
-2. `/next-migration` 取號建 migration（照 010_items.sql）→ `npx supabase db push`
-3. 型別 → Repository → composable → 頁面（頁殼：BaseDashboardPanel → isLoading/error/EmptyState/主內容）→ manifest + middleware（同一權限）
-4. Form 只 `emit('submit')`，不呼叫 API；非同步按鈕一律 `:loading`
-5. 測試（照 `tests/integration/list-items-rpc.test.ts`）
-6. `/check` 全綠 → commit → `/deploy`
+2. `/new-feature`：照 `items` 範例一次長出整個模組（migration + 型別 + Repository + composable + 頁面 + 表單 + manifest + 測試）。它內部會呼叫 `/next-migration` 取號建 migration，並用 access token 打 Supabase Management API 套進你自己的資料庫（免 login/link）——你不用先單獨跑 `/next-migration`。
+3. `/check` 全綠 → commit → `/deploy`
+
+> 各層細節（頁殼 `BaseDashboardPanel` → isLoading/error/EmptyState/主內容、Form 只 `emit('submit')` 不呼叫 API、非同步按鈕 `:loading`、列表走 `list_<模組>` RPC、整合測試照 `tests/integration/list-items-rpc.test.ts`）都由 `/new-feature` 照 `items` 範例產出；想微調時再對照 `items` 那一層改。
 
 ## 常用指令
 - `npm run dev`（本地開發）/ `npm run typecheck`（型別，全新專案零既有錯誤，紅了就是你弄壞的）/ `npm test` / `npm run test:integration`
-- migration：`npx supabase db push`（套進你自己的 Supabase）
+- migration：由 `/new-feature`／`/next-migration` 用 access token 打 Supabase Management API 套進你自己的資料庫（免 login/link/DB 密碼）。若你已自行 `supabase link`，也可用 `npx supabase db push`。
 
 ## 何時停下來找平台團隊（IT）
 - 想改平台區、要接第三方服務（Email/金流/外部 API）、要放真實客戶資料、覺得可以畢業了、或被護欄擋下的操作。

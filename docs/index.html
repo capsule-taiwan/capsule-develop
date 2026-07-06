@@ -246,6 +246,7 @@
     <nav>
       <a href="#what">是什麼</a>
       <a href="#install">安裝</a>
+      <a href="#start">開始</a>
       <a href="#supabase">資料庫</a>
       <a href="#skills">技能</a>
       <a href="#path">流程</a>
@@ -315,6 +316,9 @@
       <h2>安裝工具箱</h2>
       <p>在 Claude Code 裡輸入這兩行。裝好後你會多出一組技能，還有自動生效的安全護欄。</p>
     </div>
+    <div class="callout reveal" style="margin-bottom:16px">
+      <b>開始前你需要（Step 0）：</b>先裝好 <b style="color:var(--ink)">Claude Code</b> 並用<b style="color:var(--ink)">付費方案</b>（Pro／Max，或 API 計費）登入——這整套工具就是在 Claude Code 裡跑的。作業系統 Windows 或 Mac 皆可；<b style="color:var(--ink)">Node.js 與 git 不用先裝</b>，新電腦第一次先打 <code style="font-family:var(--mono)">/doctor</code> 會自動幫你裝好（可能跳出系統權限視窗，按允許；公司電腦被擋就找 IT）。還沒有 Claude Code？先到 Anthropic 官方裝好再回來。
+    </div>
     <div class="term reveal">
       <div class="term-top"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="term-title">Claude Code</span></div>
       <div class="cmd"><span class="prompt">&gt;</span><code>/plugin marketplace add capsule-taiwan/capsule-develop</code><button class="copy">複製</button></div>
@@ -356,7 +360,7 @@
     <div class="sec-head reveal">
       <span class="eyebrow">你會多出這些指令</span>
       <h2>八個技能</h2>
-      <p>每一個都是一句話就能用。你不用記，跟 Claude 說你想做什麼，它會挑對的來用。</p>
+      <p>做功能時你只要用生活化的話描述想要什麼，Claude 會自動照做；而幾個里程碑指令——<code style="font-family:var(--mono)">/new-project</code>、<code style="font-family:var(--mono)">/deploy</code>、<code style="font-family:var(--mono)">/graduate</code>——要你自己打出來（下面都會告訴你在哪打）。</p>
     </div>
     <div class="grid skills">
       <div class="card skill reveal"><div class="cmd-name">/doctor</div><p>檢查你的電腦有沒有 Node.js 與 git，缺了就自動幫你裝。</p></div>
@@ -365,7 +369,7 @@
       <div class="card skill reveal"><div class="cmd-name">/new-feature</div><p>照範例模組長出你要的新功能（列表／表單／權限／測試一整套）。</p></div>
       <div class="card skill reveal"><div class="cmd-name">/next-migration</div><p>幫你建立資料庫變更檔，自動取號。</p></div>
       <div class="card skill reveal"><div class="cmd-name">/check</div><p>跑測試＋型別＋契約檢查，全綠才算完成。</p></div>
-      <div class="card skill reveal"><div class="cmd-name">/deploy</div><p>部署到你自己的 Cloudflare Pages，並鎖成只有公司信箱能看。</p></div>
+      <div class="card skill reveal"><div class="cmd-name">/deploy</div><p>部署到你自己的 Cloudflare Pages（可再選配鎖成只有公司信箱能看）。</p></div>
       <div class="card skill reveal"><div class="cmd-name">/graduate</div><p>產生「畢業申請包」，交給 IT 評估是否收進大系統。</p></div>
     </div>
   </section>
@@ -419,10 +423,10 @@
     <div class="sec-head reveal">
       <span class="eyebrow">全部免費</span>
       <h2>上線到你自己的網址</h2>
-      <p>MVP 是純靜態網站，Cloudflare Pages 免費層綽綽有餘。每次更新自動重新部署。</p>
+      <p>MVP 是純靜態網站，Cloudflare Pages 免費層綽綽有餘。一次設定 Cloudflare 金鑰，之後每次更新只要再跑一次 <code style="font-family:var(--mono)">/deploy</code>，網址不變。</p>
     </div>
     <div class="grid g2">
-      <div class="card reveal"><div class="ic">🌐</div><h3>Cloudflare Pages（免費）</h3><p>接上 GitHub 就自動部署；每個修改都有一個預覽網址。</p></div>
+      <div class="card reveal"><div class="ic">🌐</div><h3>Cloudflare Pages（免費）</h3><p>跑 <code style="font-family:var(--mono)">/deploy</code>：你產一次 Cloudflare 金鑰，Claude 就用它把網站上傳，給你一個 <code style="font-family:var(--mono)">*.pages.dev</code> 網址。要更新就再跑一次。</p></div>
       <div class="card reveal"><div class="ic">🔒</div><h3>選配：只讓公司的人連得進來</h3><p>這是加在網站<b style="color:var(--ink)">最外層的一道門</b>（Cloudflare Zero Trust，50 人內免費），只管「誰能打開這個網址」。它不是登入、也不存資料——你的登入與資料仍然在<b style="color:var(--ink)">自己的資料庫</b>裡。想更嚴格時再開它。</p></div>
     </div>
   </section>

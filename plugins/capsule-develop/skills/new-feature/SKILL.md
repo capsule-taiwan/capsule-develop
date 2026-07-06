@@ -31,8 +31,8 @@ app/types/<mod>.test.ts 或就近單元測試
 
 然後照這個順序做 `<mod>`：
 1. **`/next-migration`** 產一個 migration，照 `010_items.sql` 寫：`<mod>` 表（標準欄位 `id`/`owner_id`/`created_at`/`updated_at`/`deleted_at`）+ 部分索引 `WHERE deleted_at IS NULL` + `update_<mod>_updated_at` trigger + 用 `INSERT INTO permissions ... ON CONFLICT DO NOTHING` 註冊 `<mod>` 權限並授權給 管理員/主管/員工 + 逐操作 RLS policy（用 `has_permission()`）+ `list_<mod>` RPC（page_size clamp、sort 白名單、回 `{items,total,page,page_size}`）+ `save_<mod>` / `soft_delete_<mod>` RPC。
-2. `npx supabase db push` 套進使用者自己的 Supabase。
-3. `npx supabase gen types typescript --linked > app/types/database.ts` 重生型別（或手動加你新表的 Row/Insert/Update）；再寫 `app/types/<mod>.ts`。
+2. 套用 migration：用 access token 打 `POST https://api.supabase.com/v1/projects/<ref>/database/query`（`<ref>` 取自 `.env` 的 `NUXT_PUBLIC_SUPABASE_URL`；同 `/new-project` 那把 token，免 login/link/DB 密碼）。細節見 `/next-migration` 的「套用」段。
+3. 型別：手動在 `app/types/database.ts` 補上你新表的 `Row`/`Insert`/`Update` 與新 RPC 的簽名（**只加不刪**既有內容）；再寫 `app/types/<mod>.ts`。（`supabase gen types --linked` 要先 link，非工程師流程不用它。）
 4. `app/repositories/<Mod>Repository.ts`：唯一碰 supabase 的地方，每個 method 回 `Result<T>`，**絕不 throw**。
 5. `app/composables/use<Mod>.ts` + `use<Mod>ServerPaginated.ts`（列表交給 `useServerPaginated`，不要自己寫 loading/debounce）；`app/stores/<mod>.ts` 只放 invalidationTick。
 6. `app/pages/<mod>/index.vue`：照 items 的頁殼（`BaseDashboardPanel` → isLoading/error/EmptyState/主內容）。**只用 `components/base/*`**，禁 `U*` 原生元件、禁手刻表格/彈窗/分頁。

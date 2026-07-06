@@ -23,7 +23,8 @@ allowed-tools: Bash, Read, Write, Edit
 `cp -r "${CLAUDE_PLUGIN_ROOT}/template/." .`（要放子資料夾就 cp 到 ./<代號> 再 cd 進去）。**保留 items 範例別刪**。
 
 ## 步驟 3：填入專案資訊
-把 package.json 的 name、README、CLAUDE.md 的「專案資訊」填成專案代號 / 中文名。
+把 **package.json 的 `name`** 填成專案代號、**README** 填成中文名、**`.env` 的 `NUXT_PUBLIC_APP_NAME`** 填成中文名。
+**不要改 `CLAUDE.md`**——它是平台維護區、受護欄保護（硬改會被擋）；專案名稱由 package.json 與 `.env` 提供即可。
 
 ## 步驟 4：接上 Supabase（一次 token，其餘你全自動）
 1. 請使用者到 https://supabase.com 免費登入，按 **New project** 建一個（取名、區域選 Southeast Asia (Singapore)、設一組 DB 密碼）。等約 1 分鐘。
@@ -31,7 +32,7 @@ allowed-tools: Bash, Read, Write, Edit
 3. 之後**全部你做**（`export SUPABASE_ACCESS_TOKEN=<token>`）：
    - 取專案 ref（從 URL `https://<ref>.supabase.co`，或 `GET https://api.supabase.com/v1/projects`）。
    - 取 anon/publishable 金鑰：`GET https://api.supabase.com/v1/projects/<ref>/api-keys`，連同 URL 寫進 `.env`。
-   - 建資料表：把 `supabase/migrations/` 的每個 `.sql`（依檔名順序）用 `POST https://api.supabase.com/v1/projects/<ref>/database/query` 送出，或 `npx supabase db push`。
+   - 建資料表：把 `supabase/migrations/` 的每個 `.sql`（依檔名順序）用 `POST https://api.supabase.com/v1/projects/<ref>/database/query` 送出（body `{"query":"<SQL>"}`，header 帶 access token）。這條免 login/link/DB 密碼；之後 `/new-feature`、`/next-migration` 套新 migration 也走同一條，不要叫使用者去 `supabase login/link`。
    - **注意：不要在這裡設定 Google 登入**。登入是由工程師開通（見步驟 6），這是刻意的人工關卡。
 
 ## 步驟 5：安裝與啟動

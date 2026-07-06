@@ -37,6 +37,10 @@ create index if not exists <mod>_created_idx on <mod> (created_at desc) where de
 ## 冪等
 - 全檔用 `if not exists` / `create or replace` / `on conflict do nothing`，這樣重跑不會壞。
 
-## 套用
-- 產完提醒使用者用 `npx supabase db push` 套進他自己的 Supabase（不是公司的）。
-- 這個專案是全新資料庫，用標準 `supabase db push` 即可，沒有公司主專案那套特殊眉角。
+## 套用（用 access token 打 Management API，免 login/link）
+- 用 `/new-project` 那把 Supabase access token 套進**使用者自己**的 Supabase（不是公司的）：
+  `export SUPABASE_ACCESS_TOKEN=<token>`（若這次對話還沒 export，請使用者再貼一次那把 token，用完可到 Supabase 撤銷），
+  然後 `POST https://api.supabase.com/v1/projects/<ref>/database/query`，body `{"query":"<整個 migration SQL>"}`，header `Authorization: Bearer $SUPABASE_ACCESS_TOKEN`。
+- `<ref>` 從 `.env` 的 `NUXT_PUBLIC_SUPABASE_URL`（`https://<ref>.supabase.co`）取。
+- 這條只要 token、免 `supabase login`/`link`/DB 密碼。若使用者已自行 `supabase link`，也可改用 `npx supabase db push`。
+- 想做一整個功能模組？直接用 `/new-feature`，它會呼叫本技能幫你取號建 migration，你不用先單獨跑一次。
