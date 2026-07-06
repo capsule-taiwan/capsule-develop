@@ -18,12 +18,7 @@ const page = ref(1)
 const pageSize = ref(20)
 
 const { items, total, loading, error, refresh } = useItemsServerPaginated({
-  searchQuery: search,
-  filters,
-  sortColumn,
-  sortDirection,
-  currentPage: page,
-  itemsPerPage: pageSize
+  searchQuery: search, filters, sortColumn, sortDirection, currentPage: page, itemsPerPage: pageSize
 })
 
 watch(() => store.invalidationTick, () => refresh())
@@ -62,7 +57,7 @@ const onSubmit = async (payload: { name: string; description: string; status: st
 }
 
 const onDelete = async (row: ListItemsItem) => {
-  if (!window.confirm(`確定刪除「${row.name}」？`)) return
+  if (!window.confirm('確定刪除「' + (row.name ?? '') + '」？')) return
   const { error: e } = await deleteItem(row.id)
   if (e) { toast.add({ title: e.message, color: 'error' }); return }
   toast.add({ title: '已刪除', color: 'success' })
@@ -90,8 +85,10 @@ const isEmpty = computed(() => !loading.value && !error.value && total.value ===
 
     <template #body>
       <div class="space-y-4">
+        <!-- 工具列：搜尋 + 新增（新增鈕也放這裡，確保一定看得到、點得到） -->
         <div class="flex items-center gap-2">
           <BaseInput v-model="search" icon="i-lucide-search" placeholder="搜尋名稱或說明" class="max-w-xs" />
+          <BaseButton v-if="canCreate" icon="i-lucide-plus" class="ml-auto" @click="openCreate">新增項目</BaseButton>
         </div>
 
         <BaseTableSkeleton v-if="loading && items.length === 0" :rows="5" />
@@ -102,7 +99,9 @@ const isEmpty = computed(() => !loading.value && !error.value && total.value ===
           v-else-if="isEmpty"
           icon="i-lucide-box"
           title="還沒有任何項目"
-          description="按右上角「新增項目」建立第一筆。"
+          :description="canCreate ? '按下面的按鈕建立第一筆。' : '目前沒有資料。'"
+          :action-label="canCreate ? '新增第一筆項目' : ''"
+          @action="openCreate"
         />
 
         <template v-else>
@@ -120,18 +119,13 @@ const isEmpty = computed(() => !loading.value && !error.value && total.value ===
             </template>
             <template #actions-cell="{ row }">
               <div class="flex justify-end gap-1">
-                <BaseButton v-if="canUpdate" icon="i-lucide-pencil" color="neutral" variant="ghost" size="xs" @click="openEdit((row.original as ListItemsItem))" />
-                <BaseButton v-if="canDelete" icon="i-lucide-trash-2" color="error" variant="ghost" size="xs" @click="onDelete((row.original as ListItemsItem))" />
+                <BaseButton v-if="canUpdate" icon="i-lucide-pencil" color="neutral" variant="ghost" size="xs" @click="openEdit(row.original as ListItemsItem)" />
+                <BaseButton v-if="canDelete" icon="i-lucide-trash-2" color="error" variant="ghost" size="xs" @click="onDelete(row.original as ListItemsItem)" />
               </div>
             </template>
           </BaseTable>
 
-          <BasePagination
-            :page="page"
-            :total="total"
-            :items-per-page="pageSize"
-            @update:page="(p: number) => (page = p)"
-          />
+          <BasePagination :page="page" :total="total" :items-per-page="pageSize" @update:page="(p: number) => (page = p)" />
         </template>
       </div>
     </template>
