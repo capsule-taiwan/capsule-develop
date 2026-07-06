@@ -1,7 +1,7 @@
 {
   "name": "capsule-develop",
   "displayName": "CAPSULE Develop",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "CAPSULE 星球孵化器工具箱。scaffold 一個獨立的內部工具 MVP（自帶 Supabase + Cloudflare Pages 部署），用引導式技能開發功能，並在成熟後畢業回收進母艦。",
   "author": {
     "name": "Capsule Corporation IT",

@@ -23,6 +23,6 @@ try {
 process.stdout.write(JSON.stringify({
   hookSpecificOutput: {
     hookEventName: 'SessionStart',
-    additionalContext: '本環境已安裝 capsule-develop 孵化器工具箱。若使用者是新手或詢問「怎麼開始/怎麼用」，先引導：輸入 /welcome 看視覺化上手指引，或 /new-project 直接開一個新的內部工具 MVP。'
+    additionalContext: '本環境已安裝 capsule-develop 孵化器工具箱。若使用者是新手或詢問「怎麼開始/怎麼用」，先引導：輸入 /welcome 看視覺化上手指引，或 /new-project 直接開一個新的內部工具 MVP。開工前若偵測到沒有 Node.js 或 git，先用 /doctor 幫他裝好。'
   }
 }))
