@@ -1,0 +1,4 @@
+-- 本機開發用的假資料 seed（選配）。
+-- items 需要 owner_id 對應到真實的 auth.users，所以無法在此直接 seed items；
+-- 請登入後在畫面上新增幾筆，或改用 supabase 的 auth API 建測試帳號後再插入。
+-- 這個檔留白，供你日後放測試資料。

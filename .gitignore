@@ -1,0 +1,10 @@
+# 這是 marketplace/plugin repo。範本自己的 node_modules 等產物不進版控。
+**/node_modules
+**/.nuxt
+**/.output
+**/dist
+**/.env
+!**/.env.example
+.install.log
+*.log
+.DS_Store

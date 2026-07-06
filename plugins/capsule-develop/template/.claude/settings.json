@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "deny": [
+      "Bash(git push --force:*)",
+      "Bash(git push -f:*)",
+      "Bash(git commit --amend:*)",
+      "Read(./.env)",
+      "Read(./.env.*)"
+    ]
+  },
+  "extraKnownMarketplaces": {
+    "capsule-tools": {
+      "source": { "source": "github", "repo": "capsule-taiwan/capsule-develop" }
+    }
+  },
+  "enabledPlugins": {
+    "capsule-develop@capsule-tools": true
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "name": "capsule-tools",
+  "owner": {
+    "name": "Capsule Corporation IT",
+    "email": "it@capsulecorporation.cc"
+  },
+  "plugins": [
+    {
+      "name": "capsule-develop",
+      "source": "./plugins/capsule-develop",
+      "description": "CAPSULE MANAGE 孵化器工具箱：一鍵 scaffold 內部工具 MVP、引導式開發、品質檢查、Cloudflare 部署、畢業回收。給非工程師用 Claude Code 開發、成果可回收進 CAPSULE MANAGE。",
+      "version": "0.1.0"
+    }
+  ]
+}

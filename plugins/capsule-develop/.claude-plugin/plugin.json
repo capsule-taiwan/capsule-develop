@@ -1,0 +1,13 @@
+{
+  "name": "capsule-develop",
+  "displayName": "CAPSULE Develop",
+  "version": "0.1.0",
+  "description": "CAPSULE MANAGE 孵化器工具箱。scaffold 一個獨立的內部工具 MVP（自帶 Supabase + Cloudflare Pages 部署），用引導式技能開發功能，並在成熟後畢業回收進 CAPSULE MANAGE。",
+  "author": {
+    "name": "Capsule Corporation IT",
+    "email": "it@capsulecorporation.cc"
+  },
+  "keywords": ["scaffold", "nuxt", "supabase", "cloudflare", "capsule-manage", "low-code"],
+  "skills": "./skills/",
+  "hooks": "./hooks/hooks.json"
+}
