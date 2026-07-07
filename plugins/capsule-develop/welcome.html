@@ -10,7 +10,7 @@
     --go: #0D8C80; --go-ink: #0B6E64;
     --term-bg: #1A1714; --term-ink: #EDE9E2; --term-muted: #9A948B; --term-line: #322D28;
     --glow: rgba(232,89,12,.14);
-    --sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+    --sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans TC", "Noto Sans JP", "PingFang TC", "Microsoft JhengHei", sans-serif;
     --mono: ui-monospace, "SF Mono", "Cascadia Code", "JetBrains Mono", "Segoe UI Mono", Menlo, Consolas, monospace;
     --maxw: 1060px;
   }
@@ -62,7 +62,7 @@
     background: color-mix(in srgb, var(--bg) 86%, transparent);
     border-bottom: 1px solid var(--line);
   }
-  .bar-in { display: flex; align-items: center; gap: 18px; height: 58px; }
+  .bar-in { display: flex; align-items: center; gap: 14px; height: 58px; }
   .brand { display: flex; align-items: center; gap: 9px; font-weight: 700; letter-spacing: -.01em; }
   .brand .mk { font-size: 1.15rem; }
   .brand .sub { font-family: var(--mono); font-size: .72rem; color: var(--muted); font-weight: 500; }
@@ -72,6 +72,16 @@
     padding: 7px 11px; border-radius: 8px;
   }
   .bar nav a:hover { color: var(--ink); background: var(--panel-2); }
+  .bar-tools { display: flex; align-items: center; gap: 8px; }
+  .langsw { display: inline-flex; border: 1px solid var(--line); border-radius: 9px; overflow: hidden; }
+  .langsw button {
+    border: 0; background: var(--panel); color: var(--muted);
+    font-family: var(--sans); font-size: .76rem; font-weight: 650; line-height: 1;
+    padding: 6px 10px; cursor: pointer;
+  }
+  .langsw button + button { border-left: 1px solid var(--line); }
+  .langsw button.on { background: var(--accent); color: #fff; }
+  .langsw button:not(.on):hover { color: var(--ink); background: var(--panel-2); }
   .toggle {
     display: inline-flex; align-items: center; justify-content: center;
     width: 34px; height: 34px; border-radius: 9px; cursor: pointer;
@@ -244,53 +254,60 @@
   <div class="wrap bar-in">
     <span class="brand"><span class="mk">🧪</span> CAPSULE <span class="sub">develop</span></span>
     <nav>
-      <a href="#what">是什麼</a>
-      <a href="#install">安裝</a>
-      <a href="#start">開始</a>
-      <a href="#supabase">資料庫</a>
-      <a href="#skills">技能</a>
-      <a href="#path">流程</a>
-      <a href="#contract">契約</a>
-      <a href="#deploy">上線</a>
-      <a href="#how">運作</a>
+      <a href="#what" data-i18n="nav.what">是什麼</a>
+      <a href="#install" data-i18n="nav.install">安裝</a>
+      <a href="#start" data-i18n="nav.start">開始</a>
+      <a href="#supabase" data-i18n="nav.db">資料庫</a>
+      <a href="#skills" data-i18n="nav.skills">技能</a>
+      <a href="#path" data-i18n="nav.path">流程</a>
+      <a href="#contract" data-i18n="nav.contract">契約</a>
+      <a href="#deploy" data-i18n="nav.deploy">上線</a>
+      <a href="#how" data-i18n="nav.how">運作</a>
     </nav>
-    <button class="toggle" id="themeBtn" aria-label="切換深色/淺色">◐</button>
+    <div class="bar-tools">
+      <div class="langsw" role="group" aria-label="Language / 語言 / 言語">
+        <button data-lang="zh" type="button">中</button>
+        <button data-lang="en" type="button">EN</button>
+        <button data-lang="ja" type="button">日</button>
+      </div>
+      <button class="toggle" id="themeBtn" aria-label="切換深色/淺色">◐</button>
+    </div>
   </div>
 </div>
 
 <header class="hero">
   <div class="wrap">
-    <span class="eyebrow">CAPSULE 星球孵化器</span>
-    <h1>不會寫程式，也能做出自己的內部工具。</h1>
-    <p class="lede">
+    <span class="eyebrow" data-i18n="hero.eyebrow">CAPSULE 星球孵化器</span>
+    <h1 data-i18n="hero.h1">不會寫程式，也能做出自己的內部工具。</h1>
+    <p class="lede" data-i18n="hero.lede">
       裝上這個工具箱，你就能用 Claude Code 開發一個屬於自己的小系統——用你自己的免費資料庫、自己的免費網址，
       跟公司正式系統完全隔離。用順了、證明有價值，再由 IT 把它「畢業」收進母艦。
     </p>
     <div class="hero-cta">
-      <a class="btn btn-primary" href="#install">開始安裝 →</a>
-      <a class="btn btn-ghost" href="#path">看開發流程</a>
+      <a class="btn btn-primary" href="#install" data-i18n="hero.cta1">開始安裝 →</a>
+      <a class="btn btn-ghost" href="#path" data-i18n="hero.cta2">看開發流程</a>
     </div>
 
     <div class="journey">
       <div class="stage reveal">
-        <span class="tag">起點</span>
+        <span class="tag" data-i18n="jr.1.tag">起點</span>
         <div class="cap">🌱</div>
-        <h3>種子範本</h3>
-        <p>一個現成的最小專案：畫面、登入、權限、一個完整範例功能都已備好。</p>
+        <h3 data-i18n="jr.1.h">種子範本</h3>
+        <p data-i18n="jr.1.p">一個現成的最小專案：畫面、登入、權限、一個完整範例功能都已備好。</p>
       </div>
       <div class="arrow reveal" aria-hidden="true">→</div>
       <div class="stage mid reveal">
-        <span class="tag">你在這裡</span>
+        <span class="tag" data-i18n="jr.2.tag">你在這裡</span>
         <div class="cap">🧪</div>
-        <h3>你的膠囊 MVP</h3>
-        <p>用你自己的 Supabase + Cloudflare 獨立開發。做壞了只影響自己，碰不到公司系統。</p>
+        <h3 data-i18n="jr.2.h">你的膠囊 MVP</h3>
+        <p data-i18n="jr.2.p">用你自己的 Supabase + Cloudflare 獨立開發。做壞了只影響自己，碰不到公司系統。</p>
       </div>
       <div class="arrow reveal" aria-hidden="true">→</div>
       <div class="stage reveal">
-        <span class="tag">畢業</span>
+        <span class="tag" data-i18n="jr.3.tag">畢業</span>
         <div class="cap">🛰️</div>
-        <h3>回收進母艦</h3>
-        <p>穩定使用幾個月後，平台團隊把它整包搬進母艦。</p>
+        <h3 data-i18n="jr.3.h">回收進母艦</h3>
+        <p data-i18n="jr.3.p">穩定使用幾個月後，平台團隊把它整包搬進母艦。</p>
       </div>
     </div>
   </div>
@@ -300,164 +317,164 @@
 
   <section id="what">
     <div class="sec-head reveal">
-      <span class="eyebrow">為什麼這樣設計</span>
-      <h2>你的沙盒，你的節奏</h2>
-      <p>你不需要懂伺服器、不需要碰公司正式機。你只要會描述「我想要一個可以⋯⋯的功能」，其餘交給 Claude。</p>
+      <span class="eyebrow" data-i18n="what.eyebrow">為什麼這樣設計</span>
+      <h2 data-i18n="what.h2">你的沙盒，你的節奏</h2>
+      <p data-i18n="what.p">你不需要懂伺服器、不需要碰公司正式機。你只要會描述「我想要一個可以⋯⋯的功能」，其餘交給 Claude。</p>
     </div>
     <div class="grid g3">
-      <div class="card reveal"><div class="ic">🧪</div><h3>完全獨立的沙盒</h3><p>每個 MVP 用自己的免費資料庫與網址。實驗、失敗、重來，都不影響任何人。</p></div>
-      <div class="card reveal"><div class="ic">🤖</div><h3>Claude 當你的工程師</h3><p>用業務語言講需求，Claude 照著已經備好的規則寫程式，不會長歪。</p></div>
-      <div class="card reveal"><div class="ic">🛰️</div><h3>成熟就能回收</h3><p>範本強制的慣例，讓你的成果天生就是「可以裝回大系統的形狀」。</p></div>
+      <div class="card reveal"><div class="ic">🧪</div><h3 data-i18n="what.c1h">完全獨立的沙盒</h3><p data-i18n="what.c1p">每個 MVP 用自己的免費資料庫與網址。實驗、失敗、重來，都不影響任何人。</p></div>
+      <div class="card reveal"><div class="ic">🤖</div><h3 data-i18n="what.c2h">Claude 當你的工程師</h3><p data-i18n="what.c2p">用業務語言講需求，Claude 照著已經備好的規則寫程式，不會長歪。</p></div>
+      <div class="card reveal"><div class="ic">🛰️</div><h3 data-i18n="what.c3h">成熟就能回收</h3><p data-i18n="what.c3p">範本強制的慣例，讓你的成果天生就是「可以裝回大系統的形狀」。</p></div>
     </div>
   </section>
 
   <section id="install">
     <div class="sec-head reveal">
-      <span class="eyebrow">兩行指令</span>
-      <h2>安裝工具箱</h2>
-      <p>在 Claude Code 裡輸入這兩行。裝好後你會多出一組技能，還有自動生效的安全護欄。</p>
+      <span class="eyebrow" data-i18n="install.eyebrow">兩行指令</span>
+      <h2 data-i18n="install.h2">安裝工具箱</h2>
+      <p data-i18n="install.p">在 Claude Code 裡輸入這兩行。裝好後你會多出一組技能，還有自動生效的安全護欄。</p>
     </div>
-    <div class="callout reveal" style="margin-bottom:16px">
+    <div class="callout reveal" style="margin-bottom:16px" data-i18n="install.step0">
       <b>開始前你需要（Step 0）：</b>先裝好 <b style="color:var(--ink)">Claude Code</b> 並用<b style="color:var(--ink)">付費方案</b>（Pro／Max，或 API 計費）登入——這整套工具就是在 Claude Code 裡跑的。作業系統 Windows 或 Mac 皆可；<b style="color:var(--ink)">Node.js 與 git 不用先裝</b>，新電腦第一次先打 <code style="font-family:var(--mono)">/doctor</code> 會自動幫你裝好（可能跳出系統權限視窗，按允許；公司電腦被擋就找 IT）。還沒有 Claude Code？先到 Anthropic 官方裝好再回來。
     </div>
     <div class="term reveal">
       <div class="term-top"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="term-title">Claude Code</span></div>
-      <div class="cmd"><span class="prompt">&gt;</span><code>/plugin marketplace add capsule-taiwan/capsule-develop</code><button class="copy">複製</button></div>
-      <div class="cmd"><span class="prompt">&gt;</span><code>/plugin install capsule-develop@capsule-tools</code><button class="copy">複製</button></div>
+      <div class="cmd"><span class="prompt">&gt;</span><code>/plugin marketplace add capsule-taiwan/capsule-develop</code><button class="copy" data-i18n="ui.copy">複製</button></div>
+      <div class="cmd"><span class="prompt">&gt;</span><code>/plugin install capsule-develop@capsule-tools</code><button class="copy" data-i18n="ui.copy">複製</button></div>
     </div>
-    <div class="callout reveal" style="margin-top:16px">
+    <div class="callout reveal" style="margin-top:16px" data-i18n="install.it">
       <b>給 IT：</b> 在共用 repo 的 <code style="font-family:var(--mono)">.claude/settings.json</code> 放入 <code style="font-family:var(--mono)">extraKnownMarketplaces</code> 與 <code style="font-family:var(--mono)">enabledPlugins</code>，同事 clone 後就會自動裝好，不用自己打指令。
     </div>
   </section>
 
   <section id="start">
     <div class="sec-head reveal">
-      <span class="eyebrow">第一步</span>
-      <h2>長出一個新專案</h2>
-      <p>在一個空資料夾開 Claude Code，輸入下面這行。它會問你專案名稱、帶你建立自己的免費 Supabase、把本地開發環境跑起來（第一次用會先檢查，缺 Node.js 或 git 會自動幫你裝）。</p>
+      <span class="eyebrow" data-i18n="start.eyebrow">第一步</span>
+      <h2 data-i18n="start.h2">長出一個新專案</h2>
+      <p data-i18n="start.p">在一個空資料夾開 Claude Code，輸入下面這行。它會問你專案名稱、帶你建立自己的免費 Supabase、把本地開發環境跑起來（第一次用會先檢查，缺 Node.js 或 git 會自動幫你裝）。</p>
     </div>
     <div class="term reveal">
-      <div class="term-top"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="term-title">在一個空資料夾</span></div>
-      <div class="cmd"><span class="prompt">&gt;</span><code>/new-project</code><button class="copy">複製</button></div>
-      <div class="cmd"><span class="cmt"># 之後：/task-brief 講需求 → /new-feature 做出來 → /check 檢查 → /deploy 上線</span></div>
+      <div class="term-top"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="term-title" data-i18n="start.termtitle">在一個空資料夾</span></div>
+      <div class="cmd"><span class="prompt">&gt;</span><code>/new-project</code><button class="copy" data-i18n="ui.copy">複製</button></div>
+      <div class="cmd"><span class="cmt" data-i18n="start.cmt"># 之後：/task-brief 講需求 → /new-feature 做出來 → /check 檢查 → /deploy 上線</span></div>
     </div>
   </section>
 
   <section id="supabase">
     <div class="sec-head reveal">
-      <span class="eyebrow">你的資料存在哪</span>
-      <h2>接上免費的資料庫（約 3 分鐘）</h2>
-      <p>每個 MVP 用一個自己的免費雲端資料庫（Supabase），放資料、管登入，跟別人完全分開。你不用懂它——照下面做、把兩個值貼給 Claude 就好。</p>
+      <span class="eyebrow" data-i18n="db.eyebrow">你的資料存在哪</span>
+      <h2 data-i18n="db.h2">接上免費的資料庫（約 3 分鐘）</h2>
+      <p data-i18n="db.p">每個 MVP 用一個自己的免費雲端資料庫（Supabase），放資料、管登入，跟別人完全分開。你不用懂它——照下面做、把兩個值貼給 Claude 就好。</p>
     </div>
     <div class="steps">
-      <div class="step reveal"><div class="num"></div><div><h3>免費註冊</h3><p>打開 <a href="https://supabase.com" target="_blank" rel="noopener" style="color:var(--accent-ink);text-decoration:underline">supabase.com</a>，用 Google 或 email 免費登入。</p></div></div>
-      <div class="step reveal"><div class="num"></div><div><h3>New project</h3><p>按綠色的 <b style="color:var(--ink)">New project</b>，取個名字、區域選 <b style="color:var(--ink)">Southeast Asia (Singapore)</b>、設一組資料庫密碼（記起來）。等約 1 分鐘讓它建好。</p></div></div>
-      <div class="step reveal"><div class="num"></div><div><h3>產一個 token 貼給 Claude</h3><p>到 <a href="https://supabase.com/dashboard/account/tokens" target="_blank" rel="noopener" style="color:var(--accent-ink);text-decoration:underline">account/tokens</a> 產一個 access token，貼回聊天視窗。Claude 會自動幫你建好資料表、把畫面跑起來——你不用碰任何設定。</p></div></div>
+      <div class="step reveal"><div class="num"></div><div><h3 data-i18n="db.s1h">免費註冊</h3><p data-i18n="db.s1p">打開 <a href="https://supabase.com" target="_blank" rel="noopener" style="color:var(--accent-ink);text-decoration:underline">supabase.com</a>，用 Google 或 email 免費登入。</p></div></div>
+      <div class="step reveal"><div class="num"></div><div><h3 data-i18n="db.s2h">New project</h3><p data-i18n="db.s2p">按綠色的 <b style="color:var(--ink)">New project</b>，取個名字、區域選 <b style="color:var(--ink)">Southeast Asia (Singapore)</b>、設一組資料庫密碼（記起來）。等約 1 分鐘讓它建好。</p></div></div>
+      <div class="step reveal"><div class="num"></div><div><h3 data-i18n="db.s3h">產一個 token 貼給 Claude</h3><p data-i18n="db.s3p">到 <a href="https://supabase.com/dashboard/account/tokens" target="_blank" rel="noopener" style="color:var(--accent-ink);text-decoration:underline">account/tokens</a> 產一個 access token，貼回聊天視窗。Claude 會自動幫你建好資料表、把畫面跑起來——你不用碰任何設定。</p></div></div>
     </div>
-    <div class="callout reveal" style="margin-top:16px">做到看見<b style="color:var(--ink)">登入頁</b>後，把你的網址拿去找工程師開通公司 Google 登入（一道刻意的人工把關）。<b>提醒</b>：這是測試沙盒，只放假資料，別放真實客戶資料。</div>
+    <div class="callout reveal" style="margin-top:16px" data-i18n="db.callout">做到看見<b style="color:var(--ink)">登入頁</b>後，把你的網址拿去找工程師開通公司 Google 登入（一道刻意的人工把關）。<b>提醒</b>：這是測試沙盒，只放假資料，別放真實客戶資料。</div>
   </section>
 
   <section id="skills">
     <div class="sec-head reveal">
-      <span class="eyebrow">你會多出這些指令</span>
-      <h2>八個技能</h2>
-      <p>做功能時你只要用生活化的話描述想要什麼，Claude 會自動照做；而幾個里程碑指令——<code style="font-family:var(--mono)">/new-project</code>、<code style="font-family:var(--mono)">/deploy</code>、<code style="font-family:var(--mono)">/graduate</code>——要你自己打出來（下面都會告訴你在哪打）。</p>
+      <span class="eyebrow" data-i18n="skills.eyebrow">你會多出這些指令</span>
+      <h2 data-i18n="skills.h2">八個技能</h2>
+      <p data-i18n="skills.p">做功能時你只要用生活化的話描述想要什麼，Claude 會自動照做；而幾個里程碑指令——<code style="font-family:var(--mono)">/new-project</code>、<code style="font-family:var(--mono)">/deploy</code>、<code style="font-family:var(--mono)">/graduate</code>——要你自己打出來（下面都會告訴你在哪打）。</p>
     </div>
     <div class="grid skills">
-      <div class="card skill reveal"><div class="cmd-name">/doctor</div><p>檢查你的電腦有沒有 Node.js 與 git，缺了就自動幫你裝。</p></div>
-      <div class="card skill reveal"><div class="cmd-name">/new-project</div><p>從範本長出一個全新的 MVP 專案骨架。</p></div>
-      <div class="card skill reveal"><div class="cmd-name">/task-brief</div><p>用業務選擇題訪談你的需求，整理成規格。</p></div>
-      <div class="card skill reveal"><div class="cmd-name">/new-feature</div><p>照範例模組長出你要的新功能（列表／表單／權限／測試一整套）。</p></div>
-      <div class="card skill reveal"><div class="cmd-name">/next-migration</div><p>幫你建立資料庫變更檔，自動取號。</p></div>
-      <div class="card skill reveal"><div class="cmd-name">/check</div><p>跑測試＋型別＋契約檢查，全綠才算完成。</p></div>
-      <div class="card skill reveal"><div class="cmd-name">/deploy</div><p>部署到你自己的 Cloudflare Pages（免費）。</p></div>
-      <div class="card skill reveal"><div class="cmd-name">/graduate</div><p>產生「畢業申請包」，交給 IT 評估是否收進大系統。</p></div>
+      <div class="card skill reveal"><div class="cmd-name">/doctor</div><p data-i18n="skills.doctor">檢查你的電腦有沒有 Node.js 與 git，缺了就自動幫你裝。</p></div>
+      <div class="card skill reveal"><div class="cmd-name">/new-project</div><p data-i18n="skills.newproject">從範本長出一個全新的 MVP 專案骨架。</p></div>
+      <div class="card skill reveal"><div class="cmd-name">/task-brief</div><p data-i18n="skills.taskbrief">用業務選擇題訪談你的需求，整理成規格。</p></div>
+      <div class="card skill reveal"><div class="cmd-name">/new-feature</div><p data-i18n="skills.newfeature">照範例模組長出你要的新功能（列表／表單／權限／測試一整套）。</p></div>
+      <div class="card skill reveal"><div class="cmd-name">/next-migration</div><p data-i18n="skills.nextmig">幫你建立資料庫變更檔，自動取號。</p></div>
+      <div class="card skill reveal"><div class="cmd-name">/check</div><p data-i18n="skills.check">跑測試＋型別＋契約檢查，全綠才算完成。</p></div>
+      <div class="card skill reveal"><div class="cmd-name">/deploy</div><p data-i18n="skills.deploy">部署到你自己的 Cloudflare Pages（免費）。</p></div>
+      <div class="card skill reveal"><div class="cmd-name">/graduate</div><p data-i18n="skills.graduate">產生「畢業申請包」，交給 IT 評估是否收進大系統。</p></div>
     </div>
   </section>
 
   <section id="path">
     <div class="sec-head reveal">
-      <span class="eyebrow">每個新功能都走這條</span>
-      <h2>黃金路徑</h2>
-      <p>你只要描述想要什麼，Claude 會依序把每一步做完，並在每步後告訴你怎麼在畫面上驗收。</p>
+      <span class="eyebrow" data-i18n="path.eyebrow">每個新功能都走這條</span>
+      <h2 data-i18n="path.h2">黃金路徑</h2>
+      <p data-i18n="path.p">你只要描述想要什麼，Claude 會依序把每一步做完，並在每步後告訴你怎麼在畫面上驗收。</p>
     </div>
     <div class="steps">
-      <div class="step reveal"><div class="num"></div><div><h3>講清楚需求</h3><p><code>/task-brief</code>：用生活化的問題確認要記錄哪些資料、誰能看誰能改。</p></div></div>
-      <div class="step reveal"><div class="num"></div><div><h3>建立資料</h3><p><code>/next-migration</code> 建資料表，套進你自己的 Supabase。</p></div></div>
-      <div class="step reveal"><div class="num"></div><div><h3>做出畫面</h3><p>照 <code>items</code> 範例長出列表、表單、明細——全用現成的共用元件，不會長歪。</p></div></div>
-      <div class="step reveal"><div class="num"></div><div><h3>檢查</h3><p><code>/check</code> 全綠；再自己在畫面上點過一遍（新增／編輯／刪除）。</p></div></div>
-      <div class="step reveal"><div class="num"></div><div><h3>上線</h3><p><code>/deploy</code> 推上你自己的網址，同事用公司信箱就能登入使用。</p></div></div>
+      <div class="step reveal"><div class="num"></div><div><h3 data-i18n="path.s1h">講清楚需求</h3><p data-i18n="path.s1p"><code>/task-brief</code>：用生活化的問題確認要記錄哪些資料、誰能看誰能改。</p></div></div>
+      <div class="step reveal"><div class="num"></div><div><h3 data-i18n="path.s2h">建立資料</h3><p data-i18n="path.s2p"><code>/next-migration</code> 建資料表，套進你自己的 Supabase。</p></div></div>
+      <div class="step reveal"><div class="num"></div><div><h3 data-i18n="path.s3h">做出畫面</h3><p data-i18n="path.s3p">照 <code>items</code> 範例長出列表、表單、明細——全用現成的共用元件，不會長歪。</p></div></div>
+      <div class="step reveal"><div class="num"></div><div><h3 data-i18n="path.s4h">檢查</h3><p data-i18n="path.s4p"><code>/check</code> 全綠；再自己在畫面上點過一遍（新增／編輯／刪除）。</p></div></div>
+      <div class="step reveal"><div class="num"></div><div><h3 data-i18n="path.s5h">上線</h3><p data-i18n="path.s5p"><code>/deploy</code> 推上你自己的網址，同事用公司信箱就能登入使用。</p></div></div>
     </div>
   </section>
 
   <section id="contract">
     <div class="sec-head reveal">
-      <span class="eyebrow">為什麼未來能被回收</span>
-      <h2>回收契約：七條</h2>
-      <p>你不用背這些——Claude 會遵守，護欄會把關。它們讓你的獨立成果天生就能裝回母艦。</p>
+      <span class="eyebrow" data-i18n="contract.eyebrow">為什麼未來能被回收</span>
+      <h2 data-i18n="contract.h2">回收契約：七條</h2>
+      <p data-i18n="contract.p">你不用背這些——Claude 會遵守，護欄會把關。它們讓你的獨立成果天生就能裝回母艦。</p>
     </div>
     <div class="rules">
-      <div class="rule reveal"><span class="k">✓</span><div><b>業務資料表用專屬名稱</b> <span>— 未來整包搬進大系統不會撞名。</span></div></div>
-      <div class="rule reveal"><span class="k">✓</span><div><b>畫面只用現成的共用元件</b> <span>— 長相跟大系統一致，不自造設計。</span></div></div>
-      <div class="rule reveal"><span class="k">✓</span><div><b>資料存取走固定寫法</b> <span>— 回收時直接可插。</span></div></div>
-      <div class="rule reveal"><span class="k">✓</span><div><b>權限走內建平台</b> <span>— 管理員／主管／員工三種角色，回收即對接。</span></div></div>
-      <div class="rule reveal"><span class="k">✓</span><div><b>所有資料庫變更都是檔案</b> <span>— 在網站上手點的設定「視為不存在」。</span></div></div>
-      <div class="rule reveal"><span class="k">✓</span><div><b>不改平台共用的部分</b> <span>— 要改就開 issue 給 IT，讓所有人受惠。</span></div></div>
-      <div class="rule reveal"><span class="k">✓</span><div><b>秘密只放 .env</b> <span>— 程式碼裡永遠沒有金鑰。</span></div></div>
+      <div class="rule reveal"><span class="k">✓</span><div data-i18n="contract.r1"><b>業務資料表用專屬名稱</b> <span>— 未來整包搬進大系統不會撞名。</span></div></div>
+      <div class="rule reveal"><span class="k">✓</span><div data-i18n="contract.r2"><b>畫面只用現成的共用元件</b> <span>— 長相跟大系統一致，不自造設計。</span></div></div>
+      <div class="rule reveal"><span class="k">✓</span><div data-i18n="contract.r3"><b>資料存取走固定寫法</b> <span>— 回收時直接可插。</span></div></div>
+      <div class="rule reveal"><span class="k">✓</span><div data-i18n="contract.r4"><b>權限走內建平台</b> <span>— 管理員／主管／員工三種角色，回收即對接。</span></div></div>
+      <div class="rule reveal"><span class="k">✓</span><div data-i18n="contract.r5"><b>所有資料庫變更都是檔案</b> <span>— 在網站上手點的設定「視為不存在」。</span></div></div>
+      <div class="rule reveal"><span class="k">✓</span><div data-i18n="contract.r6"><b>不改平台共用的部分</b> <span>— 要改就開 issue 給 IT，讓所有人受惠。</span></div></div>
+      <div class="rule reveal"><span class="k">✓</span><div data-i18n="contract.r7"><b>秘密只放 .env</b> <span>— 程式碼裡永遠沒有金鑰。</span></div></div>
     </div>
   </section>
 
   <section id="guards">
     <div class="sec-head reveal">
-      <span class="eyebrow">安裝後自動生效</span>
-      <h2>三道護欄</h2>
-      <p>這些會擋在你（和 Claude）前面。被擋下來，就代表這件事該找 IT，而不是想辦法繞過。</p>
+      <span class="eyebrow" data-i18n="guards.eyebrow">安裝後自動生效</span>
+      <h2 data-i18n="guards.h2">三道護欄</h2>
+      <p data-i18n="guards.p">這些會擋在你（和 Claude）前面。被擋下來，就代表這件事該找 IT，而不是想辦法繞過。</p>
     </div>
     <div class="guards">
-      <div class="guard reveal"><h3>guard-prod</h3><p>任何碰到公司正式機或測試機的操作，一律硬擋——你的沙盒本來就摸不到。</p></div>
-      <div class="guard reveal"><h3>guard-platform-area</h3><p>擋掉改動共用元件、權限地基、設定檔——落實回收契約第六條。</p></div>
-      <div class="guard reveal"><h3>guard-git</h3><p>擋掉會覆蓋歷史、難以復原的危險 git 操作。</p></div>
+      <div class="guard reveal"><h3>guard-prod</h3><p data-i18n="guards.g1p">任何碰到公司正式機或測試機的操作，一律硬擋——你的沙盒本來就摸不到。</p></div>
+      <div class="guard reveal"><h3>guard-platform-area</h3><p data-i18n="guards.g2p">擋掉改動共用元件、權限地基、設定檔——落實回收契約第六條。</p></div>
+      <div class="guard reveal"><h3>guard-git</h3><p data-i18n="guards.g3p">擋掉會覆蓋歷史、難以復原的危險 git 操作。</p></div>
     </div>
   </section>
 
   <section id="deploy">
     <div class="sec-head reveal">
-      <span class="eyebrow">全部免費</span>
-      <h2>上線到你自己的網址</h2>
-      <p>MVP 是純靜態網站，Cloudflare Pages 免費層綽綽有餘。一次設定 Cloudflare 金鑰，之後每次更新只要再跑一次 <code style="font-family:var(--mono)">/deploy</code>，網址不變。</p>
+      <span class="eyebrow" data-i18n="deploy.eyebrow">全部免費</span>
+      <h2 data-i18n="deploy.h2">上線到你自己的網址</h2>
+      <p data-i18n="deploy.p">MVP 是純靜態網站，Cloudflare Pages 免費層綽綽有餘。一次設定 Cloudflare 金鑰，之後每次更新只要再跑一次 <code style="font-family:var(--mono)">/deploy</code>，網址不變。</p>
     </div>
     <div class="grid g2">
-      <div class="card reveal"><div class="ic">🌐</div><h3>Cloudflare Pages（免費）</h3><p>跑 <code style="font-family:var(--mono)">/deploy</code>：你產一次 Cloudflare 金鑰，Claude 就用它把網站上傳，給你一個 <code style="font-family:var(--mono)">*.pages.dev</code> 網址。要更新就再跑一次。</p></div>
-      <div class="card reveal"><div class="ic">🔒</div><h3>只有公司的人進得來</h3><p>登入採<b style="color:var(--ink)">公司 Google 帳號</b>（限 @capsulecorporation.cc），資料也逐筆受保護。上線後只有公司同事登得進去、看得到資料，不用另外設定。</p></div>
+      <div class="card reveal"><div class="ic">🌐</div><h3 data-i18n="deploy.c1h">Cloudflare Pages（免費）</h3><p data-i18n="deploy.c1p">跑 <code style="font-family:var(--mono)">/deploy</code>：你產一次 Cloudflare 金鑰，Claude 就用它把網站上傳，給你一個 <code style="font-family:var(--mono)">*.pages.dev</code> 網址。要更新就再跑一次。</p></div>
+      <div class="card reveal"><div class="ic">🔒</div><h3 data-i18n="deploy.c2h">只有公司的人進得來</h3><p data-i18n="deploy.c2p">登入採<b style="color:var(--ink)">公司 Google 帳號</b>（限 @capsulecorporation.cc），資料也逐筆受保護。上線後只有公司同事登得進去、看得到資料，不用另外設定。</p></div>
     </div>
   </section>
 
   <section id="inside">
     <div class="sec-head reveal">
-      <span class="eyebrow">範本裡已經有什麼</span>
-      <h2>你不是從零開始</h2>
-      <p>新專案一長出來就是一個能跑的系統，附一個完整的範例功能 <code>items</code> 供你照抄。</p>
+      <span class="eyebrow" data-i18n="inside.eyebrow">範本裡已經有什麼</span>
+      <h2 data-i18n="inside.h2">你不是從零開始</h2>
+      <p data-i18n="inside.p">新專案一長出來就是一個能跑的系統，附一個完整的範例功能 <code>items</code> 供你照抄。</p>
     </div>
     <ul class="inside">
-      <li class="reveal"><span><b>登入與權限</b>：公司 Google 帳號登入（限 @capsulecorporation.cc），第一個登入者自動是管理員，三種角色現成。</span></li>
-      <li class="reveal"><span><b>一整套 UI 元件</b>：表格、彈窗、表單、分頁、按鈕都備好了。</span></li>
-      <li class="reveal"><span><b>items 範例功能</b>：列表＋新增＋編輯＋刪除＋權限，完整可跑。</span></li>
-      <li class="reveal"><span><b>側邊選單自動聚合</b>：加一個新功能，選單自動出現，不用改共用檔。</span></li>
-      <li class="reveal"><span><b>回收契約 CLAUDE.md</b>：Claude 每次都會讀，保證不長歪。</span></li>
-      <li class="reveal"><span><b>已驗證可跑</b>：安裝、型別檢查、正式打包全部通過。</span></li>
+      <li class="reveal"><span data-i18n="inside.li1"><b>登入與權限</b>：公司 Google 帳號登入（限 @capsulecorporation.cc），第一個登入者自動是管理員，三種角色現成。</span></li>
+      <li class="reveal"><span data-i18n="inside.li2"><b>一整套 UI 元件</b>：表格、彈窗、表單、分頁、按鈕都備好了。</span></li>
+      <li class="reveal"><span data-i18n="inside.li3"><b>items 範例功能</b>：列表＋新增＋編輯＋刪除＋權限，完整可跑。</span></li>
+      <li class="reveal"><span data-i18n="inside.li4"><b>側邊選單自動聚合</b>：加一個新功能，選單自動出現，不用改共用檔。</span></li>
+      <li class="reveal"><span data-i18n="inside.li5"><b>回收契約 CLAUDE.md</b>：Claude 每次都會讀，保證不長歪。</span></li>
+      <li class="reveal"><span data-i18n="inside.li6"><b>已驗證可跑</b>：安裝、型別檢查、正式打包全部通過。</span></li>
     </ul>
   </section>
 
   <section id="how">
     <div class="sec-head reveal">
-      <span class="eyebrow">這東西住在哪、怎麼來的</span>
-      <h2>運作方式</h2>
-      <p>整個工具箱放在公司自己的 GitHub，安裝就是從那裡拿一份到你電腦；之後有更新也從同一個地方來。你不用管細節，但想知道的話——</p>
+      <span class="eyebrow" data-i18n="how.eyebrow">這東西住在哪、怎麼來的</span>
+      <h2 data-i18n="how.h2">運作方式</h2>
+      <p data-i18n="how.p">整個工具箱放在公司自己的 GitHub，安裝就是從那裡拿一份到你電腦；之後有更新也從同一個地方來。你不用管細節，但想知道的話——</p>
     </div>
     <div class="grid g3">
-      <div class="card reveal"><div class="ic">📦</div><h3>住在公司 GitHub</h3><p>工具箱本體在 <code style="font-family:var(--mono)">capsule-taiwan/capsule-develop</code>（公司的公開 repo）。技能、安全護欄、專案範本、還有你正在看的這頁，全都在裡面。</p></div>
-      <div class="card reveal"><div class="ic">⬇️</div><h3>安裝＝從那裡拿一份</h3><p>你打的那兩行指令，就是叫 Claude Code 去那個 repo 把工具箱抓一份到你電腦、把技能與護欄裝起來。</p></div>
-      <div class="card reveal"><div class="ic">🔄</div><h3>更新＝再抓一次</h3><p>平台團隊把新版推上 GitHub 後，你用 <code style="font-family:var(--mono)">/plugin</code> 更新一下就拿到最新的技能與範本；你已經做好的專案不受影響。</p></div>
+      <div class="card reveal"><div class="ic">📦</div><h3 data-i18n="how.c1h">住在公司 GitHub</h3><p data-i18n="how.c1p">工具箱本體在 <code style="font-family:var(--mono)">capsule-taiwan/capsule-develop</code>（公司的公開 repo）。技能、安全護欄、專案範本、還有你正在看的這頁，全都在裡面。</p></div>
+      <div class="card reveal"><div class="ic">⬇️</div><h3 data-i18n="how.c2h">安裝＝從那裡拿一份</h3><p data-i18n="how.c2p">你打的那兩行指令，就是叫 Claude Code 去那個 repo 把工具箱抓一份到你電腦、把技能與護欄裝起來。</p></div>
+      <div class="card reveal"><div class="ic">🔄</div><h3 data-i18n="how.c3h">更新＝再抓一次</h3><p data-i18n="how.c3p">平台團隊把新版推上 GitHub 後，你用 <code style="font-family:var(--mono)">/plugin</code> 更新一下就拿到最新的技能與範本；你已經做好的專案不受影響。</p></div>
     </div>
   </section>
 
@@ -466,29 +483,234 @@
 <footer>
   <div class="wrap fr">
     <span>🧪 <b style="color:var(--ink)">CAPSULE develop</b></span>
-    <span>孵化器工具箱 · 給非工程師的 Claude Code 開發套件</span>
-    <span style="margin-left:auto">安裝：<code>/plugin install capsule-develop@capsule-tools</code></span>
+    <span data-i18n="footer.tagline">孵化器工具箱 · 給非工程師的 Claude Code 開發套件</span>
+    <span style="margin-left:auto" data-i18n="footer.install">安裝：<code>/plugin install capsule-develop@capsule-tools</code></span>
   </div>
 </footer>
 
-<div class="toast" id="toast">已複製到剪貼簿</div>
+<div class="toast" id="toast" data-i18n="ui.copied">已複製到剪貼簿</div>
 
 <script>
   (function () {
-    // theme toggle
     var root = document.documentElement;
+
+    // ---------- theme toggle ----------
     var btn = document.getElementById('themeBtn');
-    function current() {
+    function currentTheme() {
       var t = root.getAttribute('data-theme');
       if (t) return t;
       return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
     }
     btn.addEventListener('click', function () {
-      var next = current() === 'dark' ? 'light' : 'dark';
-      root.setAttribute('data-theme', next);
+      root.setAttribute('data-theme', currentTheme() === 'dark' ? 'light' : 'dark');
     });
 
-    // copy buttons
+    // ---------- i18n (zh default in HTML; en/ja from dict) ----------
+    var I18N = {
+      en: {
+        'meta.title': 'CAPSULE develop — build your own internal tools',
+        'meta.themeAria': 'Toggle dark/light',
+        'ui.copy': 'Copy', 'ui.copied': 'Copied to clipboard',
+        'nav.what': 'What', 'nav.install': 'Install', 'nav.start': 'Start', 'nav.db': 'Database',
+        'nav.skills': 'Skills', 'nav.path': 'Flow', 'nav.contract': 'Contract', 'nav.deploy': 'Deploy', 'nav.how': 'How',
+        'hero.eyebrow': 'CAPSULE Planet Incubator',
+        'hero.h1': 'Build your own internal tools — no coding required.',
+        'hero.lede': "Install this toolbox and use Claude Code to build your own little system — with your own free database and your own free URL, fully isolated from the company's production systems. Once it proves useful, IT “graduates” it into the mothership.",
+        'hero.cta1': 'Get started →', 'hero.cta2': 'See the workflow',
+        'jr.1.tag': 'Start', 'jr.1.h': 'Seed template', 'jr.1.p': 'A ready-made minimal project: UI, login, permissions, and one complete example feature — all set up.',
+        'jr.2.tag': 'You are here', 'jr.2.h': 'Your capsule MVP', 'jr.2.p': 'Build independently with your own Supabase + Cloudflare. Break it and only you are affected — it never touches company systems.',
+        'jr.3.tag': 'Graduate', 'jr.3.h': 'Into the mothership', 'jr.3.p': 'After a few months of stable use, the platform team moves it wholesale into the mothership.',
+        'what.eyebrow': 'Why it works this way', 'what.h2': 'Your sandbox, your pace',
+        'what.p': 'You don’t need to understand servers or touch company production. Just describe “I want a feature that can…” and leave the rest to Claude.',
+        'what.c1h': 'A fully isolated sandbox', 'what.c1p': 'Each MVP has its own free database and URL. Experiment, fail, retry — none of it affects anyone else.',
+        'what.c2h': 'Claude is your engineer', 'what.c2p': 'Describe needs in plain business language; Claude codes by the pre-set rules so nothing goes off the rails.',
+        'what.c3h': 'Ready to be reclaimed', 'what.c3p': 'The template’s enforced conventions make your work “the right shape” to fit back into the big system.',
+        'install.eyebrow': 'Two commands', 'install.h2': 'Install the toolbox',
+        'install.p': 'Type these two lines in Claude Code. Once installed you get a set of skills plus safety guards that activate automatically.',
+        'install.step0': '<b>Before you start (Step 0):</b> First install <b style="color:var(--ink)">Claude Code</b> and sign in with a <b style="color:var(--ink)">paid plan</b> (Pro/Max, or API billing) — this whole toolbox runs inside Claude Code. Windows or Mac is fine; <b style="color:var(--ink)">you don’t need Node.js or git first</b> — on a new machine, run <code style="font-family:var(--mono)">/doctor</code> once and it installs them for you (a system permission prompt may pop up — click allow; if your work laptop blocks it, ask IT). No Claude Code yet? Install it from Anthropic first, then come back.',
+        'install.it': '<b>For IT:</b> Add <code style="font-family:var(--mono)">extraKnownMarketplaces</code> and <code style="font-family:var(--mono)">enabledPlugins</code> to a shared repo’s <code style="font-family:var(--mono)">.claude/settings.json</code>, and it installs automatically when colleagues clone — no commands needed.',
+        'start.eyebrow': 'First step', 'start.h2': 'Grow a new project',
+        'start.p': 'Open Claude Code in an empty folder and type the line below. It asks for a project name, walks you through creating your own free Supabase, and gets your local dev environment running (on first use it checks for and auto-installs Node.js or git if missing).',
+        'start.termtitle': 'in an empty folder',
+        'start.cmt': '# then: /task-brief describe needs → /new-feature build it → /check verify → /deploy ship',
+        'db.eyebrow': 'Where your data lives', 'db.h2': 'Connect a free database (~3 min)',
+        'db.p': 'Each MVP uses its own free cloud database (Supabase) for data and login, fully separate from everyone else. You don’t need to understand it — just follow the steps and paste two values to Claude.',
+        'db.s1h': 'Sign up free', 'db.s1p': 'Open <a href="https://supabase.com" target="_blank" rel="noopener" style="color:var(--accent-ink);text-decoration:underline">supabase.com</a> and sign in free with Google or email.',
+        'db.s2h': 'New project', 'db.s2p': 'Click the green <b style="color:var(--ink)">New project</b>, give it a name, pick region <b style="color:var(--ink)">Southeast Asia (Singapore)</b>, and set a database password (remember it). Wait ~1 minute for it to build.',
+        'db.s3h': 'Create a token, paste to Claude', 'db.s3p': 'Go to <a href="https://supabase.com/dashboard/account/tokens" target="_blank" rel="noopener" style="color:var(--accent-ink);text-decoration:underline">account/tokens</a>, create an access token, and paste it back into the chat. Claude sets up the tables and gets the UI running — you touch no settings.',
+        'db.callout': 'Once you see the <b style="color:var(--ink)">login page</b>, take your URL to an engineer to enable company Google login (a deliberate human checkpoint). <b>Note</b>: this is a test sandbox — use fake data only, never real customer data.',
+        'skills.eyebrow': 'The commands you’ll gain', 'skills.h2': 'Eight skills',
+        'skills.p': 'To build features, just describe what you want in everyday words and Claude does it; a few milestone commands — <code style="font-family:var(--mono)">/new-project</code>, <code style="font-family:var(--mono)">/deploy</code>, <code style="font-family:var(--mono)">/graduate</code> — you type yourself (the page shows exactly where).',
+        'skills.doctor': 'Checks your machine for Node.js and git, and installs them if missing.',
+        'skills.newproject': 'Grows a brand-new MVP project skeleton from the template.',
+        'skills.taskbrief': 'Interviews you with business-style questions and turns your needs into a spec.',
+        'skills.newfeature': 'Grows your new feature from the example module (list/form/permissions/tests, all of it).',
+        'skills.nextmig': 'Creates a database change file for you, auto-numbered.',
+        'skills.check': 'Runs tests + type checks + contract checks; done only when all green.',
+        'skills.deploy': 'Deploys to your own Cloudflare Pages (free).',
+        'skills.graduate': 'Produces a “graduation packet” for IT to assess whether to bring it into the big system.',
+        'path.eyebrow': 'Every feature follows this', 'path.h2': 'The golden path',
+        'path.p': 'Just describe what you want; Claude does each step in order and tells you how to verify it on screen after each one.',
+        'path.s1h': 'Nail down the need', 'path.s1p': '<code>/task-brief</code>: everyday questions to nail down what data to record and who can view or edit.',
+        'path.s2h': 'Create the data', 'path.s2p': '<code>/next-migration</code> creates the tables and applies them to your own Supabase.',
+        'path.s3h': 'Build the screens', 'path.s3p': 'Grow the list, form, and detail from the <code>items</code> example — all with ready-made shared components, so nothing goes off-style.',
+        'path.s4h': 'Check', 'path.s4p': '<code>/check</code> all green; then click through it yourself (create/edit/delete).',
+        'path.s5h': 'Ship', 'path.s5p': '<code>/deploy</code> pushes to your own URL; colleagues log in with their company account.',
+        'contract.eyebrow': 'Why it can be reclaimed later', 'contract.h2': 'The reclaim contract: 7 rules',
+        'contract.p': 'You don’t memorize these — Claude follows them and the guards enforce them. They make your independent work natively fit back into the mothership.',
+        'contract.r1': '<b>Business tables use a dedicated prefix</b> <span>— so moving wholesale into the big system never clashes.</span>',
+        'contract.r2': '<b>UI uses only ready-made shared components</b> <span>— it looks consistent with the big system; no custom design.</span>',
+        'contract.r3': '<b>Data access follows a fixed pattern</b> <span>— plug-and-play at reclaim time.</span>',
+        'contract.r4': '<b>Permissions use the built-in platform</b> <span>— admin/manager/staff roles connect straight on reclaim.</span>',
+        'contract.r5': '<b>Every database change is a file</b> <span>— settings clicked in the dashboard “don’t count.”</span>',
+        'contract.r6': '<b>Don’t modify shared platform parts</b> <span>— to change them, open an issue for IT so everyone benefits.</span>',
+        'contract.r7': '<b>Secrets live only in .env</b> <span>— never any keys in the code.</span>',
+        'guards.eyebrow': 'Active automatically after install', 'guards.h2': 'Three guards',
+        'guards.p': 'These stand in front of you (and Claude). Getting blocked means it’s a job for IT — not something to work around.',
+        'guards.g1p': 'Hard-blocks any operation touching company production or staging — your sandbox can’t reach them anyway.',
+        'guards.g2p': 'Blocks edits to shared components, the permissions foundation, and config files — enforcing reclaim-contract rule 6.',
+        'guards.g3p': 'Blocks dangerous git operations that overwrite history and are hard to undo.',
+        'deploy.eyebrow': 'All free', 'deploy.h2': 'Ship to your own URL',
+        'deploy.p': 'The MVP is a pure static site, so Cloudflare Pages’ free tier is more than enough. Set up a Cloudflare key once; after that, each update is just another <code style="font-family:var(--mono)">/deploy</code> — same URL.',
+        'deploy.c1h': 'Cloudflare Pages (free)', 'deploy.c1p': 'Run <code style="font-family:var(--mono)">/deploy</code>: you create a Cloudflare key once, Claude uploads the site with it and gives you a <code style="font-family:var(--mono)">*.pages.dev</code> URL. To update, run it again.',
+        'deploy.c2h': 'Only company people get in', 'deploy.c2p': 'Login uses <b style="color:var(--ink)">company Google accounts</b> (only @capsulecorporation.cc), and data is protected row by row. Once live, only company colleagues can log in and see data — no extra setup.',
+        'inside.eyebrow': 'What’s already in the template', 'inside.h2': 'You’re not starting from scratch',
+        'inside.p': 'A new project comes out as a working system, with a complete example feature <code>items</code> to copy from.',
+        'inside.li1': '<b>Login &amp; permissions</b>: company Google login (only @capsulecorporation.cc); the first to log in becomes admin; three roles ready.',
+        'inside.li2': '<b>A full UI kit</b>: tables, modals, forms, pagination, buttons — all ready.',
+        'inside.li3': '<b>items example feature</b>: list + create + edit + delete + permissions, fully working.',
+        'inside.li4': '<b>Auto-aggregated sidebar</b>: add a feature and its menu item appears automatically — no shared files touched.',
+        'inside.li5': '<b>Reclaim contract CLAUDE.md</b>: Claude reads it every time, so nothing drifts off-style.',
+        'inside.li6': '<b>Verified working</b>: install, type-check, and production build all pass.',
+        'how.eyebrow': 'Where it lives &amp; how it works', 'how.h2': 'How it works',
+        'how.p': 'The whole toolbox lives in the company’s own GitHub; installing pulls a copy to your machine, and updates come from the same place. You don’t need the details, but if you’re curious —',
+        'how.c1h': 'Lives in company GitHub', 'how.c1p': 'The toolbox itself is at <code style="font-family:var(--mono)">capsule-taiwan/capsule-develop</code> (a company public repo). Skills, safety guards, the project template, and this very page — all inside.',
+        'how.c2h': 'Install = pull a copy', 'how.c2p': 'Those two lines you type tell Claude Code to fetch a copy of the toolbox from that repo and set up the skills and guards on your machine.',
+        'how.c3h': 'Update = fetch again', 'how.c3p': 'After the platform team pushes a new version to GitHub, run <code style="font-family:var(--mono)">/plugin</code> to update and get the latest skills and template; projects you’ve already built are unaffected.',
+        'footer.tagline': 'Incubator toolbox · a Claude Code dev kit for non-engineers',
+        'footer.install': 'Install: <code>/plugin install capsule-develop@capsule-tools</code>'
+      },
+      ja: {
+        'meta.title': 'CAPSULE develop — 自分の社内ツールを作る',
+        'meta.themeAria': 'ダーク/ライト切替',
+        'ui.copy': 'コピー', 'ui.copied': 'クリップボードにコピーしました',
+        'nav.what': '概要', 'nav.install': '導入', 'nav.start': '開始', 'nav.db': 'DB',
+        'nav.skills': 'スキル', 'nav.path': '流れ', 'nav.contract': '規約', 'nav.deploy': '公開', 'nav.how': '仕組み',
+        'hero.eyebrow': 'CAPSULE プラネット インキュベーター',
+        'hero.h1': 'コードが書けなくても、自分の社内ツールが作れる。',
+        'hero.lede': 'このツールボックスを入れれば、Claude Code で自分だけの小さなシステムを作れます——自分の無料データベースと無料 URL を使い、会社の本番システムとは完全に分離。使い込んで価値が証明できたら、IT が「卒業」させて母艦へ取り込みます。',
+        'hero.cta1': 'インストール →', 'hero.cta2': '開発の流れ',
+        'jr.1.tag': '出発点', 'jr.1.h': '種テンプレート', 'jr.1.p': 'すぐ使える最小プロジェクト：画面・ログイン・権限・完全なサンプル機能まで用意済み。',
+        'jr.2.tag': '現在地', 'jr.2.h': 'あなたのカプセル MVP', 'jr.2.p': '自分の Supabase + Cloudflare で独立して開発。壊しても影響は自分だけ、会社のシステムには触れません。',
+        'jr.3.tag': '卒業', 'jr.3.h': '母艦へ取り込み', 'jr.3.p': '数か月の安定運用の後、プラットフォームチームが丸ごと母艦へ移します。',
+        'what.eyebrow': 'この設計の理由', 'what.h2': 'あなたのサンドボックス、あなたのペース',
+        'what.p': 'サーバーの知識も、会社の本番環境も不要。「〜できる機能がほしい」と説明するだけ、あとは Claude に任せます。',
+        'what.c1h': '完全に独立したサンドボックス', 'what.c1p': '各 MVP は自分の無料データベースと URL を持ちます。試して、失敗して、やり直しても、誰にも影響しません。',
+        'what.c2h': 'Claude があなたのエンジニア', 'what.c2p': '業務の言葉で要件を伝えれば、Claude が用意済みのルールに沿って実装。おかしな方向にはなりません。',
+        'what.c3h': '成熟したら回収', 'what.c3p': 'テンプレートが強制する規約のおかげで、成果物は最初から「大きなシステムに戻せる形」になります。',
+        'install.eyebrow': '2 行のコマンド', 'install.h2': 'ツールボックスを導入',
+        'install.p': 'Claude Code でこの 2 行を入力。導入すると一連のスキルと、自動で効く安全ガードが追加されます。',
+        'install.step0': '<b>始める前に（Step 0）：</b>まず <b style="color:var(--ink)">Claude Code</b> を入れ、<b style="color:var(--ink)">有料プラン</b>（Pro/Max、または API 課金）でサインイン——このツール一式は Claude Code の中で動きます。OS は Windows でも Mac でも OK。<b style="color:var(--ink)">Node.js と git は先に入れなくて大丈夫</b>、新しい PC では最初に <code style="font-family:var(--mono)">/doctor</code> を打てば自動で入れてくれます（システムの許可ダイアログが出たら許可を。会社 PC でブロックされたら IT へ）。Claude Code がまだ？先に Anthropic 公式から入れて戻ってきてください。',
+        'install.it': '<b>IT の方へ：</b>共有 repo の <code style="font-family:var(--mono)">.claude/settings.json</code> に <code style="font-family:var(--mono)">extraKnownMarketplaces</code> と <code style="font-family:var(--mono)">enabledPlugins</code> を入れておけば、同僚が clone した時点で自動導入。コマンド入力は不要です。',
+        'start.eyebrow': '最初の一歩', 'start.h2': '新しいプロジェクトを生やす',
+        'start.p': '空のフォルダで Claude Code を開き、下の 1 行を入力。プロジェクト名を尋ね、自分の無料 Supabase の作成を案内し、ローカル開発環境を立ち上げます（初回はチェックが入り、Node.js や git が無ければ自動で入れます）。',
+        'start.termtitle': '空のフォルダで',
+        'start.cmt': '# 次に：/task-brief で要件 → /new-feature で実装 → /check で確認 → /deploy で公開',
+        'db.eyebrow': 'データの置き場', 'db.h2': '無料データベースに接続（約 3 分）',
+        'db.p': '各 MVP は自分の無料クラウド DB（Supabase）でデータとログインを管理し、他人とは完全に分離。仕組みは分からなくて OK——手順に沿って 2 つの値を Claude に貼るだけ。',
+        'db.s1h': '無料登録', 'db.s1p': '<a href="https://supabase.com" target="_blank" rel="noopener" style="color:var(--accent-ink);text-decoration:underline">supabase.com</a> を開き、Google か email で無料サインイン。',
+        'db.s2h': 'New project', 'db.s2p': '緑の <b style="color:var(--ink)">New project</b> を押し、名前を付け、リージョンは <b style="color:var(--ink)">Southeast Asia (Singapore)</b>、DB パスワードを設定（控えておく）。約 1 分で作成完了。',
+        'db.s3h': 'トークンを作って Claude に貼る', 'db.s3p': '<a href="https://supabase.com/dashboard/account/tokens" target="_blank" rel="noopener" style="color:var(--accent-ink);text-decoration:underline">account/tokens</a> で access token を作り、チャットに貼り戻します。Claude がテーブル作成から画面表示まで自動で行い、設定はいじりません。',
+        'db.callout': '<b style="color:var(--ink)">ログイン画面</b>が見えたら、URL をエンジニアに渡して会社 Google ログインを有効化してもらいます（意図的な人手の確認ゲート）。<b>注意</b>：これはテスト用サンドボックス。ダミーデータのみで、実顧客データは入れないこと。',
+        'skills.eyebrow': '使えるようになるコマンド', 'skills.h2': '8 つのスキル',
+        'skills.p': '機能作りは、ほしいものを普段の言葉で説明すれば Claude が実行。ただし節目のコマンド——<code style="font-family:var(--mono)">/new-project</code>、<code style="font-family:var(--mono)">/deploy</code>、<code style="font-family:var(--mono)">/graduate</code>——は自分で打ちます（どこで打つかは本ページに記載）。',
+        'skills.doctor': 'PC に Node.js と git があるか確認し、無ければ自動で入れます。',
+        'skills.newproject': 'テンプレートから新しい MVP プロジェクトの骨組みを生成。',
+        'skills.taskbrief': '業務的な選択式の質問で要件をヒアリングし、仕様書にまとめます。',
+        'skills.newfeature': 'サンプルモジュールに沿って新機能を一式生成（一覧/フォーム/権限/テスト）。',
+        'skills.nextmig': 'DB 変更ファイルを作成、番号も自動採番。',
+        'skills.check': 'テスト＋型＋規約チェックを実行。全部グリーンで完了。',
+        'skills.deploy': '自分の Cloudflare Pages に公開（無料）。',
+        'skills.graduate': '「卒業申請パック」を作成し、大システムへの取り込み可否を IT が評価。',
+        'path.eyebrow': '新機能は毎回この道', 'path.h2': 'ゴールデンパス',
+        'path.p': 'ほしいものを説明するだけ。Claude が各ステップを順に進め、毎回「画面での確認方法」を伝えます。',
+        'path.s1h': '要件を固める', 'path.s1p': '<code>/task-brief</code>：普段の言葉の質問で、記録する項目と閲覧・編集できる人を確定。',
+        'path.s2h': 'データを作る', 'path.s2p': '<code>/next-migration</code> でテーブルを作り、自分の Supabase に適用。',
+        'path.s3h': '画面を作る', 'path.s3p': '<code>items</code> サンプルに沿って一覧・フォーム・詳細を生成——既製の共通コンポーネントだけなので崩れません。',
+        'path.s4h': 'チェック', 'path.s4p': '<code>/check</code> が全グリーン；その後、自分で画面を操作（追加/編集/削除）。',
+        'path.s5h': '公開', 'path.s5p': '<code>/deploy</code> で自分の URL へ公開。同僚は会社アカウントでログインして利用。',
+        'contract.eyebrow': '後で回収できる理由', 'contract.h2': '回収規約：7 か条',
+        'contract.p': '覚える必要はありません——Claude が守り、ガードが監視します。これにより独立した成果物が最初から母艦に戻せる形になります。',
+        'contract.r1': '<b>業務テーブルは専用の接頭辞</b> <span>— 大システムへ丸ごと移しても名前が衝突しません。</span>',
+        'contract.r2': '<b>画面は既製の共通コンポーネントのみ</b> <span>— 大システムと見た目が揃い、独自デザインはしません。</span>',
+        'contract.r3': '<b>データアクセスは決まった書き方</b> <span>— 回収時にそのまま差し込めます。</span>',
+        'contract.r4': '<b>権限は組み込みプラットフォーム</b> <span>— 管理者/主管/社員の 3 ロールが回収時にそのまま接続。</span>',
+        'contract.r5': '<b>DB 変更はすべてファイル</b> <span>— 管理画面で手動設定したものは「無いもの」とみなします。</span>',
+        'contract.r6': '<b>共有プラットフォーム部分は変更しない</b> <span>— 変えたい時は IT に issue を。全員が恩恵を受けます。</span>',
+        'contract.r7': '<b>秘密情報は .env だけ</b> <span>— コード内に鍵は一切置きません。</span>',
+        'guards.eyebrow': '導入後、自動で有効', 'guards.h2': '3 つのガード',
+        'guards.p': 'これらはあなた（と Claude）の前に立ちます。ブロックされたら、それは IT に頼む案件——回避しようとしないこと。',
+        'guards.g1p': '会社の本番・検証環境に触れる操作は一律ブロック——サンドボックスからは元々届きません。',
+        'guards.g2p': '共通コンポーネント・権限基盤・設定ファイルの変更をブロック——回収規約 6 か条目を徹底。',
+        'guards.g3p': '履歴を上書きする復元困難な危険な git 操作をブロック。',
+        'deploy.eyebrow': 'すべて無料', 'deploy.h2': '自分の URL へ公開',
+        'deploy.p': 'MVP は純粋な静的サイトなので、Cloudflare Pages の無料枠で十分。Cloudflare のキーは一度だけ設定。以後の更新は <code style="font-family:var(--mono)">/deploy</code> をもう一度実行するだけ、URL は変わりません。',
+        'deploy.c1h': 'Cloudflare Pages（無料）', 'deploy.c1p': '<code style="font-family:var(--mono)">/deploy</code> を実行：Cloudflare のキーを一度作れば、Claude がそれでサイトをアップロードし、<code style="font-family:var(--mono)">*.pages.dev</code> の URL を発行。更新はもう一度実行するだけ。',
+        'deploy.c2h': '入れるのは社内の人だけ', 'deploy.c2p': 'ログインは<b style="color:var(--ink)">会社 Google アカウント</b>（@capsulecorporation.cc のみ）、データも 1 行ずつ保護。公開後は社内の同僚だけがログインしデータを見られます——追加設定は不要。',
+        'inside.eyebrow': 'テンプレートに最初からあるもの', 'inside.h2': 'ゼロからではありません',
+        'inside.p': '新しいプロジェクトは生成した時点で動くシステム。まねできる完全なサンプル機能 <code>items</code> 付き。',
+        'inside.li1': '<b>ログインと権限</b>：会社 Google ログイン（@capsulecorporation.cc のみ）。最初のログイン者が管理者、3 ロール標準装備。',
+        'inside.li2': '<b>UI コンポーネント一式</b>：テーブル・モーダル・フォーム・ページング・ボタンまで用意済み。',
+        'inside.li3': '<b>items サンプル機能</b>：一覧＋追加＋編集＋削除＋権限、完全に動作。',
+        'inside.li4': '<b>サイドメニュー自動集約</b>：機能を追加するとメニューが自動で出現、共有ファイルは触りません。',
+        'inside.li5': '<b>回収規約 CLAUDE.md</b>：Claude が毎回読むので、方向がぶれません。',
+        'inside.li6': '<b>動作確認済み</b>：インストール・型チェック・本番ビルドすべて通過。',
+        'how.eyebrow': 'どこにあり、どう動くか', 'how.h2': '仕組み',
+        'how.p': 'ツール一式は会社の GitHub にあり、インストールはそこから 1 部を PC に取得。更新も同じ場所から来ます。詳細は不要ですが、知りたい方は——',
+        'how.c1h': '会社の GitHub にある', 'how.c1p': '本体は <code style="font-family:var(--mono)">capsule-taiwan/capsule-develop</code>（会社の公開 repo）。スキル・安全ガード・プロジェクトテンプレート、そして今見ているこのページも全部その中。',
+        'how.c2h': 'インストール＝1 部を取得', 'how.c2p': 'あの 2 行のコマンドは、Claude Code にその repo からツールを 1 部取得させ、スキルとガードを PC に設定する指示です。',
+        'how.c3h': '更新＝もう一度取得', 'how.c3p': 'プラットフォームチームが新版を GitHub に push した後、<code style="font-family:var(--mono)">/plugin</code> で更新すれば最新のスキルとテンプレートを取得。作成済みのプロジェクトには影響しません。',
+        'footer.tagline': 'インキュベーター・ツールボックス · 非エンジニアのための Claude Code 開発キット',
+        'footer.install': 'インストール：<code>/plugin install capsule-develop@capsule-tools</code>'
+      }
+    };
+
+    var titleZh = document.title;
+    var i18nEls = document.querySelectorAll('[data-i18n]');
+    var origins = [];
+    i18nEls.forEach(function (el) { origins.push(el.innerHTML); });
+    var langBtns = document.querySelectorAll('.langsw button');
+
+    function setLang(lang) {
+      if (lang !== 'en' && lang !== 'ja') lang = 'zh';
+      root.setAttribute('lang', lang === 'zh' ? 'zh-Hant' : lang);
+      var dict = I18N[lang];
+      i18nEls.forEach(function (el, i) {
+        var k = el.getAttribute('data-i18n');
+        if (lang === 'zh') { el.innerHTML = origins[i]; }
+        else { el.innerHTML = (dict && dict[k] != null) ? dict[k] : origins[i]; }
+      });
+      document.title = (lang === 'zh') ? titleZh : ((dict && dict['meta.title']) || titleZh);
+      btn.setAttribute('aria-label', (lang === 'zh') ? '切換深色/淺色' : (dict['meta.themeAria'] || 'Toggle theme'));
+      langBtns.forEach(function (b) { b.classList.toggle('on', b.getAttribute('data-lang') === lang); });
+      try { localStorage.setItem('capsule_lang', lang); } catch (e) {}
+    }
+
+    langBtns.forEach(function (b) {
+      b.addEventListener('click', function () { setLang(b.getAttribute('data-lang')); });
+    });
+
+    var saved = null;
+    try { saved = localStorage.getItem('capsule_lang'); } catch (e) {}
+    if (!saved) {
+      var nav = (navigator.language || '').toLowerCase();
+      if (nav.indexOf('ja') === 0) saved = 'ja';
+      else if (nav.indexOf('zh') === 0) saved = 'zh';
+      else if (nav.indexOf('en') === 0) saved = 'en';
+    }
+    setLang(saved || 'zh');
+
+    // ---------- copy buttons ----------
     var toast = document.getElementById('toast'), tt;
     document.querySelectorAll('.copy').forEach(function (b) {
       b.addEventListener('click', function () {
@@ -501,7 +723,7 @@
       });
     });
 
-    // scroll reveal
+    // ---------- scroll reveal ----------
     var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     var els = document.querySelectorAll('.reveal');
     if (reduce || !('IntersectionObserver' in window)) {
