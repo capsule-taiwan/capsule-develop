@@ -38,13 +38,23 @@
 
 ## 安裝
 
-### 方式一：個人安裝（在 Claude Code 裡打指令）
+工具箱只要裝一次，看你用哪種 Claude Code（圖解步驟見 <https://capsule-taiwan.github.io/capsule-develop/#install>）：
+
+### 🖥️ Claude 桌面版 App（用點的，推薦給非工程師）
+訊息輸入框旁 **＋ → Plugins → Browse plugins** → 在 Directory 右上角 **＋（Add marketplace）→ Add from a repository** → URL 貼 `capsule-taiwan/capsule-develop` → **Sync** → 找到 **CAPSULE Develop** 卡片，安裝並啟用。
+
+### ⌨️ 終端機（CLI）
 ```
 /plugin marketplace add capsule-taiwan/capsule-develop
 /plugin install capsule-develop@capsule-tools
 ```
+> `/plugin` 只有**終端機版** Claude Code 能用；桌面版 App 的聊天打不了，請走上面「用點的」。
 
-### 方式二：團隊自動啟用（IT 在共用 repo 的 `.claude/settings.json` 加這段，成員 clone 後自動生效）
+### 🧩 IDE（VS Code / Cursor / JetBrains）
+用 Claude Code 擴充套件內建的面板或終端機，貼上面終端機那兩行；或直接用下面的 settings.json 方式。
+
+### ✅ 或：IT 統一掛好（大家打開就有，完全不用自己裝）
+在共用 repo 的 `.claude/settings.json` 加這段，成員打開後自動生效：
 ```json
 {
   "extraKnownMarketplaces": {
