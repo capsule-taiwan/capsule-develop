@@ -420,17 +420,47 @@
     </div>
 
     <div class="tabpanel" data-panel="terminal" hidden>
-      <p class="ip-note" style="margin:0 0 12px" data-i18n="term.intro">在 Claude Code 終端機（CLI）貼這兩行、各按 Enter：</p>
-      <div class="term">
-        <div class="term-top"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="term-title" data-i18n="install.termtitle">Claude Code 終端機（CLI）</span></div>
-        <div class="cmd"><span class="prompt">&gt;</span><code>/plugin marketplace add capsule-taiwan/capsule-develop</code><button class="copy" data-i18n="ui.copy">複製</button></div>
-        <div class="cmd"><span class="prompt">&gt;</span><code>/plugin install capsule-develop@capsule-tools</code><button class="copy" data-i18n="ui.copy">複製</button></div>
+      <div class="dsteps">
+        <div class="dstep">
+          <div class="dstep-h"><span class="dn">1</span><p data-i18n="term.s1">打開<b>終端機版 Claude Code</b>（或 IDE 內建的 Claude Code 終端機）。</p></div>
+        </div>
+        <div class="dstep">
+          <div class="dstep-h"><span class="dn">2</span><p data-i18n="term.s2">貼上這兩行 <code style="font-family:var(--mono)">/plugin</code>、各按 <b>Enter</b>：</p></div>
+          <div class="term">
+            <div class="term-top"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="term-title" data-i18n="install.termtitle">Claude Code 終端機（CLI）</span></div>
+            <div class="cmd"><span class="prompt">&gt;</span><code>/plugin marketplace add capsule-taiwan/capsule-develop</code><button class="copy" data-i18n="ui.copy">複製</button></div>
+            <div class="cmd"><span class="prompt">&gt;</span><code>/plugin install capsule-develop@capsule-tools</code><button class="copy" data-i18n="ui.copy">複製</button></div>
+          </div>
+          <img class="dshot" src="media/cli-mac-1-install.png" alt="macOS 終端機貼上 /plugin 指令" loading="lazy">
+        </div>
+        <div class="dstep">
+          <div class="dstep-h"><span class="dn">3</span><p data-i18n="term.s3">輸入指令後，看到多出一排新的 <code style="font-family:var(--mono)">/指令</code>，就完成了。</p></div>
+          <img class="dshot" src="media/cli-mac-2-complete.png" alt="macOS 終端機顯示 capsule-develop 安裝完成" loading="lazy">
+        </div>
       </div>
       <p class="ip-note" data-i18n="term.note">這兩行 <code style="font-family:var(--mono)">/plugin</code> 只有「終端機版 Claude Code」能用；桌面版 App 請切上面的「Claude 桌面版」分頁。</p>
     </div>
 
     <div class="tabpanel" data-panel="ide" hidden>
-      <p class="ide-note" data-i18n="ide.body">用 VS Code / Cursor / JetBrains 的 <b>Claude Code 擴充套件</b>時，打開它內建的 Claude Code 面板或終端機，就跟「終端機」分頁一樣貼那兩行 <code style="font-family:var(--mono)">/plugin …</code>。</p>
+      <div class="dsteps">
+        <div class="dstep">
+          <div class="dstep-h"><span class="dn">1</span><p data-i18n="ide.s1">在 IDE 的 <b>Claude Code 面板</b>（VS Code / Cursor / JetBrains 擴充套件）最下面的輸入框打 <code>/plugins</code>，選出現的 <b>Manage plugins</b>。</p></div>
+          <img class="dshot" src="media/ide-mac-1-plugin.png" alt="在 Claude Code 面板輸入 /plugins → Manage plugins" loading="lazy">
+        </div>
+        <div class="dstep">
+          <div class="dstep-h"><span class="dn">2</span><p data-i18n="ide.s2">切到 <b>Marketplaces</b> 分頁，輸入 <code>capsule-taiwan/capsule-develop</code>，按 <b>Add</b>。</p></div>
+          <img class="dshot" src="media/ide-mac-2-add-marketplace.png" alt="Marketplaces 分頁加入 capsule-taiwan/capsule-develop" loading="lazy">
+        </div>
+        <div class="dstep">
+          <div class="dstep-h"><span class="dn">3</span><p data-i18n="ide.s3">切到 <b>Plugins</b> 分頁，找到 <b>capsule-develop</b> 這張卡，按 <b>Install</b>。</p></div>
+          <img class="dshot" src="media/ide-mac-3-install.png" alt="Plugins 分頁找到 capsule-develop 按 Install" loading="lazy">
+        </div>
+        <div class="dstep">
+          <div class="dstep-h"><span class="dn">4</span><p data-i18n="ide.s4">上面跳出 <b>Restart Claude to apply plugin changes</b>，按 <b>Restart</b> 套用，就完成了。</p></div>
+          <img class="dshot" src="media/ide-mac-4-restart.png" alt="按 Restart 套用，capsule-develop@capsule-tools 已安裝" loading="lazy">
+        </div>
+      </div>
+      <p class="ip-note" data-i18n="ide.note">版本不同，標籤可能略有差異；也可以像「終端機」分頁那樣，直接在面板輸入框貼上那兩行 <code style="font-family:var(--mono)">/plugin …</code>。</p>
     </div>
 
   </section>
@@ -665,7 +695,14 @@
         'ds.5': 'Find the <b>CAPSULE Develop</b> (capsule-tools) card, click it to install and enable — done.',
         'term.intro': 'In the Claude Code terminal (CLI), paste these two lines, each followed by Enter:',
         'term.note': 'These two <code style="font-family:var(--mono)">/plugin</code> lines only work in the terminal (CLI) Claude Code; on the desktop app, switch to the “Claude Desktop” tab above.',
-        'ide.body': 'With the <b>Claude Code extension</b> in VS Code / Cursor / JetBrains, open its built-in Claude Code panel or terminal and use the same two <code style="font-family:var(--mono)">/plugin …</code> lines as the “Terminal” tab.',
+        'term.s1': 'Open the <b>terminal version of Claude Code</b> (or the built-in Claude Code terminal in your IDE).',
+        'term.s2': 'Paste these two <code style="font-family:var(--mono)">/plugin</code> lines, each followed by <b>Enter</b>:',
+        'term.s3': 'After running the commands, when a row of new <code style="font-family:var(--mono)">/commands</code> appears, you’re done.',
+        'ide.s1': 'In your IDE’s <b>Claude Code panel</b> (the VS Code / Cursor / JetBrains extension), type <code>/plugins</code> in the input box and choose <b>Manage plugins</b>.',
+        'ide.s2': 'Open the <b>Marketplaces</b> tab, enter <code>capsule-taiwan/capsule-develop</code>, and click <b>Add</b>.',
+        'ide.s3': 'Switch to the <b>Plugins</b> tab, find the <b>capsule-develop</b> card, and click <b>Install</b>.',
+        'ide.s4': 'When <b>Restart Claude to apply plugin changes</b> appears at the top, click <b>Restart</b> — done.',
+        'ide.note': 'Labels may vary a little by version; you can also paste the two <code style="font-family:var(--mono)">/plugin …</code> lines into the panel’s input, just like the “Terminal” tab.',
         'install.step0': '<b>Before you start (Step 0):</b> First install <b style="color:var(--ink)">Claude Code</b> and sign in with a <b style="color:var(--ink)">paid plan</b> (Pro/Max, or API billing) — this whole toolbox runs inside Claude Code. Windows or Mac is fine; <b style="color:var(--ink)">you don’t need Node.js or git first</b> — on a new machine, run <code style="font-family:var(--mono)">/doctor</code> once and it installs them for you (a system permission prompt may pop up — click allow; if your work laptop blocks it, ask IT). No Claude Code yet? Install it from Anthropic first, then come back.',
         'install.it': '✅ <b>Or have IT set it up for everyone</b>: put <code style="font-family:var(--mono)">extraKnownMarketplaces</code> and <code style="font-family:var(--mono)">enabledPlugins</code> in a shared repo’s <code style="font-family:var(--mono)">.claude/settings.json</code>, and it’s simply there when colleagues open it — no self-install.',
         'nav.howto': 'Use',
@@ -778,7 +815,14 @@
         'ds.5': '<b>CAPSULE Develop</b>（capsule-tools）のカードを見つけ、クリックしてインストール・有効化——完了。',
         'term.intro': 'Claude Code ターミナル（CLI）でこの 2 行を貼り、それぞれ Enter：',
         'term.note': 'この 2 行の <code style="font-family:var(--mono)">/plugin</code> はターミナル版（CLI）専用。デスクトップアプリでは上の「Claude デスクトップ」タブへ。',
-        'ide.body': 'VS Code / Cursor / JetBrains の <b>Claude Code 拡張</b>では、内蔵の Claude Code パネルまたはターミナルを開き、「ターミナル」タブと同じ 2 行の <code style="font-family:var(--mono)">/plugin …</code> を使います。',
+        'term.s1': '<b>ターミナル版の Claude Code</b>（または IDE 内蔵の Claude Code ターミナル）を開く。',
+        'term.s2': 'この 2 行の <code style="font-family:var(--mono)">/plugin</code> を貼り、それぞれ <b>Enter</b>：',
+        'term.s3': 'コマンドを実行して、新しい <code style="font-family:var(--mono)">/コマンド</code> が並んで表示されれば完了。',
+        'ide.s1': 'IDE の <b>Claude Code パネル</b>（VS Code / Cursor / JetBrains 拡張）の入力欄に <code>/plugins</code> と打ち、表示される <b>Manage plugins</b> を選ぶ。',
+        'ide.s2': '<b>Marketplaces</b> タブで <code>capsule-taiwan/capsule-develop</code> を入力し、<b>Add</b> を押す。',
+        'ide.s3': '<b>Plugins</b> タブに切り替え、<b>capsule-develop</b> のカードを見つけて <b>Install</b> を押す。',
+        'ide.s4': '上部に <b>Restart Claude to apply plugin changes</b> が出たら <b>Restart</b> を押して適用すれば完了。',
+        'ide.note': 'バージョンによってラベルが多少異なる場合があります。「ターミナル」タブと同じく、この 2 行の <code style="font-family:var(--mono)">/plugin …</code> をパネルの入力欄に貼っても構いません。',
         'install.step0': '<b>始める前に（Step 0）：</b>まず <b style="color:var(--ink)">Claude Code</b> を入れ、<b style="color:var(--ink)">有料プラン</b>（Pro/Max、または API 課金）でサインイン——このツール一式は Claude Code の中で動きます。OS は Windows でも Mac でも OK。<b style="color:var(--ink)">Node.js と git は先に入れなくて大丈夫</b>、新しい PC では最初に <code style="font-family:var(--mono)">/doctor</code> を打てば自動で入れてくれます（システムの許可ダイアログが出たら許可を。会社 PC でブロックされたら IT へ）。Claude Code がまだ？先に Anthropic 公式から入れて戻ってきてください。',
         'install.it': '✅ <b>または IT が全員分を設定</b>：共有 repo の <code style="font-family:var(--mono)">.claude/settings.json</code> に <code style="font-family:var(--mono)">extraKnownMarketplaces</code> と <code style="font-family:var(--mono)">enabledPlugins</code> を入れれば、同僚が開いた時点で使え、各自の導入は不要です。',
         'nav.howto': '操作',
