@@ -70,11 +70,9 @@
 
 ## 開始用
 
-裝好後，在一個空資料夾開 Claude Code，輸入：
-```
-/new-project
-```
-它會問你專案名稱、模組代號，然後長出骨架、引導你建立自己的免費 Supabase 專案、起本地開發伺服器。之後就用 `/task-brief` → `/new-feature` 迭代開發，`/check` 通過就 `/deploy`。
+裝好後，在一個空資料夾開 Claude Code，**直接跟它說「幫我開一個新專案」**（或打 `/new-project`）。它會問你專案名稱、模組代號，然後長出骨架、引導你建立自己的免費 Supabase 專案、起本地開發伺服器。之後你只要用一句話描述想要的功能，Claude 就會挑對的技能帶你做；做完 `/check` 通過就上線。
+
+> 你不用背指令。技能都能由 Claude 從你的白話自動觸發（`/new-project`、`/deploy` 等打斜線也行，但不是必須）。
 
 > 登入採**公司 Google 帳號**（限 @capsulecorporation.cc）。跑完 `/new-project` 你會看到登入頁但一開始還登不進去——把你的 Supabase 網址給工程師（IT）跑 `/enable-login` 開通後即可登入，**第一個登入的人是管理員**。這是刻意的人工把關。
 

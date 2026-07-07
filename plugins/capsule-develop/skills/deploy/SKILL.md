@@ -1,7 +1,6 @@
 ---
 name: deploy
 description: 把這個 MVP 部署到使用者自己的 Cloudflare Pages（免費）。用「一次 token、其餘全自動」的方式：使用者產一次 Cloudflare API token，你用 wrangler 自動部署。當使用者說「上線」「部署」「deploy」「發布」時使用。
-disable-model-invocation: true
 allowed-tools: Bash, Read
 ---
 

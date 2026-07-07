@@ -438,15 +438,15 @@
   <section id="howto">
     <div class="sec-head reveal">
       <span class="eyebrow" data-i18n="howto.eyebrow">看圖照做</span>
-      <h2 data-i18n="howto.h2">這些指令要打在哪？</h2>
-      <p data-i18n="howto.p">那些 <code>/new-project</code>、<code>/deploy</code> 看起來像程式，其實只是「你打給 Claude 的一句話」。下面告訴你：在 Claude Desktop 的哪裡打、東西貼哪裡。</p>
+      <h2 data-i18n="howto.h2">裝好之後，怎麼開始？</h2>
+      <p data-i18n="howto.p">裝好工具箱後，你<b>大多不用打 <code>/指令</code></b>——直接在輸入框用一句話說你要什麼，Claude 就會挑對的技能、帶你一步步做。要貼 token 時也是貼進同一個框。</p>
     </div>
     <div class="howto-wrap reveal">
       <div>
         <div class="chatmock">
           <div class="chatmock-top"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="t">Claude Code</span></div>
           <div class="chatmock-body">
-            <div class="bubble you">/new-project</div>
+            <div class="bubble you" data-i18n="howto.mock.you">幫我做一個管理庫存的小工具</div>
             <div class="bubble ai" data-i18n="howto.mock.ai">好的，我先幫你把專案建起來…</div>
           </div>
           <div class="chatmock-input">
@@ -458,13 +458,13 @@
         <p class="howto-cap" data-i18n="howto.mock.cap">示意圖，實際畫面以你的 Claude Desktop 為準</p>
       </div>
       <div class="howto-notes">
-        <div class="howto-note"><span class="n">①</span><p data-i18n="howto.mock.a1">指令、要貼的 token，全都打在<b>最下面這個框</b>。</p></div>
-        <div class="howto-note"><span class="n">②</span><p data-i18n="howto.mock.a2">桌面版：從 <b>＋ → Plugins</b> 用「點的」裝工具箱；平常打 <b>/</b> 也會跳出你有的技能。</p></div>
+        <div class="howto-note"><span class="n">①</span><p data-i18n="howto.mock.a1">跟 Claude 說的話、要貼的 token，全都打在<b>最下面這個框</b>。</p></div>
+        <div class="howto-note"><span class="n">②</span><p data-i18n="howto.mock.a2">第一次裝工具箱是用「點的」（桌面版 <b>＋ → Plugins</b>，見上面〈安裝〉）。</p></div>
       </div>
     </div>
     <div class="steps" style="margin-top:8px">
       <div class="step reveal"><div class="num"></div><div><h3 data-i18n="howto.s1h">找到最下面的輸入框</h3><p data-i18n="howto.s1p">Claude Desktop 開好後，畫面最下面那條就是「輸入框」——你跟 Claude 講的話都打在這裡。</p></div></div>
-      <div class="step reveal"><div class="num"></div><div><h3 data-i18n="howto.s2h">打技能、按 Enter</h3><p data-i18n="howto.s2p">裝好之後，像 <code>/new-project</code> 這種「技能」就能直接打在框裡、按 Enter，Claude 就開始帶你做。（第一次「安裝工具箱」是一次性設定，見上面〈安裝〉。）</p></div></div>
+      <div class="step reveal"><div class="num"></div><div><h3 data-i18n="howto.s2h">用一句話說你要什麼</h3><p data-i18n="howto.s2p">在框裡用白話說「幫我做一個○○」、按 Enter，Claude 就會挑對的技能、帶你把它建起來。（想打 <code>/new-project</code> 也行，但不是必須。）</p></div></div>
       <div class="step reveal"><div class="num"></div><div><h3 data-i18n="howto.s3h">要你貼東西時，貼回同一個框</h3><p data-i18n="howto.s3p">Claude 有時會請你貼一段 token（例如 Supabase 的）。複製後，貼回這個輸入框、按 Enter 就好——不用開任何設定檔。</p></div></div>
     </div>
   </section>
@@ -473,7 +473,7 @@
     <div class="sec-head reveal">
       <span class="eyebrow" data-i18n="start.eyebrow">第一步</span>
       <h2 data-i18n="start.h2">長出一個新專案</h2>
-      <p data-i18n="start.p">在一個空資料夾開 Claude Code，輸入下面這行。它會問你專案名稱、帶你建立自己的免費 Supabase、把本地開發環境跑起來（第一次用會先檢查，缺 Node.js 或 git 會自動幫你裝）。</p>
+      <p data-i18n="start.p">在一個空資料夾開 Claude Code，直接跟它說「<b style="color:var(--ink)">幫我開一個新專案</b>」（或打 <code>/new-project</code>）。它會問你專案名稱、帶你建立自己的免費 Supabase、把本地開發環境跑起來（第一次會先檢查，缺 Node.js 或 git 會自動幫你裝）。</p>
     </div>
     <div class="term reveal">
       <div class="term-top"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="term-title" data-i18n="start.termtitle">在一個空資料夾</span></div>
@@ -500,7 +500,7 @@
     <div class="sec-head reveal">
       <span class="eyebrow" data-i18n="skills.eyebrow">你會多出這些指令</span>
       <h2 data-i18n="skills.h2">八個技能</h2>
-      <p data-i18n="skills.p">做功能時你只要用生活化的話描述想要什麼，Claude 會自動照做；而幾個里程碑指令——<code style="font-family:var(--mono)">/new-project</code>、<code style="font-family:var(--mono)">/deploy</code>、<code style="font-family:var(--mono)">/graduate</code>——要你自己打出來（下面都會告訴你在哪打）。</p>
+      <p data-i18n="skills.p">你不用記這些指令、也不用自己打——<b style="color:var(--ink)">直接用一句話跟 Claude 說你想做什麼</b>（例如「幫我開一個新專案」「幫我做一個管理庫存的小工具」），它就會挑對的技能、一步步帶你做。</p>
     </div>
     <div class="grid skills">
       <div class="card skill reveal"><div class="cmd-name">/doctor</div><p data-i18n="skills.doctor">檢查你的電腦有沒有 Node.js 與 git，缺了就自動幫你裝。</p></div>
@@ -669,19 +669,20 @@
         'install.step0': '<b>Before you start (Step 0):</b> First install <b style="color:var(--ink)">Claude Code</b> and sign in with a <b style="color:var(--ink)">paid plan</b> (Pro/Max, or API billing) — this whole toolbox runs inside Claude Code. Windows or Mac is fine; <b style="color:var(--ink)">you don’t need Node.js or git first</b> — on a new machine, run <code style="font-family:var(--mono)">/doctor</code> once and it installs them for you (a system permission prompt may pop up — click allow; if your work laptop blocks it, ask IT). No Claude Code yet? Install it from Anthropic first, then come back.',
         'install.it': '✅ <b>Or have IT set it up for everyone</b>: put <code style="font-family:var(--mono)">extraKnownMarketplaces</code> and <code style="font-family:var(--mono)">enabledPlugins</code> in a shared repo’s <code style="font-family:var(--mono)">.claude/settings.json</code>, and it’s simply there when colleagues open it — no self-install.',
         'nav.howto': 'Use',
-        'howto.eyebrow': 'Follow the pictures', 'howto.h2': 'Where do I type these commands?',
-        'howto.p': 'Things like <code>/new-project</code> and <code>/deploy</code> look like code, but they’re really just “a message you type to Claude.” Here’s where to type them in Claude Desktop, and where to paste things.',
+        'howto.eyebrow': 'Follow the pictures', 'howto.h2': 'Installed — how do I start?',
+        'howto.p': 'Once the toolbox is installed, you <b>mostly don’t type <code>/commands</code></b> — just say what you want in the input box and Claude picks the right skill and guides you step by step. Paste tokens into the same box.',
+        'howto.mock.you': 'help me build a little inventory tool',
         'howto.mock.ai': 'Sure — let me set up your project first…',
         'howto.mock.input': 'Type a message here, or paste a token…',
         'howto.mock.enter': 'Press Enter',
-        'howto.mock.a1': 'Commands, and any token you paste, all go in <b>this box at the bottom</b>.',
-        'howto.mock.a2': 'On desktop, install the toolbox via <b>＋ → Plugins</b>; typing <b>/</b> also lists your skills.',
+        'howto.mock.a1': 'What you say to Claude, and any token you paste, all go in <b>this box at the bottom</b>.',
+        'howto.mock.a2': 'Installing the toolbox the first time is done by clicking (desktop <b>＋ → Plugins</b>, see Install above).',
         'howto.mock.cap': 'Illustration — your actual Claude Desktop may look a little different.',
         'howto.s1h': 'Find the input box at the bottom', 'howto.s1p': 'Once Claude Desktop is open, the bar at the very bottom is the “input box” — everything you say to Claude goes there.',
-        'howto.s2h': 'Type a skill, press Enter', 'howto.s2p': 'Once installed, “skills” like <code>/new-project</code> can be typed right into the box — press Enter and Claude gets to work. (The one-time toolbox install is separate — see Install above.)',
+        'howto.s2h': 'Say what you want, in one sentence', 'howto.s2p': 'In the box, say “help me build a ___” and press Enter — Claude picks the right skill and builds it with you. (You can type <code>/new-project</code> too, but it’s not required.)',
         'howto.s3h': 'When asked to paste, use the same box', 'howto.s3p': 'Sometimes Claude asks you to paste a token (e.g. from Supabase). Copy it, paste it back into this input box, and press Enter — no config files to open.',
         'start.eyebrow': 'First step', 'start.h2': 'Grow a new project',
-        'start.p': 'Open Claude Code in an empty folder and type the line below. It asks for a project name, walks you through creating your own free Supabase, and gets your local dev environment running (on first use it checks for and auto-installs Node.js or git if missing).',
+        'start.p': 'Open Claude Code in an empty folder and just say “<b style="color:var(--ink)">help me start a new project</b>” (or type <code>/new-project</code>). It asks for a project name, walks you through creating your own free Supabase, and gets your local dev environment running (it checks first and auto-installs Node.js or git if missing).',
         'start.termtitle': 'in an empty folder',
         'start.cmt': '# then: /task-brief describe needs → /new-feature build it → /check verify → /deploy ship',
         'db.eyebrow': 'Where your data lives', 'db.h2': 'Connect a free database (~3 min)',
@@ -691,7 +692,7 @@
         'db.s3h': 'Create a token, paste to Claude', 'db.s3p': 'Go to <a href="https://supabase.com/dashboard/account/tokens" target="_blank" rel="noopener" style="color:var(--accent-ink);text-decoration:underline">account/tokens</a>, create an access token, and paste it back into the chat. Claude sets up the tables and gets the UI running — you touch no settings.',
         'db.callout': 'Once you see the <b style="color:var(--ink)">login page</b>, take your URL to an engineer to enable company Google login (a deliberate human checkpoint). <b>Note</b>: this is a test sandbox — use fake data only, never real customer data.',
         'skills.eyebrow': 'The commands you’ll gain', 'skills.h2': 'Eight skills',
-        'skills.p': 'To build features, just describe what you want in everyday words and Claude does it; a few milestone commands — <code style="font-family:var(--mono)">/new-project</code>, <code style="font-family:var(--mono)">/deploy</code>, <code style="font-family:var(--mono)">/graduate</code> — you type yourself (the page shows exactly where).',
+        'skills.p': 'You don’t need to remember or type these — just <b style="color:var(--ink)">tell Claude what you want in a sentence</b> (e.g. “help me start a new project”, “help me build a little inventory tool”), and it picks the right skill and walks you through it.',
         'skills.doctor': 'Checks your machine for Node.js and git, and installs them if missing.',
         'skills.newproject': 'Grows a brand-new MVP project skeleton from the template.',
         'skills.taskbrief': 'Interviews you with business-style questions and turns your needs into a spec.',
@@ -781,19 +782,20 @@
         'install.step0': '<b>始める前に（Step 0）：</b>まず <b style="color:var(--ink)">Claude Code</b> を入れ、<b style="color:var(--ink)">有料プラン</b>（Pro/Max、または API 課金）でサインイン——このツール一式は Claude Code の中で動きます。OS は Windows でも Mac でも OK。<b style="color:var(--ink)">Node.js と git は先に入れなくて大丈夫</b>、新しい PC では最初に <code style="font-family:var(--mono)">/doctor</code> を打てば自動で入れてくれます（システムの許可ダイアログが出たら許可を。会社 PC でブロックされたら IT へ）。Claude Code がまだ？先に Anthropic 公式から入れて戻ってきてください。',
         'install.it': '✅ <b>または IT が全員分を設定</b>：共有 repo の <code style="font-family:var(--mono)">.claude/settings.json</code> に <code style="font-family:var(--mono)">extraKnownMarketplaces</code> と <code style="font-family:var(--mono)">enabledPlugins</code> を入れれば、同僚が開いた時点で使え、各自の導入は不要です。',
         'nav.howto': '操作',
-        'howto.eyebrow': '図を見てそのまま', 'howto.h2': 'このコマンド、どこに打つ？',
-        'howto.p': '<code>/new-project</code> や <code>/deploy</code> はコードのように見えますが、実は「Claude に打つ一言」です。Claude Desktop のどこに打つか、何をどこに貼るかを説明します。',
+        'howto.eyebrow': '図を見てそのまま', 'howto.h2': '導入後、どう始める？',
+        'howto.p': '導入後は、<b>基本的に <code>/コマンド</code> は打ちません</b>——入力欄でやりたいことを一言伝えれば、Claude が適切なスキルを選び、順に案内します。トークンも同じ枠に貼ります。',
+        'howto.mock.you': '在庫管理の小さなツールを作って',
         'howto.mock.ai': 'では、まずプロジェクトを作成しますね…',
         'howto.mock.input': 'ここにメッセージを入力、またはトークンを貼り付け…',
         'howto.mock.enter': 'Enter で送信',
-        'howto.mock.a1': 'コマンドも、貼り付けるトークンも、全部<b>一番下のこの枠</b>に。',
-        'howto.mock.a2': 'デスクトップは <b>＋ → Plugins</b> からクリックで導入。<b>/</b> を打つとスキル一覧も出ます。',
+        'howto.mock.a1': 'Claude への言葉も、貼り付けるトークンも、全部<b>一番下のこの枠</b>に。',
+        'howto.mock.a2': '初回のツールボックス導入はクリック操作（デスクトップ <b>＋ → Plugins</b>、上の〈導入〉参照）。',
         'howto.mock.cap': 'イメージ図——実際の画面は Claude Desktop に準じます。',
         'howto.s1h': '一番下の入力欄を見つける', 'howto.s1p': 'Claude Desktop を開くと、画面最下部のバーが「入力欄」。Claude への言葉はすべてここに打ちます。',
-        'howto.s2h': 'スキルを打って Enter', 'howto.s2p': '導入後は <code>/new-project</code> のような「スキル」を枠に打って Enter——Claude が作業を始めます。（ツールボックスの初回導入は別途——上の〈導入〉参照。）',
+        'howto.s2h': 'やりたいことを一言で', 'howto.s2p': '枠に「〜を作って」と伝えて Enter——Claude が適切なスキルを選び、一緒に作ります。（<code>/new-project</code> と打っても OK ですが必須ではありません。）',
         'howto.s3h': '貼るよう言われたら、同じ枠に', 'howto.s3p': 'Claude がトークン（例：Supabase の）を貼るよう頼むことがあります。コピーして、この入力欄に貼って Enter——設定ファイルを開く必要はありません。',
         'start.eyebrow': '最初の一歩', 'start.h2': '新しいプロジェクトを生やす',
-        'start.p': '空のフォルダで Claude Code を開き、下の 1 行を入力。プロジェクト名を尋ね、自分の無料 Supabase の作成を案内し、ローカル開発環境を立ち上げます（初回はチェックが入り、Node.js や git が無ければ自動で入れます）。',
+        'start.p': '空のフォルダで Claude Code を開き、「<b style="color:var(--ink)">新しいプロジェクトを作って</b>」と伝えるだけ（または <code>/new-project</code>）。プロジェクト名を尋ね、自分の無料 Supabase の作成を案内し、ローカル開発環境を立ち上げます（初回はチェックし、Node.js や git が無ければ自動で入れます）。',
         'start.termtitle': '空のフォルダで',
         'start.cmt': '# 次に：/task-brief で要件 → /new-feature で実装 → /check で確認 → /deploy で公開',
         'db.eyebrow': 'データの置き場', 'db.h2': '無料データベースに接続（約 3 分）',
@@ -803,7 +805,7 @@
         'db.s3h': 'トークンを作って Claude に貼る', 'db.s3p': '<a href="https://supabase.com/dashboard/account/tokens" target="_blank" rel="noopener" style="color:var(--accent-ink);text-decoration:underline">account/tokens</a> で access token を作り、チャットに貼り戻します。Claude がテーブル作成から画面表示まで自動で行い、設定はいじりません。',
         'db.callout': '<b style="color:var(--ink)">ログイン画面</b>が見えたら、URL をエンジニアに渡して会社 Google ログインを有効化してもらいます（意図的な人手の確認ゲート）。<b>注意</b>：これはテスト用サンドボックス。ダミーデータのみで、実顧客データは入れないこと。',
         'skills.eyebrow': '使えるようになるコマンド', 'skills.h2': '8 つのスキル',
-        'skills.p': '機能作りは、ほしいものを普段の言葉で説明すれば Claude が実行。ただし節目のコマンド——<code style="font-family:var(--mono)">/new-project</code>、<code style="font-family:var(--mono)">/deploy</code>、<code style="font-family:var(--mono)">/graduate</code>——は自分で打ちます（どこで打つかは本ページに記載）。',
+        'skills.p': 'これらを覚えたり打ったりする必要はありません——<b style="color:var(--ink)">やりたいことを一言 Claude に伝える</b>だけ（例：「新しいプロジェクトを作って」「在庫管理の小さなツールを作って」）。適切なスキルを選び、順に案内します。',
         'skills.doctor': 'PC に Node.js と git があるか確認し、無ければ自動で入れます。',
         'skills.newproject': 'テンプレートから新しい MVP プロジェクトの骨組みを生成。',
         'skills.taskbrief': '業務的な選択式の質問で要件をヒアリングし、仕様書にまとめます。',

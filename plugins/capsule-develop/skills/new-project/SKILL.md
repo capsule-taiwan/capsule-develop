@@ -1,7 +1,6 @@
 ---
 name: new-project
 description: 建立一個新的 CAPSULE 內部工具 MVP 專案骨架。當使用者說「開新專案」「new project」「scaffold」「我想做一個新的內部工具」時使用。用「一次憑證、其餘全自動」的方式接上資料庫並跑到登入頁，再交給工程師開通登入。
-disable-model-invocation: true
 allowed-tools: Bash, Read, Write, Edit
 ---
 
