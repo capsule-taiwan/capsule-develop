@@ -444,20 +444,27 @@
     <div class="tabpanel" data-panel="ide" hidden>
       <div class="dsteps">
         <div class="dstep">
-          <div class="dstep-h"><span class="dn">1</span><p data-i18n="ide.s1">在 IDE 的 <b>Claude Code 面板</b>（VS Code / Cursor / JetBrains 擴充套件）最下面的輸入框打 <code>/plugins</code>，選出現的 <b>Manage plugins</b>。</p></div>
-          <img class="dshot" src="media/ide-mac-1-plugin.png" alt="在 Claude Code 面板輸入 /plugins → Manage plugins" loading="lazy">
+          <div class="dstep-h"><span class="dn">1</span><p data-i18n="ide.dl">還沒有 IDE？先到 <a href="https://code.visualstudio.com" target="_blank" rel="noopener" style="color:var(--accent-ink);text-decoration:underline">code.visualstudio.com</a> 下載安裝 <b>VS Code</b>（Mac 版），裝好後打開。</p></div>
         </div>
         <div class="dstep">
-          <div class="dstep-h"><span class="dn">2</span><p data-i18n="ide.s2">切到 <b>Marketplaces</b> 分頁，輸入 <code>capsule-taiwan/capsule-develop</code>，按 <b>Add</b>。</p></div>
-          <img class="dshot" src="media/ide-mac-2-add-marketplace.png" alt="Marketplaces 分頁加入 capsule-taiwan/capsule-develop" loading="lazy">
+          <div class="dstep-h"><span class="dn">2</span><p data-i18n="ide.ext">在 VS Code 左側點 <b>擴充套件（Extensions）</b>圖示，搜尋 <b>Claude Code</b>，按 <b>Install</b> 安裝。</p></div>
+          <img class="dshot" src="media/ide-mac-2-extension.png" alt="在 VS Code 擴充套件商店搜尋 Claude Code for VS Code 並安裝" loading="lazy">
         </div>
         <div class="dstep">
-          <div class="dstep-h"><span class="dn">3</span><p data-i18n="ide.s3">切到 <b>Plugins</b> 分頁，找到 <b>capsule-develop</b> 這張卡，按 <b>Install</b>。</p></div>
-          <img class="dshot" src="media/ide-mac-3-install.png" alt="Plugins 分頁找到 capsule-develop 按 Install" loading="lazy">
+          <div class="dstep-h"><span class="dn">3</span><p data-i18n="ide.s1">在 IDE 的 <b>Claude Code 面板</b>（VS Code / Cursor / JetBrains 擴充套件）最下面的輸入框打 <code>/plugins</code>，選出現的 <b>Manage plugins</b>。</p></div>
+          <img class="dshot" src="media/ide-mac-3-plugin.png" alt="在 Claude Code 面板輸入 /plugins → Manage plugins" loading="lazy">
         </div>
         <div class="dstep">
-          <div class="dstep-h"><span class="dn">4</span><p data-i18n="ide.s4">上面跳出 <b>Restart Claude to apply plugin changes</b>，按 <b>Restart</b> 套用，就完成了。</p></div>
-          <img class="dshot" src="media/ide-mac-4-restart.png" alt="按 Restart 套用，capsule-develop@capsule-tools 已安裝" loading="lazy">
+          <div class="dstep-h"><span class="dn">4</span><p data-i18n="ide.s2">切到 <b>Marketplaces</b> 分頁，輸入 <code>capsule-taiwan/capsule-develop</code>，按 <b>Add</b>。</p></div>
+          <img class="dshot" src="media/ide-mac-4-add-marketplace.png" alt="Marketplaces 分頁加入 capsule-taiwan/capsule-develop" loading="lazy">
+        </div>
+        <div class="dstep">
+          <div class="dstep-h"><span class="dn">5</span><p data-i18n="ide.s3">切到 <b>Plugins</b> 分頁，找到 <b>capsule-develop</b> 這張卡，按 <b>Install</b>。</p></div>
+          <img class="dshot" src="media/ide-mac-5-install.png" alt="Plugins 分頁找到 capsule-develop 按 Install" loading="lazy">
+        </div>
+        <div class="dstep">
+          <div class="dstep-h"><span class="dn">6</span><p data-i18n="ide.s4">上面跳出 <b>Restart Claude to apply plugin changes</b>，按 <b>Restart</b> 套用，就完成了。</p></div>
+          <img class="dshot" src="media/ide-mac-6-restart.png" alt="按 Restart 套用，capsule-develop@capsule-tools 已安裝" loading="lazy">
         </div>
       </div>
       <p class="ip-note" data-i18n="ide.note">版本不同，標籤可能略有差異；也可以像「終端機」分頁那樣，直接在面板輸入框貼上那兩行 <code style="font-family:var(--mono)">/plugin …</code>。</p>
@@ -698,6 +705,8 @@
         'term.s1': 'Open the <b>terminal version of Claude Code</b> (or the built-in Claude Code terminal in your IDE).',
         'term.s2': 'Paste these two <code style="font-family:var(--mono)">/plugin</code> lines, each followed by <b>Enter</b>:',
         'term.s3': 'After running the commands, when a row of new <code style="font-family:var(--mono)">/commands</code> appears, you’re done.',
+        'ide.dl': 'No IDE yet? First download and install <b>VS Code</b> (macOS) from <a href="https://code.visualstudio.com" target="_blank" rel="noopener" style="color:var(--accent-ink);text-decoration:underline">code.visualstudio.com</a>, then open it.',
+        'ide.ext': 'In VS Code, click the <b>Extensions</b> icon on the left, search for <b>Claude Code</b>, and click <b>Install</b>.',
         'ide.s1': 'In your IDE’s <b>Claude Code panel</b> (the VS Code / Cursor / JetBrains extension), type <code>/plugins</code> in the input box and choose <b>Manage plugins</b>.',
         'ide.s2': 'Open the <b>Marketplaces</b> tab, enter <code>capsule-taiwan/capsule-develop</code>, and click <b>Add</b>.',
         'ide.s3': 'Switch to the <b>Plugins</b> tab, find the <b>capsule-develop</b> card, and click <b>Install</b>.',
@@ -818,6 +827,8 @@
         'term.s1': '<b>ターミナル版の Claude Code</b>（または IDE 内蔵の Claude Code ターミナル）を開く。',
         'term.s2': 'この 2 行の <code style="font-family:var(--mono)">/plugin</code> を貼り、それぞれ <b>Enter</b>：',
         'term.s3': 'コマンドを実行して、新しい <code style="font-family:var(--mono)">/コマンド</code> が並んで表示されれば完了。',
+        'ide.dl': 'IDE がまだ？まず <a href="https://code.visualstudio.com" target="_blank" rel="noopener" style="color:var(--accent-ink);text-decoration:underline">code.visualstudio.com</a> から <b>VS Code</b>（Mac 版）をダウンロードしてインストールし、開く。',
+        'ide.ext': 'VS Code 左側の <b>拡張機能（Extensions）</b> アイコンをクリックし、<b>Claude Code</b> を検索して <b>Install</b> を押す。',
         'ide.s1': 'IDE の <b>Claude Code パネル</b>（VS Code / Cursor / JetBrains 拡張）の入力欄に <code>/plugins</code> と打ち、表示される <b>Manage plugins</b> を選ぶ。',
         'ide.s2': '<b>Marketplaces</b> タブで <code>capsule-taiwan/capsule-develop</code> を入力し、<b>Add</b> を押す。',
         'ide.s3': '<b>Plugins</b> タブに切り替え、<b>capsule-develop</b> のカードを見つけて <b>Install</b> を押す。',
