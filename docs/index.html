@@ -700,14 +700,9 @@
       b.addEventListener('click', function () { setLang(b.getAttribute('data-lang')); });
     });
 
+    // 預設一律中文；只有使用者自己切過語言，才記住他的選擇。
     var saved = null;
     try { saved = localStorage.getItem('capsule_lang'); } catch (e) {}
-    if (!saved) {
-      var nav = (navigator.language || '').toLowerCase();
-      if (nav.indexOf('ja') === 0) saved = 'ja';
-      else if (nav.indexOf('zh') === 0) saved = 'zh';
-      else if (nav.indexOf('en') === 0) saved = 'en';
-    }
     setLang(saved || 'zh');
 
     // ---------- copy buttons ----------
