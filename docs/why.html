@@ -136,6 +136,12 @@
   .faq details[open] summary::after { content: "\2013"; }
   .faq .fa { color: var(--muted); font-size: .92rem; line-height: 1.65; padding: 0 0 16px; margin: 0; }
 
+  .cando { border-left: 3px solid var(--go); }
+  .cantdo { border-left: 3px solid var(--accent); }
+  .cl { margin: 12px 0 0; padding: 0; list-style: none; display: grid; gap: 8px; }
+  .cl li { font-size: .9rem; color: var(--muted); line-height: 1.5; }
+  .cl li b { color: var(--ink); }
+
   footer { border-top: 1px solid var(--line); padding: 34px 0 56px; color: var(--muted); font-size: .85rem; }
   footer .fr { display: flex; flex-wrap: wrap; gap: 6px 18px; align-items: center; }
 
@@ -151,6 +157,7 @@
     <nav>
       <a class="navlink" href="#why" data-i18n="nav.why">為什麼</a>
       <a class="navlink" href="#seeds" data-i18n="nav.seeds">選種子</a>
+      <a class="navlink" href="#limits" data-i18n="nav.limits">能做什麼</a>
       <a class="navlink" href="#faq" data-i18n="nav.faq">常見問題</a>
       <a class="cta" href="index.html" data-i18n="nav.guide">安裝說明 →</a>
     </nav>
@@ -272,6 +279,24 @@
     </div>
   </section>
 
+  <section id="limits">
+    <div class="sec-head reveal">
+      <span class="eyebrow" data-i18n="lim.eyebrow">先講清楚</span>
+      <h2 data-i18n="lim.h2">前端？後端？你的工具做得到什麼</h2>
+      <p data-i18n="lim.p">兩個常聽到的詞，先用一句話講白，你就知道你的工具能做到哪、哪些要找幫手。</p>
+    </div>
+    <div class="grid g2" style="align-items:start">
+      <div class="card reveal"><div class="ic">🖥️</div><h3 data-i18n="lim.feh">前端 = 你看得到、點得到的畫面</h3><p data-i18n="lim.fep">跑在你自己瀏覽器裡的東西：頁面、按鈕、表單。使用者直接看到、直接操作的都是前端。</p></div>
+      <div class="card reveal"><div class="ic">☁️</div><h3 data-i18n="lim.beh">後端 = 雲端幫你「跑事情、把關」的伺服器</h3><p data-i18n="lim.bep">使用者看不到、也改不了的那一層：存資料、驗證身分、照時間自動做事、藏祕密鑰匙。它在雲端 24 小時待命。</p></div>
+    </div>
+    <p class="subh reveal" style="margin-top:24px" data-i18n="lim.subh">你的膠囊 MVP = 前端（畫面）＋ 一個現成的「倉庫＋門禁」（Supabase）</p>
+    <div class="grid g2" style="align-items:start">
+      <div class="card cando reveal"><h3 data-i18n="lim.canh">✅ 做得到（大多數內部小工具）</h3><ul class="cl" data-i18n="lim.can"><li>記錄、清單、搜尋、篩選、分頁</li><li>登入（公司 Google）、權限（誰能看／改／刪）</li><li>新增／編輯／刪除資料</li></ul></div>
+      <div class="card cantdo reveal"><h3 data-i18n="lim.canth">⚠️ 種子沒給你、要「真正後端」才好做</h3><ul class="cl" data-i18n="lim.cant"><li>⏰ <b>定時排程</b>：例如每天早上自動寄週報、自動提醒——要有東西在雲端「照時間自己跑」。</li><li>🔑 <b>需要藏密鑰的驗證／串接</b>：接金流、寄 email、呼叫別家 API——密鑰不能放前端（放了誰都看得到）。</li><li>⚙️ <b>背景大量運算</b>：處理圖片、批次匯入匯出。</li></ul></div>
+    </div>
+    <div class="when reveal" style="margin-top:20px" data-i18n="lim.where"><b>那這些怎麼辦？</b>　想「把現成平台接起來、自動跑」（含排程、通知）→ 用 <b>n8n 種子</b>；真的要變公司級的正式功能 → 找 <b>IT</b>，或讓這個工具<b>畢業進母艦</b>（那裡有完整後端）。</div>
+  </section>
+
   <section id="faq">
     <div class="sec-head reveal">
       <span class="eyebrow" data-i18n="faq.eyebrow">常見疑問</span>
@@ -348,6 +373,17 @@
         'n8n.whyh': 'Why n8n', 'n8n.n1q': 'Hand-coding the connections is a chore', 'n8n.n1a': 'Writing your own code to connect Slack, Notion, Google Sheets and the like is genuinely fiddly.',
         'n8n.n2q': 'n8n connects them by drag-and-drop', 'n8n.n2a': 'n8n is a “drag-and-drop automation” tool: treat each platform as a block, connect them, and the flow runs itself. You’ll use <b>n8n</b> + each platform’s key (Slack / Notion / Sheets…).',
         'n8n.status': '🌱 This seed is still being prepared — for now, just so you know this path exists. To “connect existing platforms and automate”, use it later; to “build a new little system / screen”, use “Internal-tool app” on the left.',
+        'nav.limits': 'Scope',
+        'lim.eyebrow': 'Let’s be clear', 'lim.h2': 'Frontend? Backend? What your tool can (and can’t) do',
+        'lim.p': 'Two words you hear a lot — explained in one line each, so you know what your tool can do and what needs a helper.',
+        'lim.feh': 'Frontend = the screen you see and click', 'lim.fep': 'The stuff that runs in your own browser: pages, buttons, forms. Whatever the user sees and touches directly is the frontend.',
+        'lim.beh': 'Backend = a cloud server that “runs things and stands guard”', 'lim.bep': 'The layer users can’t see or change: storing data, checking identity, doing things on a schedule, keeping secret keys. It waits in the cloud 24/7.',
+        'lim.subh': 'Your capsule MVP = frontend (the screen) + a ready-made “warehouse + door” (Supabase)',
+        'lim.canh': '✅ It can do (most internal mini-tools)',
+        'lim.can': '<li>Record, list, search, filter, paginate</li><li>Login (company Google), permissions (who can view / edit / delete)</li><li>Create / edit / delete data</li>',
+        'lim.canth': '⚠️ Not in the seed — needs a “real backend”',
+        'lim.cant': '<li>⏰ <b>Scheduled jobs</b>: e.g. auto-send a weekly report every morning — something has to “run on a timer” in the cloud.</li><li>🔑 <b>Checks / integrations that need a secret key</b>: payments, sending email, calling another company’s API — secret keys can’t live in the frontend (anyone could read them).</li><li>⚙️ <b>Heavy background work</b>: image processing, batch import/export.</li>',
+        'lim.where': '<b>So what about those?</b>　To “connect existing platforms and automate” (including schedules and notifications) → use the <b>n8n seed</b>. To make it a real company-grade feature → ask <b>IT</b>, or let the tool <b>graduate into the mothership</b> (which has a full backend).',
         'faq.eyebrow': 'FAQ', 'faq.h2': 'You might be wondering…',
         'faq.q1': 'Does it cost money?', 'faq.a1': 'Everything you use is on <b>free tiers</b> (Supabase and Cloudflare free plans are plenty for a small personal project). The paid part is Claude Code itself, which the company covers.',
         'faq.q2': 'Is my data safe?', 'faq.a2': 'Only <b>company Google accounts</b> can get in, and data has multiple layers of protection. During testing, use <b>fake data only</b> — no real customer data; when you truly need real data, tell IT to move it into a company account.',
@@ -400,6 +436,17 @@
         'n8n.whyh': 'なぜ n8n か', 'n8n.n1q': '自前で書いてつなぐのは手間', 'n8n.n1a': 'Slack、Notion、Google Sheets などを自分でコードを書いてつなぐのは、実際かなり面倒です。',
         'n8n.n2q': 'n8n はドラッグ＆ドロップでつなぐ', 'n8n.n2a': 'n8n は「ドラッグ＆ドロップの自動化」ツール。各プラットフォームをブロックのようにつなぐと、フローが自動で動きます。使うのは <b>n8n</b> + 各プラットフォームの鍵（Slack／Notion／Sheets…）。',
         'n8n.status': '🌱 この種はまだ準備中——まずはこの道があると知っておいてください。「既存プラットフォームをつないで自動化」したいなら後日これを、「新しい小さなシステム／画面」を作るなら左の「社内ツール App」を。',
+        'nav.limits': 'できること',
+        'lim.eyebrow': 'はっきりさせる', 'lim.h2': 'フロント？バック？あなたのツールにできること・できないこと',
+        'lim.p': 'よく聞く 2 語を一言ずつ。自分のツールで何ができて、何は助けが要るか分かります。',
+        'lim.feh': 'フロントエンド = 見えて触れる画面', 'lim.fep': '自分のブラウザで動くもの：ページ・ボタン・フォーム。ユーザーが直接見て操作するのがフロント。',
+        'lim.beh': 'バックエンド = クラウドで「処理し、見張る」サーバー', 'lim.bep': 'ユーザーには見えず変えられない層：データ保存、本人確認、時間どおりの自動処理、秘密の鍵の保管。クラウドで 24 時間待機。',
+        'lim.subh': 'あなたのカプセル MVP = フロント（画面）＋ 出来合いの「倉庫＋入口」（Supabase）',
+        'lim.canh': '✅ できること（ほとんどの社内ミニツール）',
+        'lim.can': '<li>記録・一覧・検索・絞り込み・ページング</li><li>ログイン（会社 Google）、権限（閲覧／編集／削除）</li><li>データの追加・編集・削除</li>',
+        'lim.canth': '⚠️ 種にはない——「本物のバックエンド」が必要',
+        'lim.cant': '<li>⏰ <b>定時実行</b>：毎朝自動で週報を送る等——クラウドで「時間どおりに動く」ものが必要。</li><li>🔑 <b>秘密鍵が要る検証／連携</b>：決済、メール送信、他社 API 呼び出し——秘密鍵はフロントに置けません（誰でも見える）。</li><li>⚙️ <b>重いバックグラウンド処理</b>：画像処理、一括入出力。</li>',
+        'lim.where': '<b>ではどうする？</b>　「既存プラットフォームをつないで自動化」（定時・通知含む）→ <b>n8n の種</b>。会社レベルの正式機能にするなら → <b>IT</b> に相談、またはツールを<b>母艦へ卒業</b>（完全なバックエンドあり）。',
         'faq.eyebrow': 'よくある質問', 'faq.h2': 'こんな疑問があるかも…',
         'faq.q1': 'お金はかかる？', 'faq.a1': '使うものはすべて<b>無料枠</b>（Supabase・Cloudflare の無料プランで個人の小規模には十分）。有料なのは Claude Code 本体で、それは会社負担です。',
         'faq.q2': 'データは安全？', 'faq.a2': '入れるのは<b>会社 Google アカウント</b>だけ、データも多層で保護。テスト段階は<b>ダミーデータのみ</b>で実顧客データは入れないこと。本当に実データが必要になったら IT に会社アカウントへの移行を依頼。',
