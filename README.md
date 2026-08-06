@@ -33,7 +33,13 @@
 
 ## 開始前你需要（Step 0）
 - **Claude Code** 裝好並用**付費方案**（Pro / Max，或 API 計費）登入——這整套工具是在 Claude Code 裡跑的。還沒有的話先到 Anthropic 官方裝好、登入，再回來。
-- **Windows 或 macOS**。Node.js 與 git **不用**先裝——第一次在新電腦，先在 Claude Code 裡打 `/doctor`，它會用 winget/brew 幫你把 Node 與 git 裝好（可能跳出系統權限視窗，按允許；公司電腦若被擋就找 IT）。
+- **Windows 或 macOS**。Node.js **不用**先裝——裝好工具箱後在 Claude Code 裡打 `/doctor`，它會用 winget/brew 幫你裝好（可能跳出系統權限視窗，按允許；公司電腦若被擋就找 IT）。
+- ⚠️ **git 要看你用哪種安裝方式**：
+  - **桌面版 App（用點的）** → 不用先裝 git，直接跳到下面的安裝步驟。
+  - **終端機（CLI）** → **必須先有 git**，因為 `/plugin marketplace add` 需要 git 才能取得工具箱本身。沒有的話先裝：
+    - Windows：`winget install Git.Git --accept-package-agreements --accept-source-agreements`（裝完關掉終端機重開，讓 PATH 生效）
+    - macOS：`xcode-select --install`
+  - 分不清楚或裝不起來 → 用桌面版，或找 IT。
 - 裝不起來或不確定 → 找 IT。
 
 ## 安裝

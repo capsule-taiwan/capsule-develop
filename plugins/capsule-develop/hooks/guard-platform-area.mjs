@@ -37,7 +37,9 @@ const PLATFORM = [
   { re: /\/app\/layouts\//, what: '版面配置' },
   { re: /\/supabase\/migrations\/00[0-9]_/, what: '身份/權限地基 migration（001-009）' },
   { re: /\/\.claude\//, what: 'Claude 設定與護欄' },
-  { re: /\/(nuxt\.config|eslint\.config|vitest[^/]*\.config)\.(ts|mjs|js)$/, what: '建置/檢查設定檔' },
+  // ⚠️ 用 (^|\/) 而不是 \/：file_path 若是相對路徑（nuxt.config.ts）就沒有前導斜線，
+  //    只寫 \/ 會靜默放行。下面 CLAUDE.md 那條本來就是對的寫法，這裡對齊。
+  { re: /(^|\/)(nuxt\.config|eslint\.config|vitest[^/]*\.config)\.(ts|mjs|js)$/, what: '建置/檢查設定檔' },
   { re: /(^|\/)CLAUDE\.md$/, what: '回收契約（CLAUDE.md）' },
 ]
 
