@@ -32,15 +32,38 @@
 安裝後還會自動載入護欄（hooks），擋掉危險操作與「改到平台共用檔」。
 
 ## 開始前你需要（Step 0）
-- **Claude Code** 裝好並用**付費方案**（Pro / Max，或 API 計費）登入——這整套工具是在 Claude Code 裡跑的。還沒有的話先到 Anthropic 官方裝好、登入，再回來。
-- **Windows 或 macOS**。Node.js **不用**先裝——裝好工具箱後在 Claude Code 裡打 `/doctor`，它會用 winget/brew 幫你裝好（可能跳出系統權限視窗，按允許；公司電腦若被擋就找 IT）。
-- ⚠️ **git 要看你用哪種安裝方式**：
-  - **桌面版 App（用點的）** → 不用先裝 git，直接跳到下面的安裝步驟。
-  - **終端機（CLI）** → **必須先有 git**，因為 `/plugin marketplace add` 需要 git 才能取得工具箱本身。沒有的話先裝：
-    - Windows：`winget install Git.Git --accept-package-agreements --accept-source-agreements`（裝完關掉終端機重開，讓 PATH 生效）
-    - macOS：`xcode-select --install`
-  - 分不清楚或裝不起來 → 用桌面版，或找 IT。
-- 裝不起來或不確定 → 找 IT。
+
+作業系統 Windows 或 macOS 皆可。**照下面的順序做**，三種安裝方式（桌面版／終端機／IDE）都一樣。
+
+> 📌 **這是整個流程裡唯一需要你自己動手裝東西的地方。** 做完之後，從頭到尾都只要「跟 Claude 說話」——不用再打指令、不用改設定檔、不用碰終端機。
+>
+> 如果公司電腦是 IT 統一發的，可以請 IT 直接把第 1、2 步做好（見下方「IT 統一掛好」），你打開就能用。
+
+### 1. 先裝 git 與 Node.js（LTS）
+
+這兩個之後開發一定會用到——Node 用來跑你的專案，git 用來做版控（`/new-project` 會自動幫你建立版本紀錄，之後想備份到自己的 GitHub 也是靠它）。**先裝好，不要留到後面**。
+
+- **Windows**（PowerShell）：
+  ```
+  winget install Git.Git --accept-package-agreements --accept-source-agreements
+  winget install OpenJS.NodeJS.LTS --accept-package-agreements --accept-source-agreements
+  ```
+- **macOS**：`xcode-select --install`（git）＋ 到 <https://nodejs.org> 下載 **LTS** 安裝包。有 Homebrew 的話一行搞定：`brew install node git`。
+- 裝完**關掉所有終端機視窗再重開**，讓 PATH 生效。
+
+> ⚠️ **電腦上已經有舊版 Node（v18 以下）的話，一定要升級到 LTS。** 舊版 Node 可能讓 Claude Code 連登入都失敗，而那時候 `/doctor` 還救不了你（你根本進不去）。不確定的話打 `node --version` 看一眼。
+
+### 2. 裝 Claude Code 並登入
+
+用**付費方案**（Pro / Max，或 API 計費）登入——這整套工具是在 Claude Code 裡跑的。還沒有的話先到 Anthropic 官方裝好、登入，再回來。
+
+### 3. 裝工具箱 → 打 `/doctor`
+
+安裝方式見下一節。裝完在 Claude Code 裡打 `/doctor`，它會確認 git 與 Node 版本都合格。
+
+---
+
+**裝不起來、被公司電腦權限擋住、或登入時看到跟 `node` 有關的錯誤** → 別自己想辦法裝東西，截圖找 IT。IT 的排查步驟見 [`plugins/capsule-develop/docs/IT-TROUBLESHOOTING.md`](plugins/capsule-develop/docs/IT-TROUBLESHOOTING.md)。
 
 ## 安裝
 

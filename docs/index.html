@@ -387,7 +387,7 @@
       <p data-i18n="install.p">工具箱只要裝一次。看你用哪種 Claude Code，選一種做法。</p>
     </div>
     <div class="callout reveal" style="margin-bottom:16px" data-i18n="install.step0">
-      <b>開始前你需要（Step 0）：</b>先裝好 <b style="color:var(--ink)">Claude Code</b> 並用<b style="color:var(--ink)">付費方案</b>（Pro／Max，或 API 計費）登入——這整套工具就是在 Claude Code 裡跑的。作業系統 Windows 或 Mac 皆可；<b style="color:var(--ink)">Node.js 與 git 不用先裝</b>，新電腦第一次先打 <code style="font-family:var(--mono)">/doctor</code> 會自動幫你裝好（可能跳出系統權限視窗，按允許；公司電腦被擋就找 IT）。還沒有 Claude Code？先到 Anthropic 官方裝好再回來。
+      <b>開始前你需要（Step 0）：</b>這是整個流程裡<b style="color:var(--ink)">唯一需要你自己動手裝東西的地方</b>——做完之後，從頭到尾都只要「跟 Claude 說話」。作業系統 Windows 或 Mac 皆可，三種安裝方式都照同一個順序。<br><b style="color:var(--ink)">① 先裝 git 與 Node.js（LTS）</b>：之後開發一定會用到——Node 跑你的專案，git 做版控。Windows 在 PowerShell 打 <code style="font-family:var(--mono)">winget install Git.Git</code> 與 <code style="font-family:var(--mono)">winget install OpenJS.NodeJS.LTS</code>；Mac 打 <code style="font-family:var(--mono)">xcode-select --install</code> 再到 nodejs.org 下載 LTS。裝完關掉視窗重開，讓設定生效。<b style="color:var(--ink)">電腦上已經有舊版 Node（v18 以下）務必一併升級</b>，否則可能連 Claude Code 都登不進去（打 <code style="font-family:var(--mono)">node --version</code> 看一眼）。<br><b style="color:var(--ink)">② 裝 Claude Code 並登入</b>：用<b style="color:var(--ink)">付費方案</b>（Pro／Max，或 API 計費）——這整套工具就是在它裡面跑的。<br><b style="color:var(--ink)">③ 裝下面的工具箱</b>，然後打 <code style="font-family:var(--mono)">/doctor</code> 讓它確認環境沒問題。<br>公司電腦是 IT 發的話，可以請 IT 直接把 ①② 做好，你打開就能用。<b style="color:var(--ink)">裝不起來、被權限擋住、或看到跟 <code style="font-family:var(--mono)">node</code> 有關的錯誤 → 別自己想辦法，截圖找 IT。</b>
     </div>
     <div class="tabs" role="tablist">
       <button class="tab on" type="button" data-tab="desktop">🖥️ <span data-i18n="tab.desktop">Claude 桌面版</span></button>
@@ -511,7 +511,7 @@
     <div class="sec-head reveal">
       <span class="eyebrow" data-i18n="start.eyebrow">第一步</span>
       <h2 data-i18n="start.h2">長出一個新專案</h2>
-      <p data-i18n="start.p">在一個空資料夾開 Claude Code，直接跟它說「<b style="color:var(--ink)">幫我開一個新專案</b>」（或打 <code>/new-project</code>）。它會問你專案名稱、帶你建立自己的免費 Supabase、把本地開發環境跑起來（第一次會先檢查，缺 Node.js 或 git 會自動幫你裝）。</p>
+      <p data-i18n="start.p">在一個空資料夾開 Claude Code，直接跟它說「<b style="color:var(--ink)">幫我開一個新專案</b>」（或打 <code>/new-project</code>）。它會問你專案名稱、帶你建立自己的免費 Supabase、把本地開發環境跑起來（第一次會先確認 Step 0 裝的 git 與 Node 都就緒）。</p>
     </div>
     <div class="term reveal">
       <div class="term-top"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="term-title" data-i18n="start.termtitle">在一個空資料夾</span></div>
@@ -541,7 +541,7 @@
       <p data-i18n="skills.p">你不用記這些指令、也不用自己打——<b style="color:var(--ink)">直接用一句話跟 Claude 說你想做什麼</b>（例如「幫我開一個新專案」「幫我做一個管理庫存的小工具」），它就會挑對的技能、一步步帶你做。</p>
     </div>
     <div class="grid skills">
-      <div class="card skill reveal"><div class="cmd-name">/doctor</div><p data-i18n="skills.doctor">檢查你的電腦有沒有 Node.js 與 git，缺了就自動幫你裝。</p></div>
+      <div class="card skill reveal"><div class="cmd-name">/doctor</div><p data-i18n="skills.doctor">確認你的電腦環境沒問題（git、Node.js 版本），有缺或太舊會告訴你怎麼處理。</p></div>
       <div class="card skill reveal"><div class="cmd-name">/new-project</div><p data-i18n="skills.newproject">從範本長出一個全新的 MVP 專案骨架。</p></div>
       <div class="card skill reveal"><div class="cmd-name">/task-brief</div><p data-i18n="skills.taskbrief">用業務選擇題訪談你的需求，整理成規格。</p></div>
       <div class="card skill reveal"><div class="cmd-name">/new-feature</div><p data-i18n="skills.newfeature">照範例模組長出你要的新功能（列表／表單／權限／測試一整套）。</p></div>
@@ -713,7 +713,7 @@
         'ide.s3': 'Switch to the <b>Plugins</b> tab, find the <b>capsule-develop</b> card, and click <b>Install</b>.',
         'ide.s4': 'When <b>Restart Claude to apply plugin changes</b> appears at the top, click <b>Restart</b> — done.',
         'ide.note': 'Labels may vary a little by version; you can also paste the two <code style="font-family:var(--mono)">/plugin …</code> lines into the panel’s input, just like the “Terminal” tab.',
-        'install.step0': '<b>Before you start (Step 0):</b> First install <b style="color:var(--ink)">Claude Code</b> and sign in with a <b style="color:var(--ink)">paid plan</b> (Pro/Max, or API billing) — this whole toolbox runs inside Claude Code. Windows or Mac is fine; <b style="color:var(--ink)">you don’t need Node.js or git first</b> — on a new machine, run <code style="font-family:var(--mono)">/doctor</code> once and it installs them for you (a system permission prompt may pop up — click allow; if your work laptop blocks it, ask IT). No Claude Code yet? Install it from Anthropic first, then come back.',
+        'install.step0': '<b>Before you start (Step 0):</b> This is the <b style="color:var(--ink)">only point where you install anything yourself</b> — after this, everything is just talking to Claude. Windows or Mac is fine, and all three install methods follow the same order.<br><b style="color:var(--ink)">① Install git and Node.js (LTS) first</b>: you will need both later — Node runs your project, git handles version history. On Windows, run <code style="font-family:var(--mono)">winget install Git.Git</code> and <code style="font-family:var(--mono)">winget install OpenJS.NodeJS.LTS</code> in PowerShell; on Mac, run <code style="font-family:var(--mono)">xcode-select --install</code> and download the LTS installer from nodejs.org. Close and reopen your windows afterwards so the changes take effect. <b style="color:var(--ink)">If the machine already has an old Node (v18 or below), upgrade it</b> — otherwise even signing in to Claude Code can fail (check with <code style="font-family:var(--mono)">node --version</code>).<br><b style="color:var(--ink)">② Install Claude Code and sign in</b> with a <b style="color:var(--ink)">paid plan</b> (Pro/Max, or API billing) — this whole toolbox runs inside it.<br><b style="color:var(--ink)">③ Install the toolbox below</b>, then run <code style="font-family:var(--mono)">/doctor</code> to confirm your environment is good.<br>If your laptop is issued by IT, ask them to do ① and ② for you — then it just works when you open it. <b style="color:var(--ink)">If something won’t install, permissions block you, or you see an error mentioning <code style="font-family:var(--mono)">node</code> → don’t try to fix it yourself; screenshot it and ask IT.</b>',
         'install.it': '✅ <b>Or have IT set it up for everyone</b>: put <code style="font-family:var(--mono)">extraKnownMarketplaces</code> and <code style="font-family:var(--mono)">enabledPlugins</code> in a shared repo’s <code style="font-family:var(--mono)">.claude/settings.json</code>, and it’s simply there when colleagues open it — no self-install.',
         'nav.howto': 'Use',
         'howto.eyebrow': 'Follow the pictures', 'howto.h2': 'Installed — how do I start?',
@@ -729,7 +729,7 @@
         'howto.s2h': 'Say what you want, in one sentence', 'howto.s2p': 'In the box, say “help me build a ___” and press Enter — Claude picks the right skill and builds it with you. (You can type <code>/new-project</code> too, but it’s not required.)',
         'howto.s3h': 'When asked to paste, use the same box', 'howto.s3p': 'Sometimes Claude asks you to paste a token (e.g. from Supabase). Copy it, paste it back into this input box, and press Enter — no config files to open.',
         'start.eyebrow': 'First step', 'start.h2': 'Grow a new project',
-        'start.p': 'Open Claude Code in an empty folder and just say “<b style="color:var(--ink)">help me start a new project</b>” (or type <code>/new-project</code>). It asks for a project name, walks you through creating your own free Supabase, and gets your local dev environment running (it checks first and auto-installs Node.js or git if missing).',
+        'start.p': 'Open Claude Code in an empty folder and just say “<b style="color:var(--ink)">help me start a new project</b>” (or type <code>/new-project</code>). It asks for a project name, walks you through creating your own free Supabase, and gets your local dev environment running (it first confirms the git and Node you installed in Step 0 are ready).',
         'start.termtitle': 'in an empty folder',
         'start.cmt': '# then: /task-brief describe needs → /new-feature build it → /check verify → /deploy ship',
         'db.eyebrow': 'Where your data lives', 'db.h2': 'Connect a free database (~3 min)',
@@ -740,7 +740,7 @@
         'db.callout': 'Once you see the <b style="color:var(--ink)">login page</b>, take your URL to an engineer to enable company Google login (a deliberate human checkpoint). <b>Note</b>: this is a test sandbox — use fake data only, never real customer data.',
         'skills.eyebrow': 'The commands you’ll gain', 'skills.h2': 'Eight skills',
         'skills.p': 'You don’t need to remember or type these — just <b style="color:var(--ink)">tell Claude what you want in a sentence</b> (e.g. “help me start a new project”, “help me build a little inventory tool”), and it picks the right skill and walks you through it.',
-        'skills.doctor': 'Checks your machine for Node.js and git, and installs them if missing.',
+        'skills.doctor': 'Confirms your environment is good (git, Node.js version) and tells you what to do if something is missing or too old.',
         'skills.newproject': 'Grows a brand-new MVP project skeleton from the template.',
         'skills.taskbrief': 'Interviews you with business-style questions and turns your needs into a spec.',
         'skills.newfeature': 'Grows your new feature from the example module (list/form/permissions/tests, all of it).',
@@ -835,7 +835,7 @@
         'ide.s3': '<b>Plugins</b> タブに切り替え、<b>capsule-develop</b> のカードを見つけて <b>Install</b> を押す。',
         'ide.s4': '上部に <b>Restart Claude to apply plugin changes</b> が出たら <b>Restart</b> を押して適用すれば完了。',
         'ide.note': 'バージョンによってラベルが多少異なる場合があります。「ターミナル」タブと同じく、この 2 行の <code style="font-family:var(--mono)">/plugin …</code> をパネルの入力欄に貼っても構いません。',
-        'install.step0': '<b>始める前に（Step 0）：</b>まず <b style="color:var(--ink)">Claude Code</b> を入れ、<b style="color:var(--ink)">有料プラン</b>（Pro/Max、または API 課金）でサインイン——このツール一式は Claude Code の中で動きます。OS は Windows でも Mac でも OK。<b style="color:var(--ink)">Node.js と git は先に入れなくて大丈夫</b>、新しい PC では最初に <code style="font-family:var(--mono)">/doctor</code> を打てば自動で入れてくれます（システムの許可ダイアログが出たら許可を。会社 PC でブロックされたら IT へ）。Claude Code がまだ？先に Anthropic 公式から入れて戻ってきてください。',
+        'install.step0': '<b>始める前に（Step 0）：</b>ここが<b style="color:var(--ink)">自分で何かをインストールする唯一の場面</b>です——これ以降は、ずっと Claude と話すだけ。OS は Windows でも Mac でも OK、3 つのインストール方法すべて同じ順番です。<br><b style="color:var(--ink)">① まず git と Node.js（LTS）を入れる</b>：後の開発で必ず使います——Node はプロジェクトの実行、git はバージョン管理に。Windows は PowerShell で <code style="font-family:var(--mono)">winget install Git.Git</code> と <code style="font-family:var(--mono)">winget install OpenJS.NodeJS.LTS</code>；Mac は <code style="font-family:var(--mono)">xcode-select --install</code> のあと nodejs.org から LTS をダウンロード。入れ終わったらウィンドウを閉じて開き直し、設定を反映させてください。<b style="color:var(--ink)">PC に古い Node（v18 以下）が入っている場合は必ず更新を</b>——そのままだと Claude Code へのサインインすら失敗することがあります（<code style="font-family:var(--mono)">node --version</code> で確認）。<br><b style="color:var(--ink)">② Claude Code を入れてサインイン</b>：<b style="color:var(--ink)">有料プラン</b>（Pro/Max、または API 課金）で——このツール一式はその中で動きます。<br><b style="color:var(--ink)">③ 下のツール一式を入れて</b>、<code style="font-family:var(--mono)">/doctor</code> で環境を確認。<br>会社支給の PC なら、①② を IT にやってもらえば開くだけで使えます。<b style="color:var(--ink)">入らない・権限でブロックされる・<code style="font-family:var(--mono)">node</code> に関するエラーが出る → 自分で何とかしようとせず、スクショを撮って IT へ。</b>',
         'install.it': '✅ <b>または IT が全員分を設定</b>：共有 repo の <code style="font-family:var(--mono)">.claude/settings.json</code> に <code style="font-family:var(--mono)">extraKnownMarketplaces</code> と <code style="font-family:var(--mono)">enabledPlugins</code> を入れれば、同僚が開いた時点で使え、各自の導入は不要です。',
         'nav.howto': '操作',
         'howto.eyebrow': '図を見てそのまま', 'howto.h2': '導入後、どう始める？',
@@ -851,7 +851,7 @@
         'howto.s2h': 'やりたいことを一言で', 'howto.s2p': '枠に「〜を作って」と伝えて Enter——Claude が適切なスキルを選び、一緒に作ります。（<code>/new-project</code> と打っても OK ですが必須ではありません。）',
         'howto.s3h': '貼るよう言われたら、同じ枠に', 'howto.s3p': 'Claude がトークン（例：Supabase の）を貼るよう頼むことがあります。コピーして、この入力欄に貼って Enter——設定ファイルを開く必要はありません。',
         'start.eyebrow': '最初の一歩', 'start.h2': '新しいプロジェクトを生やす',
-        'start.p': '空のフォルダで Claude Code を開き、「<b style="color:var(--ink)">新しいプロジェクトを作って</b>」と伝えるだけ（または <code>/new-project</code>）。プロジェクト名を尋ね、自分の無料 Supabase の作成を案内し、ローカル開発環境を立ち上げます（初回はチェックし、Node.js や git が無ければ自動で入れます）。',
+        'start.p': '空のフォルダで Claude Code を開き、「<b style="color:var(--ink)">新しいプロジェクトを作って</b>」と伝えるだけ（または <code>/new-project</code>）。プロジェクト名を尋ね、自分の無料 Supabase の作成を案内し、ローカル開発環境を立ち上げます（初回に Step 0 で入れた git と Node が使える状態か確認します）。',
         'start.termtitle': '空のフォルダで',
         'start.cmt': '# 次に：/task-brief で要件 → /new-feature で実装 → /check で確認 → /deploy で公開',
         'db.eyebrow': 'データの置き場', 'db.h2': '無料データベースに接続（約 3 分）',
@@ -862,7 +862,7 @@
         'db.callout': '<b style="color:var(--ink)">ログイン画面</b>が見えたら、URL をエンジニアに渡して会社 Google ログインを有効化してもらいます（意図的な人手の確認ゲート）。<b>注意</b>：これはテスト用サンドボックス。ダミーデータのみで、実顧客データは入れないこと。',
         'skills.eyebrow': '使えるようになるコマンド', 'skills.h2': '8 つのスキル',
         'skills.p': 'これらを覚えたり打ったりする必要はありません——<b style="color:var(--ink)">やりたいことを一言 Claude に伝える</b>だけ（例：「新しいプロジェクトを作って」「在庫管理の小さなツールを作って」）。適切なスキルを選び、順に案内します。',
-        'skills.doctor': 'PC に Node.js と git があるか確認し、無ければ自動で入れます。',
+        'skills.doctor': 'PC の環境（git・Node.js のバージョン）を確認し、足りない/古い場合の対処を教えます。',
         'skills.newproject': 'テンプレートから新しい MVP プロジェクトの骨組みを生成。',
         'skills.taskbrief': '業務的な選択式の質問で要件をヒアリングし、仕様書にまとめます。',
         'skills.newfeature': 'サンプルモジュールに沿って新機能を一式生成（一覧/フォーム/権限/テスト）。',
