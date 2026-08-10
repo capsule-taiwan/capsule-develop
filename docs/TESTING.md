@@ -157,6 +157,26 @@ stdout，所以「裝得起來、skills 齊全、SessionStart hook 有跑」這�
 clone 只會帶受版控的檔案，跟使用者從 GitHub 裝到的內容一致。
 （同理：你自己在本機用 `claude plugin marketplace add ./` 測試時也會踩到這個。）
 
+### 已知欠債：範本的 lint 有 52 個 error
+
+`template` job 的 lint 步驟目前是 `continue-on-error`。這是範本本來就欠的債，不是測試寫壞了——
+意思是**每個新 scaffold 出來的 MVP 一開始就有 52 個 lint error**。
+
+大宗是 `@typescript-eslint/no-explicit-any` 與 components 裡宣告了卻沒用到的 `props`。
+其中一個不只是風格問題：
+
+```
+app/components/common/LoadingSpinner.vue:22
+  :class="class"   ← class 是 JS 保留字，模板編譯不過（vue/no-parsing-error）
+```
+
+而且那個 `class` prop 宣告本身是多餘的——Vue 的 fallthrough attrs 本來就會把 class 帶下去，
+宣告成 prop 反而擋掉了自動繼承。
+
+這些檔案都在平台共用區、受 `guard-platform-area` 保護，要另外開一輪處理。
+`/check` 目前也沒有跑 lint（只跑 test / test:integration / typecheck），所以影響是
+「新人看不到，但債一直在」。修完之後把 workflow 裡的 `continue-on-error` 拿掉。
+
 ### 已知的維護摩擦：護欄會擋住這個 repo 自己
 
 `guard-prod.mjs` 會掃 `Edit`/`Write` 的 **content**，只要內容裡出現公司正式機的識別字就擋。
