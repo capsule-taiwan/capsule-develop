@@ -1,7 +1,7 @@
 ---
 name: next-migration
 description: 幫使用者建立下一個資料庫變更檔（migration），自動取號並產生含標準結構的骨架。當要建表、加欄位、改資料庫結構時使用。
-allowed-tools: Read, Write, Bash, Glob
+allowed-tools: Read, Write, Bash, Glob, PowerShell
 ---
 
 # 建立下一個 migration

@@ -1,7 +1,7 @@
 ---
 name: welcome
 description: 顯示 CAPSULE develop 的視覺化上手指引，並用一段話說明怎麼開始。當使用者說「開始」「怎麼用」「怎麼上手」「welcome」「說明」「help」或第一次使用時使用。
-allowed-tools: Bash, Read
+allowed-tools: Bash, Read, PowerShell
 ---
 
 # CAPSULE develop 上手指引

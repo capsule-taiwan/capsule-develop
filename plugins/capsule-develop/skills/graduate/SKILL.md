@@ -1,7 +1,7 @@
 ---
 name: graduate
 description: 產生一份「畢業申請包」，評估這個 MVP 是否準備好被平台團隊收進母艦。當使用者說「這個想正式化」「收進大系統」「畢業」「graduate」時使用。
-allowed-tools: Read, Grep, Glob, Write, Bash
+allowed-tools: Read, Grep, Glob, Write, Bash, PowerShell
 ---
 
 # 畢業申請包

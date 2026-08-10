@@ -1,9 +1,45 @@
 {
+  "_comment": [
+    "為什麼每個 command 都先判斷 node 存不存在：",
+    "  這些 hook 都是 node 腳本，但目標使用者是非工程師，可能還沒跑 /doctor 就先開始用。",
+    "  沒有 node 時 `node x.mjs` 會以 exit 127 收場，而 Claude Code 把「非 0 非 2」視為",
+    "  非阻擋錯誤——工具照跑，只在畫面上印一行看不懂的紅字。結果是：最沒經驗的使用者",
+    "  每次操作都看到錯誤，而且三道護欄全部靜默失效（fail-open）。",
+    "",
+    "為什麼可以放心用 shell: bash：",
+    "  Windows 上沒有 git 就裝不了這個 plugin（marketplace add 走 git clone，桌面版的",
+    "  Code 分頁官方也明文要求 Git for Windows）。所以 hook 跑得到的 Windows 機器一定",
+    "  有 Git Bash。macOS/Linux 本來就有 sh。",
+    "",
+    "為什麼有的 exit 0、有的 exit 2：",
+    "  exit 2 = 擋下這次操作並把訊息回報給 Claude；其他非 0 = 不擋、只印錯誤。",
+    "  對「危險操作」的護欄缺 node 時要 fail-closed（exit 2），寧可擋住也不要無聲放行。",
+    "  但不能對所有 Bash 都 fail-closed —— 那會連 /doctor 自己的 winget 安裝指令都擋掉，",
+    "  使用者就永遠裝不好 node，變成死結。所以只有被 if 縮小過觸發範圍的那幾條才 fail-closed。",
+    "",
+    "下面兩條 if 的 glob 故意寫成不完整的識別字（少最後一兩個字元）：",
+    "  glob 仍然比對得到完整識別字，但這個檔案本身不含完整字面值，",
+    "  才不會被 guard-prod.mjs 掃 content 時當成「碰到正式機」而擋掉自己的設定檔。",
+    "",
+    "測試：node tests/hooks.test.mjs（有 node 時擋得對不對）",
+    "      node tests/bare-machine.test.mjs（沒有 node 時護欄還在不在）"
+  ],
   "hooks": {
     "SessionStart": [
       {
         "hooks": [
-          { "type": "command", "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/welcome.mjs\"" }
+          {
+            "type": "command",
+            "shell": "bash",
+            "timeout": 10,
+            "command": "command -v node >/dev/null 2>&1 || exit 0; exec node \"${CLAUDE_PLUGIN_ROOT}/hooks/welcome.mjs\""
+          },
+          {
+            "type": "command",
+            "shell": "bash",
+            "timeout": 10,
+            "command": "command -v node >/dev/null 2>&1 || exit 0; exec node \"${CLAUDE_PLUGIN_ROOT}/hooks/check-update.mjs\""
+          }
         ]
       }
     ],
@@ -11,15 +47,50 @@
       {
         "matcher": "Bash",
         "hooks": [
-          { "type": "command", "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/guard-git.mjs\"" },
-          { "type": "command", "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/guard-prod.mjs\"" }
+          {
+            "type": "command",
+            "shell": "bash",
+            "if": "Bash(git *)",
+            "timeout": 10,
+            "command": "command -v node >/dev/null 2>&1 || { echo '這台電腦還沒有安裝 Node.js，capsule-develop 的 git 安全護欄無法運作。為了避免不小心丟掉工作成果，這個 git 指令先擋下來了。請先執行 /doctor 把環境裝好，再繼續。' >&2; exit 2; }; exec node \"${CLAUDE_PLUGIN_ROOT}/hooks/guard-git.mjs\""
+          },
+          {
+            "type": "command",
+            "shell": "bash",
+            "timeout": 10,
+            "command": "command -v node >/dev/null 2>&1 || exit 0; exec node \"${CLAUDE_PLUGIN_ROOT}/hooks/guard-prod.mjs\""
+          },
+          {
+            "type": "command",
+            "shell": "bash",
+            "if": "Bash(*PROD_DB_UR*)",
+            "timeout": 10,
+            "command": "command -v node >/dev/null 2>&1 || { echo '偵測到公司正式機資料庫的識別字。你的 MVP 是獨立沙盒，不該接觸公司正式或測試系統，這個操作已被擋下。如果你覺得真的需要，請找平台團隊（IT）。' >&2; exit 2; }; exec node \"${CLAUDE_PLUGIN_ROOT}/hooks/guard-prod.mjs\""
+          },
+          {
+            "type": "command",
+            "shell": "bash",
+            "if": "Bash(*supabase_pro*)",
+            "timeout": 10,
+            "command": "command -v node >/dev/null 2>&1 || { echo '偵測到公司正式機 Supabase 的識別字。你的 MVP 是獨立沙盒，不該接觸公司正式或測試系統，這個操作已被擋下。如果你覺得真的需要，請找平台團隊（IT）。' >&2; exit 2; }; exec node \"${CLAUDE_PLUGIN_ROOT}/hooks/guard-prod.mjs\""
+          }
         ]
       },
       {
         "matcher": "Edit|Write|MultiEdit",
         "hooks": [
-          { "type": "command", "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/guard-platform-area.mjs\"" },
-          { "type": "command", "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/guard-prod.mjs\"" }
+          {
+            "type": "command",
+            "shell": "bash",
+            "timeout": 10,
+            "command": "command -v node >/dev/null 2>&1 || { echo '這台電腦還沒有安裝 Node.js，capsule-develop 的平台共用區護欄無法運作，改檔動作先擋下來了。請先執行 /doctor 把環境裝好，再繼續。' >&2; exit 2; }; exec node \"${CLAUDE_PLUGIN_ROOT}/hooks/guard-platform-area.mjs\""
+          },
+          {
+            "type": "command",
+            "shell": "bash",
+            "timeout": 10,
+            "command": "command -v node >/dev/null 2>&1 || exit 0; exec node \"${CLAUDE_PLUGIN_ROOT}/hooks/guard-prod.mjs\""
+          }
         ]
       }
     ]

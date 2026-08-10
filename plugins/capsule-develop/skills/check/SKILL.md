@@ -1,7 +1,7 @@
 ---
 name: check
 description: 跑專案的品質檢查（單元測試、整合測試、型別檢查），並回報結果。當使用者做完一段改動、想確認有沒有壞、或準備部署前使用。
-allowed-tools: Bash, Read, Grep
+allowed-tools: Bash, Read, Grep, PowerShell
 ---
 
 # 品質檢查

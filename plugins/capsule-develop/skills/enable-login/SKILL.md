@@ -2,7 +2,7 @@
 name: enable-login
 description: （平台團隊 / IT 用）幫一個 MVP 專案開通公司 Google 登入。當非工程師帶著他的 Supabase URL 來找你、你確認過這個專案 OK 之後使用。這是人工驗證關卡。
 disable-model-invocation: true
-allowed-tools: Bash
+allowed-tools: Bash, PowerShell
 ---
 
 # 開通公司 Google 登入（IT 人工驗證關卡）

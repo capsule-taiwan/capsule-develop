@@ -1,0 +1,21 @@
+# 這個 repo 同時出貨 bash 與 PowerShell 腳本，換行不能交給 autocrlf 決定。
+#
+#   .sh  被轉成 CRLF → bash 會把 \r 當成指令的一部分，直接壞掉
+#   .ps1 用 CRLF 才是 Windows 上的原生格式
+#
+* text=auto
+
+*.sh   text eol=lf
+*.mjs  text eol=lf
+*.js   text eol=lf
+*.json text eol=lf
+*.yml  text eol=lf
+
+*.ps1 text eol=crlf
+*.cmd text eol=crlf
+*.bat text eol=crlf
+
+# 圖片不要被當成文字處理
+*.png binary
+*.jpg binary
+*.gif binary

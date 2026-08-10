@@ -28,6 +28,7 @@
 | `/check` | 跑測試 + 型別檢查 + 契約檢查，全綠才算完成 |
 | `/deploy` | 部署到你自己的 Cloudflare Pages（免費） |
 | `/graduate` | 產生「畢業申請包」，交給平台團隊審查是否收進母艦 |
+| `/update` | 把工具箱更新到最新版（開場若偵測到有新版會自動提醒你） |
 
 安裝後還會自動載入護欄（hooks），擋掉危險操作與「改到平台共用檔」。
 
@@ -74,7 +75,7 @@
 
 ### ⌨️ 終端機（CLI）
 ```
-/plugin marketplace add capsule-taiwan/capsule-develop
+/plugin marketplace add https://github.com/capsule-taiwan/capsule-develop.git
 /plugin install capsule-develop@capsule-tools
 ```
 > `/plugin` 只有**終端機版** Claude Code 能用；桌面版 App 的聊天打不了，請走上面「用點的」。

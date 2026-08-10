@@ -1,0 +1,188 @@
+name: plugin-smoke
+
+# 這條 workflow 回答一個問題：「同事現在照 README 裝，裝得起來嗎？」
+#
+# 分四層，越前面越快、越便宜：
+#   contract      純 Node 離線檢查，<5 秒，不需要 Claude Code
+#   bare-machine  把 node 從 PATH 拿掉，驗護欄還在不在（目前預期紅燈，見 docs/TESTING.md）
+#   install       三個 OS 各裝一次 Claude Code，走完整安裝路徑並斷言 plugin 真的載入
+#   template      三個 OS 各 scaffold 一次 MVP，驗依賴解得開、build 過
+#
+# 成本：公開 repo 用標準 runner 完全免費、不計分鐘（含 macOS）。
+#       不要換成 -large / -xlarge，那個在公開 repo 也收費。
+# 不需要任何 ANTHROPIC_API_KEY：`claude -p` 在呼叫模型之前就會把 init 與 hook 事件
+#       印到 stdout。刻意餵一把假 key 反而更糟（401 會被當可重試錯誤，退避累計三分鐘）。
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+env:
+  DISABLE_AUTOUPDATER: '1'
+
+jobs:
+  # ── 第一層：離線契約檢查 ────────────────────────────────────────────
+  contract:
+    name: 契約檢查（離線）
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: manifest / skills / hooks 契約
+        run: node tools/lint-plugin.mjs
+
+      - name: 護欄單元測試（有 node 時擋得對不對）
+        run: node tests/hooks.test.mjs
+
+  # ── 第二層：裸機護欄 ───────────────────────────────────────────────
+  # 目標使用者是非工程師，第一次用的時候機器上還沒有 Node.js。
+  # 這個 job 驗的就是那個狀態下護欄還在不在。
+  bare-machine:
+    name: 裸機護欄（無 Node.js）
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: 缺 node 時護欄是否仍然有效
+        run: node tests/bare-machine.test.mjs
+
+  # ── 第三層：真的裝一次 ─────────────────────────────────────────────
+  install:
+    name: 安裝路徑
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 安裝 Claude Code（Linux / macOS）
+        if: runner.os != 'Windows'
+        run: |
+          curl -fsSL https://claude.ai/install.sh | bash -s stable
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+
+      - name: 安裝 Claude Code（Windows）
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          & ([scriptblock]::Create((irm https://claude.ai/install.ps1))) stable
+          "$env:USERPROFILE\.local\bin" | Out-File -FilePath $env:GITHUB_PATH -Append -Encoding utf8
+
+      - run: claude --version
+
+      - name: manifest 官方驗證
+        shell: bash
+        # --strict 會把警告當失敗（未知欄位、缺 metadata）。
+        run: |
+          claude plugin validate ./plugins/capsule-develop --strict
+          claude plugin validate . --strict
+
+      - name: 走使用者真正的安裝路徑
+        shell: bash
+        env:
+          # 把設定隔離掉，避免 runner 上的其他狀態干擾，也讓失敗容易重現
+          CLAUDE_CONFIG_DIR: ${{ runner.temp }}/claude-config
+        run: |
+          mkdir -p "$CLAUDE_CONFIG_DIR"
+
+          # ★ 用 clone 而不是直接 add 這個工作目錄。
+          #   從本機目錄加 marketplace 會把 .gitignore 掉的 build 產物一起複製，
+          #   而 template/.output/public 是一個 symlink —— Windows 上沒有開發者模式
+          #   就會 EPERM 裝不起來。clone 只會帶受版控的檔案，跟使用者從 GitHub
+          #   裝到的內容一致。
+          git clone --quiet "$GITHUB_WORKSPACE" "$RUNNER_TEMP/marketplace"
+
+          claude plugin marketplace add "$RUNNER_TEMP/marketplace"
+          claude plugin install capsule-develop@capsule-tools
+          claude plugin list
+          claude plugin details capsule-develop@capsule-tools
+
+      - name: 斷言 plugin 真的載入、hook 真的執行
+        shell: bash
+        env:
+          CLAUDE_CONFIG_DIR: ${{ runner.temp }}/claude-config
+        run: |
+          cd "$RUNNER_TEMP"
+          # ★ 沒登入時 claude -p 會 exit 1，但 init 與 hook 事件在那之前就印出來了 → || true
+          # ★ 不要加 --bare，那會跳過 plugins / skills / hooks 的自動探索
+          claude -p "noop" --output-format stream-json --verbose --max-turns 1 \
+            < /dev/null > init.jsonl 2>init.err || true
+          node "$GITHUB_WORKSPACE/tools/assert-init.mjs" init.jsonl
+
+      - name: 失敗時把原始事件印出來
+        if: failure()
+        shell: bash
+        run: |
+          echo '--- init.jsonl ---'; cat "$RUNNER_TEMP/init.jsonl" 2>/dev/null || true
+          echo '--- stderr ---';     cat "$RUNNER_TEMP/init.err"   2>/dev/null || true
+
+  # ── 第四層：scaffold 出來的 MVP 跑不跑得起來 ────────────────────────
+  template:
+    name: MVP 樣板
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+          # 預設只找 repo 根目錄的 lock，這裡的 lock 在 template/ 底下
+          cache-dependency-path: plugins/capsule-develop/template/package-lock.json
+
+      - name: Scaffold（等同 /new-project 的複製步驟）
+        shell: bash # Windows runner 預設是 pwsh，這行必要
+        run: |
+          mkdir -p "$RUNNER_TEMP/mvp"
+          # ★ 結尾的 /. 不能省，否則 .claude/、.env.example、.gitignore 會被漏掉
+          cp -R plugins/capsule-develop/template/. "$RUNNER_TEMP/mvp/"
+          cd "$RUNNER_TEMP/mvp"
+          cp .env.example .env
+
+      - name: 安裝依賴
+        shell: bash
+        working-directory: ${{ runner.temp }}/mvp
+        # 用 npm install 而非 npm ci：/new-project 步驟 5 實際跑的就是 npm install，
+        # 且相依都是 ^ 範圍，npm ci 鎖死 lockfile 反而抓不到上游 breaking change。
+        run: npm install
+
+      - name: lint
+        shell: bash
+        working-directory: ${{ runner.temp }}/mvp
+        run: npm run lint
+
+      - name: typecheck
+        shell: bash
+        working-directory: ${{ runner.temp }}/mvp
+        run: npm run typecheck
+
+      - name: build
+        shell: bash
+        working-directory: ${{ runner.temp }}/mvp
+        run: npm run build
+
+      - name: 單元測試
+        shell: bash
+        working-directory: ${{ runner.temp }}/mvp
+        # app/utils/result.test.ts 是隨 template 附的範例測試，同時也讓新人第一次跑
+        # /check 就是綠的（以前 vitest.config.ts 的 include 找不到任何檔案，必定 exit 1）。
+        run: npm run test

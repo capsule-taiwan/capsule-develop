@@ -1,7 +1,7 @@
 ---
 name: new-feature
 description: 在 MVP 專案裡新增一個功能模組（列表/表單/明細/權限/測試一整套），做法是照抄內建的 items 範例模組再改成使用者要的欄位。當使用者要新增一個資料類型、一個管理畫面、或說「幫我做一個 XX 功能」時使用。
-allowed-tools: Read, Write, Edit, Bash, Grep, Glob
+allowed-tools: Read, Write, Edit, Bash, Grep, Glob, PowerShell
 ---
 
 # 新增功能模組（照抄 items 範例）

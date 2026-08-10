@@ -8,3 +8,10 @@
 .install.log
 *.log
 .DS_Store
+
+# @nuxt/test-utils 在 nuxt prepare / 跑測試時產生的
+**/.nuxtrc
+
+# IDE 個人設定
+.idea/
+.vscode/

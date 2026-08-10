@@ -429,7 +429,7 @@
           <div class="dstep-h"><span class="dn">2</span><p data-i18n="term.s2">貼上這兩行 <code style="font-family:var(--mono)">/plugin</code>、各按 <b>Enter</b>：</p></div>
           <div class="term">
             <div class="term-top"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="term-title" data-i18n="install.termtitle">Claude Code 終端機（CLI）</span></div>
-            <div class="cmd"><span class="prompt">&gt;</span><code>/plugin marketplace add capsule-taiwan/capsule-develop</code><button class="copy" data-i18n="ui.copy">複製</button></div>
+            <div class="cmd"><span class="prompt">&gt;</span><code>/plugin marketplace add https://github.com/capsule-taiwan/capsule-develop.git</code><button class="copy" data-i18n="ui.copy">複製</button></div>
             <div class="cmd"><span class="prompt">&gt;</span><code>/plugin install capsule-develop@capsule-tools</code><button class="copy" data-i18n="ui.copy">複製</button></div>
           </div>
           <img class="dshot" src="media/cli-mac-1-install.png" alt="macOS 終端機貼上 /plugin 指令" loading="lazy">
@@ -549,6 +549,7 @@
       <div class="card skill reveal"><div class="cmd-name">/check</div><p data-i18n="skills.check">跑測試＋型別＋契約檢查，全綠才算完成。</p></div>
       <div class="card skill reveal"><div class="cmd-name">/deploy</div><p data-i18n="skills.deploy">部署到你自己的 Cloudflare Pages（免費）。</p></div>
       <div class="card skill reveal"><div class="cmd-name">/graduate</div><p data-i18n="skills.graduate">產生「畢業申請包」，交給 IT 評估是否收進大系統。</p></div>
+      <div class="card skill reveal"><div class="cmd-name">/update</div><p data-i18n="skills.update">把工具箱更新到最新版；有新版時開場會自動提醒你。</p></div>
     </div>
   </section>
 
@@ -748,6 +749,7 @@
         'skills.check': 'Runs tests + type checks + contract checks; done only when all green.',
         'skills.deploy': 'Deploys to your own Cloudflare Pages (free).',
         'skills.graduate': 'Produces a “graduation packet” for IT to assess whether to bring it into the big system.',
+        'skills.update': 'Updates the toolbox to the latest version; you are notified at startup when a new one is available.',
         'path.eyebrow': 'Every feature follows this', 'path.h2': 'The golden path',
         'path.p': 'Just describe what you want; Claude does each step in order and tells you how to verify it on screen after each one.',
         'path.s1h': 'Nail down the need', 'path.s1p': '<code>/task-brief</code>: everyday questions to nail down what data to record and who can view or edit.',
@@ -870,6 +872,7 @@
         'skills.check': 'テスト＋型＋規約チェックを実行。全部グリーンで完了。',
         'skills.deploy': '自分の Cloudflare Pages に公開（無料）。',
         'skills.graduate': '「卒業申請パック」を作成し、大システムへの取り込み可否を IT が評価。',
+        'skills.update': 'ツールボックスを最新版に更新。新版があれば起動時に通知します。',
         'path.eyebrow': '新機能は毎回この道', 'path.h2': 'ゴールデンパス',
         'path.p': 'ほしいものを説明するだけ。Claude が各ステップを順に進め、毎回「画面での確認方法」を伝えます。',
         'path.s1h': '要件を固める', 'path.s1p': '<code>/task-brief</code>：普段の言葉の質問で、記録する項目と閲覧・編集できる人を確定。',
