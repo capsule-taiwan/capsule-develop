@@ -18,6 +18,6 @@
 1. **Migrations**：把 `supabase/migrations/010+` 的業務 migration renumber 進母艦的模組號段，套 staging 驗證。（001–009 身份地基不搬，用大系統既有的。）
 2. **權限**：把模組的 permissions resource 併入主 permissions 表、對映角色授權。
 3. **前端**：把 `app/{pages,components,composables,repositories,stores,middleware}/<模組>/` 與 `app/types/<模組>.ts`、`app/modules/<模組>.manifest.ts` 整包搬進主 repo。
-4. **身份切換**：MVP 已用公司 Google 登入（共用 IT 的 OAuth app）；併入母艦時改綁母艦自己的登入設定即可。`useAuth`/`usePermissions` 介面同名，改動小。
+4. **身份切換**：MVP 已用公司 Google 登入（IT 為這個專案建的專屬 OAuth client `mvp-<專案代號>`）；併入母艦時改綁母艦自己的登入設定即可。`useAuth`/`usePermissions` 介面同名，改動小。併入後請 IT 撤銷這組過渡用的 OAuth client。
 5. **資料**：MVP Supabase 匯出 → 主系統 staging 匯入驗收 → prod；規畫使用者遷移與舊網址轉址。
 6. **收尾**：MVP repo 封存（archive）保留歷史；Cloudflare Pages 專案下線或轉址到主系統。

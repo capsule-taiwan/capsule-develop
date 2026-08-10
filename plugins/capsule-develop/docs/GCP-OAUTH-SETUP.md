@@ -1,8 +1,10 @@
-# 共用 Google 登入（GCP OAuth app）一次性設定 — 給 IT / 平台團隊
+# Google 登入（GCP OAuth）一次性設定 — 給 IT / 平台團隊
 
-所有 CAPSULE 星球 MVP 共用**同一組** Google OAuth app 來做「公司 Google 登入」。這份是**一次性**把那組 OAuth app 建起來的步驟；建好之後，每個新 MVP 只要用 `/enable-login` 把它的 callback 網址加進來即可。
+CAPSULE 星球 MVP 的「公司 Google 登入」建立在一個 GCP 專案的 **Internal 同意畫面**上。
+這份是**一次性**把那個 GCP 專案與同意畫面設好的步驟。
 
-> 這是整個平台登入的命脈：沒有這組 OAuth app，任何 MVP 都無法登入。建議由 IT 用公司 Google Workspace 管理者帳號建立與保管。
+> **每個 MVP 用自己的一組 OAuth client**（由 `/enable-login` 逐案建立），
+> **不是**共用同一組。理由見文末〈為什麼每個 MVP 一組憑證〉。
 
 ## 前置條件（缺一不可）
 - 一個屬於 **capsulecorporation.cc Google Workspace 組織**的 GCP 專案（**不是**個人 Google 帳號建的專案）。
@@ -14,6 +16,7 @@
 ### 1. 建立（或選擇）GCP 專案
 - 到 https://console.cloud.google.com，**確認左上角的機構（Organization）是 `capsulecorporation.cc`**，在它底下新建一個專案，例如 `capsule-mvp-auth`。
 - ⚠️ 若機構選單裡沒有 `capsulecorporation.cc`，代表你不是用公司 Workspace 帳號登入——先換帳號，否則下一步的「Internal」會是灰的。
+- **所有 MVP 的 OAuth client 都建在這一個專案底下**，這樣它們共用同一個 Internal 同意畫面。
 
 ### 2. OAuth consent screen（同意畫面）= Internal
 - **APIs & Services → OAuth consent screen**。
@@ -23,20 +26,33 @@
 - Scopes：只用預設的 `openid` / `email` / `profile`，**不要**加任何敏感 scope。
 - 儲存。
 
-### 3. 建立 OAuth client
-- **APIs & Services → Credentials → Create Credentials → OAuth client ID**。
-- **Application type = Web application**。
-- Name 取 **`capsule-shared-oauth`**（`/enable-login` 會用這個名字指涉它，請照這個命名）。
-- **Authorized JavaScript origins**：留空（登入走 Supabase 伺服器端，不需要）。
-- **Authorized redirect URIs**：這裡**先留空**；每個 MVP 上線時由 `/enable-login` 各自加一條 `https://<該專案ref>.supabase.co/auth/v1/callback`（Google 不接受萬用字元，只能一條一條加）。
-- 建立 → 複製 **Client ID** 與 **Client secret**。
+**同意畫面是專案層級的** —— 設定一次，這個 GCP 專案底下**所有** OAuth client 都自動套用 Internal 限制。
+之後每個 MVP 建 client 時不需要再碰這裡。
 
-### 4. 保管憑證（指定唯一存放處）
-- 把 Client ID + Client secret 存到 **IT 的密碼管理器**，項目名建議 **`IT / capsule-shared-oauth`**（1Password / Bitwarden / 公司 secret manager 擇一，全隊統一用同一個）。
-- 之後**每次** `/enable-login` 都從這裡讀這組憑證；**第一次建立的人負責寫進去**。不要散落在聊天記錄或個人筆記。
+### 3. 到此為止
+一次性設定結束。**不要**在這裡建立共用的 OAuth client。
 
-### 5. 容量規劃
-- 一組 OAuth client 會隨 MVP 數量累積 redirect URI，Google 對每個 client 的 redirect URI 數量有上限（數百條）。接近上限時，再建第二組共用 client（重複步驟 3-4），並在 `/enable-login` 分流。
+每個新 MVP 的 client 由 `/enable-login` 逐案建立（名稱 `mvp-<專案代號>`、只掛該專案的一條 redirect URI）。
+
+## 為什麼每個 MVP 一組憑證
+
+早期版本讓所有 MVP 共用一組 `capsule-shared-oauth`。那個做法有四個問題：
+
+| 問題 | 說明 |
+|---|---|
+| **共用 secret 會散出去** | client secret 要 PATCH 進**開發者自己的** Supabase 專案，他從 dashboard 就看得到。等於每個做過 MVP 的同事手上都有公司共用密鑰，可以做出任何「以 Capsule 名義」要求登入的頁面 |
+| **redirect URI 清單是共用可變狀態** | 每個專案加一條，有人手滑刪掉別人的，其他 MVP 的登入就掛了——而且那是在 Google Console 裡，任何護欄都擋不到 |
+| **撤銷是全有全無** | 一個 MVP 外洩或同事離職，只能輪替共用 secret，**所有 MVP 同時掛掉** |
+| **稽核分不出來源** | Google 那邊只看得到一組 client，無法知道某次登入來自哪個 MVP |
+
+改成一案一組後：secret 只開自己那扇門、redirect URI 各自獨立、可單獨撤銷、稽核看得出來源。
+
+代價是 IT 每個專案多花約兩分鐘建 client——**而這些步驟本來就是 IT 在做**（`/enable-login` 是人工驗證關卡），
+非工程同事的流程完全沒變。
+
+> **已經用共用 client 開通過的 MVP**：不必立刻停用，但下次維護時逐案換成專屬 client
+> （建新 client → PATCH 該專案 Supabase → 從共用 client 移除它那條 redirect URI）。
+> 全部換完後再撤銷共用 client 的 secret。
 
 ## 網域限制是三層防禦（理解為什麼 Internal 重要）
 1. **`hd` 參數**（`useAuth.ts` 送出）：只是 Google 選帳號畫面的提示，可被繞過。
@@ -45,5 +61,8 @@
 
 三層都在，才是「只有公司帳號能登入」。若步驟 2 誤用 External，第 2 層就破了，只剩 hd 提示 + DB 擋（DB 擋會讓使用者看到一個不清楚的登入失敗）——所以 Internal 一定要成功。
 
+**改成一案一組 client 不影響這三層**：同意畫面是專案層級的，所有 client 共用同一個 Internal 設定。
+
 ## 之後：每個新 MVP
-用 `/enable-login`：取該專案 ref → 到 `capsule-shared-oauth` 加 `https://<ref>.supabase.co/auth/v1/callback` → 用**開發者的** Supabase token PATCH 該專案的 auth 設定（填入這組共用 client id/secret）。詳見 `skills/enable-login/SKILL.md`。
+用 `/enable-login`：取該專案 ref → **在這個 GCP 專案底下建一組專屬 OAuth client**
+→ 用**開發者的** Supabase token PATCH 該專案的 auth 設定。詳見 `skills/enable-login/SKILL.md`。
