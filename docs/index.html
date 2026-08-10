@@ -283,7 +283,7 @@
     <h1 data-i18n="hero.h1">不會寫程式，也能做出自己的內部工具。</h1>
     <p class="lede" data-i18n="hero.lede">
       裝上這個工具箱，你就能用 Claude Code 開發一個屬於自己的小系統——用你自己的免費資料庫、自己的免費網址，
-      跟公司正式系統完全隔離。用順了、證明有價值，再由 IT 把它「畢業」收進母艦。
+      跟公司正式系統完全隔離。大部分工具會一直是它自己，這樣就很好；真的長很大、變成公司關鍵流程時，才需要考慮讓 IT 收進母艦。
     </p>
     <div class="hero-cta">
       <a class="btn btn-primary" href="#install" data-i18n="hero.cta1">開始安裝 →</a>
@@ -306,10 +306,10 @@
       </div>
       <div class="arrow" aria-hidden="true">→</div>
       <div class="stage">
-        <span class="tag" data-i18n="jr.3.tag">畢業</span>
+        <span class="tag" data-i18n="jr.3.tag">少數情況</span>
         
         <h3 data-i18n="jr.3.h">回收進母艦</h3>
-        <p data-i18n="jr.3.p">穩定使用幾個月後，平台團隊把它整包搬進母艦。</p>
+        <p data-i18n="jr.3.p">用的人變多、變成公司關鍵流程時才走這一步。多數工具停在上一站就很有價值了。</p>
       </div>
     </div>
   </div>
@@ -486,7 +486,7 @@
       <div class="step"><div class="num"></div><div><h3 data-i18n="db.s2h">New project</h3><p data-i18n="db.s2p">按綠色的 <b style="color:var(--ink)">New project</b>，取個名字、區域選 <b style="color:var(--ink)">Southeast Asia (Singapore)</b>、設一組資料庫密碼（記起來）。等約 1 分鐘讓它建好。</p></div></div>
       <div class="step"><div class="num"></div><div><h3 data-i18n="db.s3h">產一個 token 貼給 Claude</h3><p data-i18n="db.s3p">到 <a href="https://supabase.com/dashboard/account/tokens" target="_blank" rel="noopener" style="color:var(--accent-ink);text-decoration:underline">account/tokens</a> 產一個 access token，貼回聊天視窗。Claude 會自動幫你建好資料表、把畫面跑起來——你不用碰任何設定。</p></div></div>
     </div>
-    <div class="callout" style="margin-top:16px" data-i18n="db.callout">做到看見<b style="color:var(--ink)">登入頁</b>後，把你的網址拿去找工程師開通公司 Google 登入（一道刻意的人工把關）。<b>提醒</b>：這是測試沙盒，只放假資料，別放真實客戶資料。</div>
+    <div class="callout" style="margin-top:16px" data-i18n="db.callout">做到看見<b style="color:var(--ink)">登入頁</b>後，把你的網址拿去找工程師開通公司 Google 登入（一道刻意的人工把關）。<b>建議</b>：請直接用<b style="color:var(--ink)">真實的資料與真實的流程</b>來測——假資料測不出格式亂、備註超長、同一家客戶三種寫法這類真問題。只有薪資、個資、客戶合約金額這種特別敏感的，動之前先問 IT 一聲。</div>
   </div>
   </section>
 
@@ -530,7 +530,7 @@
     <div class="marg"><div class="num">08</div><div class="lab" data-i18n="contract.eyebrow">為什麼未來能被回收</div></div>
     <div>
     <h2 data-i18n="contract.h2">回收契約：七條</h2>
-      <p class="intro" data-i18n="contract.p">你不用背這些——Claude 會遵守，護欄會把關。它們讓你的獨立成果天生就能裝回母艦。</p>
+      <p class="intro" data-i18n="contract.p">你不用背這些——Claude 會遵守，護欄會把關。它們的用途是讓你的成果好維護、換人接手也看得懂；萬一哪天真的要收進母艦，也不用重寫。</p>
     
     <div class="rules">
       <div class="rule"><span class="k">✓</span><div data-i18n="contract.r1"><b>業務資料表用專屬名稱</b> <span>— 未來整包搬進大系統不會撞名。</span></div></div>
@@ -571,8 +571,25 @@
   </div>
   </section>
 
+  <section class="sec" id="sheet">
+    <div class="marg"><div class="num">11</div><div class="lab" data-i18n="sheet.eyebrow">跟 Sheet 來往</div></div>
+    <div>
+    <h2 data-i18n="sheet.h2">接 Google Sheet：一條規定，一個建議</h2>
+      <p class="intro" data-i18n="sheet.p">很多工具最後都會需要跟 Google Sheet 交換資料。這裡只有一條硬規定，其餘你自己判斷。</p>
+
+    <div class="callout" data-i18n="sheet.rule"><b>硬規定：一律走 service account，而且帳號一律由工程師產出。</b>不要用自己的 Google 帳號授權，也不要自己去 Google Cloud 開一組。跟 IT 說你要接哪一份 Sheet、要讀還是要寫，他們會給你一組 service account 與設定方式。<br>這樣做的原因：不會綁在某個人身上（那個人離職你的工具就壞）、權限只給到該碰的那幾份 Sheet、而且看得出是誰動的。</div>
+
+    <div class="grid g2" style="margin-top:20px">
+      <div class="card"><h3 data-i18n="sheet.inh">建議：輸入端做在系統</h3><p data-i18n="sheet.inp">因為輸入要「管得住」：擋掉填錯的、選項統一（部門用下拉不會有三種寫法）、誰改了什麼有紀錄、權限分得開。Sheet 是誰都能打任何東西進去，而且有人排序時只選一欄就會整份錯位。</p></div>
+      <div class="card"><h3 data-i18n="sheet.outh">建議：輸出端做在 Sheet</h3><p data-i18n="sheet.outp">因為看資料要「夠靈活」：大家本來就會篩選、排序、拉樞紐；主管想換角度看自己拉就好，不用回頭找你改程式；要貼進簡報、丟給會計都是現成的。</p></div>
+    </div>
+
+    <p class="cmt" style="margin-top:14px" data-i18n="sheet.oneline">一句話：要寫進去的走系統，要拿出來看的走 Sheet。這只是建議——你的情境反過來比較順就反過來做。細節與實際案例見「怎麼運作」那一頁。</p>
+    </div>
+  </section>
+
   <section class="sec" id="inside">
-    <div class="marg"><div class="num">11</div><div class="lab" data-i18n="inside.eyebrow">範本裡已經有什麼</div></div>
+    <div class="marg"><div class="num">12</div><div class="lab" data-i18n="inside.eyebrow">範本裡已經有什麼</div></div>
     <div>
     <h2 data-i18n="inside.h2">你不是從零開始</h2>
       <p class="intro" data-i18n="inside.p">新專案一長出來就是一個能跑的系統，附一個完整的範例功能 <code>items</code> 供你照抄。</p>
@@ -589,7 +606,7 @@
   </section>
 
   <section class="sec" id="how">
-    <div class="marg"><div class="num">12</div><div class="lab" data-i18n="how.eyebrow">這東西住在哪、怎麼來的</div></div>
+    <div class="marg"><div class="num">13</div><div class="lab" data-i18n="how.eyebrow">這東西住在哪、怎麼來的</div></div>
     <div>
     <h2 data-i18n="how.h2">運作方式</h2>
       <p class="intro" data-i18n="how.p">整個工具箱放在公司自己的 GitHub，安裝就是從那裡拿一份到你電腦；之後有更新也從同一個地方來。你不用管細節，但想知道的話——</p>
@@ -632,6 +649,14 @@
     // ---------- i18n (zh default in HTML; en/ja from dict) ----------
     var I18N = {
       en: {
+        'sheet.eyebrow': 'Talking to Sheets', 'sheet.h2': 'Google Sheets: one rule, one recommendation',
+        'sheet.p': 'Most tools end up exchanging data with Google Sheets. There is exactly one hard rule; the rest is your call.',
+        'sheet.rule': '<b>Hard rule: always use a service account, and always get that account from an engineer.</b> Do not authorise with your own Google account, and do not create one yourself in Google Cloud. Tell IT which Sheet you need and whether you need read or write; they will hand you a service account and the setup.<br>Why: it is not tied to a person (your tool breaks the day they leave), access is granted only to the specific Sheets it should touch, and edits are attributable.',
+        'sheet.inh': 'Recommended: input side in the system',
+        'sheet.inp': 'Because input needs to be controlled: wrong values get blocked, options stay consistent (a department dropdown avoids three spellings), changes are on the record, permissions can differ. A Sheet accepts anything anyone types — and one person sorting a single column misaligns the whole table.',
+        'sheet.outh': 'Recommended: output side in the Sheet',
+        'sheet.outp': 'Because reading needs to be flexible: everyone already filters, sorts and pivots; a manager wanting a different cut just does it instead of asking you for a code change; pasting into a deck or sending to accounting is off-the-shelf.',
+        'sheet.oneline': 'In one line: things being written go through the system, things being read go through the Sheet. It is only a recommendation — if your situation works better the other way round, do that. Details and real examples are on the “How it works” page.',
         'nav.tool': 'The toolbox', 'nav.how2': 'How it works',
         'meta.title': 'CAPSULE develop — build your own internal tools',
         'meta.themeAria': 'Toggle dark/light',
@@ -640,11 +665,11 @@
         'nav.skills': 'Skills', 'nav.path': 'Flow', 'nav.contract': 'Contract', 'nav.deploy': 'Deploy', 'nav.how': 'How',
         'hero.eyebrow': 'CAPSULE Planet Incubator',
         'hero.h1': 'Build your own internal tools — no coding required.',
-        'hero.lede': "Install this toolbox and use Claude Code to build your own little system — with your own free database and your own free URL, fully isolated from the company's production systems. Once it proves useful, IT “graduates” it into the mothership.",
+        'hero.lede': "Install this toolbox and use Claude Code to build your own little system — with your own free database and your own free URL, fully isolated from the company's production systems. Most tools simply stay as themselves, and that is fine; only when one grows large and becomes a critical company process is it worth moving into the mothership.",
         'hero.cta1': 'Get started →', 'hero.cta2': 'See the workflow',
         'jr.1.tag': 'Start', 'jr.1.h': 'Seed template', 'jr.1.p': 'A ready-made minimal project: UI, login, permissions, and one complete example feature — all set up.',
         'jr.2.tag': 'You are here', 'jr.2.h': 'Your capsule MVP', 'jr.2.p': 'Build independently with your own Supabase + Cloudflare. Break it and only you are affected — it never touches company systems.',
-        'jr.3.tag': 'Graduate', 'jr.3.h': 'Into the mothership', 'jr.3.p': 'After a few months of stable use, the platform team moves it wholesale into the mothership.',
+        'jr.3.tag': 'The exception', 'jr.3.h': 'Into the mothership', 'jr.3.p': 'Only when usage grows and it becomes a critical company process. Most tools are plenty valuable one stop earlier.',
         'what.eyebrow': 'Why it works this way', 'what.h2': 'Your sandbox, your pace',
         'what.p': 'You don’t need to understand servers or touch company production. Just describe “I want a feature that can…” and leave the rest to Claude.',
         'what.c1h': 'A fully isolated sandbox', 'what.c1p': 'Each MVP has its own free database and URL. Experiment, fail, retry — none of it affects anyone else.',
@@ -702,7 +727,7 @@
         'db.s1h': 'Sign up free', 'db.s1p': 'Open <a href="https://supabase.com" target="_blank" rel="noopener" style="color:var(--accent-ink);text-decoration:underline">supabase.com</a> and sign in free with Google or email.',
         'db.s2h': 'New project', 'db.s2p': 'Click the green <b style="color:var(--ink)">New project</b>, give it a name, pick region <b style="color:var(--ink)">Southeast Asia (Singapore)</b>, and set a database password (remember it). Wait ~1 minute for it to build.',
         'db.s3h': 'Create a token, paste to Claude', 'db.s3p': 'Go to <a href="https://supabase.com/dashboard/account/tokens" target="_blank" rel="noopener" style="color:var(--accent-ink);text-decoration:underline">account/tokens</a>, create an access token, and paste it back into the chat. Claude sets up the tables and gets the UI running — you touch no settings.',
-        'db.callout': 'Once you see the <b style="color:var(--ink)">login page</b>, take your URL to an engineer to enable company Google login (a deliberate human checkpoint). <b>Note</b>: this is a test sandbox — use fake data only, never real customer data.',
+        'db.callout': 'Once you see the <b style="color:var(--ink)">login page</b>, take your URL to an engineer to enable company Google login (a deliberate human checkpoint). <b>Recommended</b>: test with <b style="color:var(--ink)">real data and the real workflow</b> — fake data will not reveal messy formats, 200-character notes, or one client spelled three ways. Only for genuinely sensitive data (salaries, personal identity data, contract values) check with IT first.',
         'skills.eyebrow': 'The commands you’ll gain', 'skills.h2': 'Eight skills',
         'skills.p': 'You don’t need to remember or type these — just <b style="color:var(--ink)">tell Claude what you want in a sentence</b> (e.g. “help me start a new project”, “help me build a little inventory tool”), and it picks the right skill and walks you through it.',
         'skills.doctor': 'Confirms your environment is good (git, Node.js version) and tells you what to do if something is missing or too old.',
@@ -722,7 +747,7 @@
         'path.s4h': 'Check', 'path.s4p': '<code>/check</code> all green; then click through it yourself (create/edit/delete).',
         'path.s5h': 'Ship', 'path.s5p': '<code>/deploy</code> pushes to your own URL; colleagues log in with their company account.',
         'contract.eyebrow': 'Why it can be reclaimed later', 'contract.h2': 'The reclaim contract: 7 rules',
-        'contract.p': 'You don’t memorize these — Claude follows them and the guards enforce them. They make your independent work natively fit back into the mothership.',
+        'contract.p': 'You don’t memorize these — Claude follows them and the guards enforce them. Their purpose is to keep your work maintainable and legible to whoever picks it up next; and if it ever does move into the mothership, nothing has to be rewritten.',
         'contract.r1': '<b>Business tables use a dedicated prefix</b> <span>— so moving wholesale into the big system never clashes.</span>',
         'contract.r2': '<b>UI uses only ready-made shared components</b> <span>— it looks consistent with the big system; no custom design.</span>',
         'contract.r3': '<b>Data access follows a fixed pattern</b> <span>— plug-and-play at reclaim time.</span>',
@@ -756,6 +781,14 @@
         'footer.install': 'Install: <code>/plugin install capsule-develop@capsule-tools</code>'
       },
       ja: {
+        'sheet.eyebrow': 'Sheet とのやり取り', 'sheet.h2': 'Google Sheets 連携：ルール 1 つ、推奨 1 つ',
+        'sheet.p': '多くのツールは最終的に Google Sheets とデータをやり取りします。絶対のルールは 1 つだけ、あとは判断にお任せします。',
+        'sheet.rule': '<b>ルール：必ず service account を使い、そのアカウントは必ずエンジニアから受け取ること。</b>自分の Google アカウントでの認可も、Google Cloud で自作するのも不可。どの Sheet に、読み取りか書き込みかを IT に伝えてください。<br>理由：個人に紐づかない（その人の退職でツールが壊れない）、触るべき Sheet だけに権限を渡せる、誰が変更したか追える。',
+        'sheet.inh': '推奨：入力側はシステムで',
+        'sheet.inp': '入力は制御が要るから：誤りを弾け、選択肢が揃い（部署はプルダウンで表記ゆれなし）、変更履歴が残り、権限を分けられます。Sheet は誰でも何でも打て、1 列だけ並べ替えると表全体がずれます。',
+        'sheet.outh': '推奨：出力側は Sheet で',
+        'sheet.outp': '閲覧は柔軟さが要るから：皆すでに絞り込み・並べ替え・ピボットができ、管理者は別の切り口も自分で見られます。資料に貼る、経理へ渡すのも既製です。',
+        'sheet.oneline': '一言で：書き込むものはシステム経由、読み出すものは Sheet 経由。あくまで推奨です——逆が自然ならそれで構いません。詳細と実例は「仕組み」のページに。',
         'nav.tool': 'ツールボックス', 'nav.how2': '仕組み',
         'meta.title': 'CAPSULE develop — 自分の社内ツールを作る',
         'meta.themeAria': 'ダーク/ライト切替',
@@ -764,11 +797,11 @@
         'nav.skills': 'スキル', 'nav.path': '流れ', 'nav.contract': '規約', 'nav.deploy': '公開', 'nav.how': '仕組み',
         'hero.eyebrow': 'CAPSULE プラネット インキュベーター',
         'hero.h1': 'コードが書けなくても、自分の社内ツールが作れる。',
-        'hero.lede': 'このツールボックスを入れれば、Claude Code で自分だけの小さなシステムを作れます——自分の無料データベースと無料 URL を使い、会社の本番システムとは完全に分離。使い込んで価値が証明できたら、IT が「卒業」させて母艦へ取り込みます。',
+        'hero.lede': 'このツールボックスを入れれば、Claude Code で自分だけの小さなシステムを作れます——自分の無料データベースと無料 URL を使い、会社の本番システムとは完全に分離。多くのツールはそのままで十分価値があります。大きく育ち会社の重要業務になったときに初めて、母艦への取り込みを検討します。',
         'hero.cta1': 'インストール →', 'hero.cta2': '開発の流れ',
         'jr.1.tag': '出発点', 'jr.1.h': '種テンプレート', 'jr.1.p': 'すぐ使える最小プロジェクト：画面・ログイン・権限・完全なサンプル機能まで用意済み。',
         'jr.2.tag': '現在地', 'jr.2.h': 'あなたのカプセル MVP', 'jr.2.p': '自分の Supabase + Cloudflare で独立して開発。壊しても影響は自分だけ、会社のシステムには触れません。',
-        'jr.3.tag': '卒業', 'jr.3.h': '母艦へ取り込み', 'jr.3.p': '数か月の安定運用の後、プラットフォームチームが丸ごと母艦へ移します。',
+        'jr.3.tag': '例外', 'jr.3.h': '母艦へ取り込み', 'jr.3.p': '利用者が増え会社の重要業務になったときだけ。多くはひとつ前の段階で十分価値があります。',
         'what.eyebrow': 'この設計の理由', 'what.h2': 'あなたのサンドボックス、あなたのペース',
         'what.p': 'サーバーの知識も、会社の本番環境も不要。「〜できる機能がほしい」と説明するだけ、あとは Claude に任せます。',
         'what.c1h': '完全に独立したサンドボックス', 'what.c1p': '各 MVP は自分の無料データベースと URL を持ちます。試して、失敗して、やり直しても、誰にも影響しません。',
@@ -826,7 +859,7 @@
         'db.s1h': '無料登録', 'db.s1p': '<a href="https://supabase.com" target="_blank" rel="noopener" style="color:var(--accent-ink);text-decoration:underline">supabase.com</a> を開き、Google か email で無料サインイン。',
         'db.s2h': 'New project', 'db.s2p': '緑の <b style="color:var(--ink)">New project</b> を押し、名前を付け、リージョンは <b style="color:var(--ink)">Southeast Asia (Singapore)</b>、DB パスワードを設定（控えておく）。約 1 分で作成完了。',
         'db.s3h': 'トークンを作って Claude に貼る', 'db.s3p': '<a href="https://supabase.com/dashboard/account/tokens" target="_blank" rel="noopener" style="color:var(--accent-ink);text-decoration:underline">account/tokens</a> で access token を作り、チャットに貼り戻します。Claude がテーブル作成から画面表示まで自動で行い、設定はいじりません。',
-        'db.callout': '<b style="color:var(--ink)">ログイン画面</b>が見えたら、URL をエンジニアに渡して会社 Google ログインを有効化してもらいます（意図的な人手の確認ゲート）。<b>注意</b>：これはテスト用サンドボックス。ダミーデータのみで、実顧客データは入れないこと。',
+        'db.callout': '<b style="color:var(--ink)">ログイン画面</b>が見えたら、URL をエンジニアに渡して会社 Google ログインを有効化してもらいます（意図的な人手の確認ゲート）。<b>推奨</b>：<b style="color:var(--ink)">実際のデータと実際の業務フロー</b>で試してください——ダミーデータでは、書式の乱れ、200 字の備考、同じ取引先の 3 通りの表記といった本当の問題が出ません。給与・個人情報・契約金額など特に機微なものだけ、動かす前に IT へ一声を。',
         'skills.eyebrow': '使えるようになるコマンド', 'skills.h2': '8 つのスキル',
         'skills.p': 'これらを覚えたり打ったりする必要はありません——<b style="color:var(--ink)">やりたいことを一言 Claude に伝える</b>だけ（例：「新しいプロジェクトを作って」「在庫管理の小さなツールを作って」）。適切なスキルを選び、順に案内します。',
         'skills.doctor': 'PC の環境（git・Node.js のバージョン）を確認し、足りない/古い場合の対処を教えます。',
@@ -846,7 +879,7 @@
         'path.s4h': 'チェック', 'path.s4p': '<code>/check</code> が全グリーン；その後、自分で画面を操作（追加/編集/削除）。',
         'path.s5h': '公開', 'path.s5p': '<code>/deploy</code> で自分の URL へ公開。同僚は会社アカウントでログインして利用。',
         'contract.eyebrow': '後で回収できる理由', 'contract.h2': '回収規約：7 か条',
-        'contract.p': '覚える必要はありません——Claude が守り、ガードが監視します。これにより独立した成果物が最初から母艦に戻せる形になります。',
+        'contract.p': '覚える必要はありません——Claude が守り、ガードが監視します。狙いは、保守しやすく引き継ぎやすい形にすること。将来もし母艦へ取り込むことになっても書き直さずに済みます。',
         'contract.r1': '<b>業務テーブルは専用の接頭辞</b> <span>— 大システムへ丸ごと移しても名前が衝突しません。</span>',
         'contract.r2': '<b>画面は既製の共通コンポーネントのみ</b> <span>— 大システムと見た目が揃い、独自デザインはしません。</span>',
         'contract.r3': '<b>データアクセスは決まった書き方</b> <span>— 回収時にそのまま差し込めます。</span>',
