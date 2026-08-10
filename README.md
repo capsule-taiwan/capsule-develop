@@ -3,7 +3,9 @@
 給公司同事（包含非工程師）用 Claude Code 開發**獨立的內部工具 MVP**的一組技能。每個 MVP 用自己的 Supabase + 免費 Cloudflare Pages 部署，跟公司正式系統完全隔離；成熟後由平台團隊「畢業回收」進母艦。
 
 ## 線上看看
-- 📖 **視覺化上手指引（GitHub Pages）** → <https://capsule-taiwan.github.io/capsule-develop/>
+- 📖 **工具箱說明與安裝步驟** → <https://capsule-taiwan.github.io/capsule-develop/>
+- 🧭 **這些東西怎麼運作（給非工程師的背景知識）** → <https://capsule-taiwan.github.io/capsule-develop/how.html>
+  滑板車→汽車的做法、模型／Agent／API／MCP／Skill 五個名詞、模型與思考深度怎麼選、前端後端的界線
 - 🧪 **範例 MVP demo（實際部署在 Cloudflare Pages）** → <https://capsule-planet-test.pages.dev/>　（內部畫面需公司 Google 登入；未登入只看得到登入頁）
 
 [![CAPSULE develop 視覺化上手指引](docs/media/guide.png)](https://capsule-taiwan.github.io/capsule-develop/)

@@ -1,0 +1,695 @@
+<!doctype html>
+<html lang="zh-Hant">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>怎麼運作 · CAPSULE develop</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper:#F7F4EE; --paper-2:#F1ECE3; --card:#FFFDF9; --rule:#DCD5C8; --rule-soft:#E7E1D6;
+    --ink:#17140F; --ink-2:#3C3730; --muted:#726A5E;
+    --tool:#B5450A;              /* 工具箱頁的識別色 */
+    --learn:#15606E;             /* 本頁的識別色 */
+    --accent:var(--learn); --on-accent:#FFFDF9;
+    --sans:"IBM Plex Sans","PingFang TC","Noto Sans TC","Hiragino Sans","Yu Gothic","Microsoft JhengHei",sans-serif;
+    --mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+    --maxw:1080px;
+  }
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme="light"]){
+      --paper:#131110; --paper-2:#1A1715; --card:#1C1917; --rule:#332E28; --rule-soft:#282420;
+      --ink:#F2EEE6; --ink-2:#D6D0C6; --muted:#948B7F;
+      --tool:#E8823F; --learn:#5CC4C9; --accent:var(--learn); --on-accent:#0F1416;
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#131110; --paper-2:#1A1715; --card:#1C1917; --rule:#332E28; --rule-soft:#282420;
+    --ink:#F2EEE6; --ink-2:#D6D0C6; --muted:#948B7F;
+    --tool:#E8823F; --learn:#5CC4C9; --accent:var(--learn); --on-accent:#0F1416;
+  }
+
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+  body{
+    margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);
+    font-size:16.5px;line-height:1.75;-webkit-font-smoothing:antialiased;
+    font-feature-settings:"kern","liga";
+  }
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 26px}
+  a{color:inherit}
+  h1,h2,h3{margin:0;text-wrap:balance;letter-spacing:-.015em}
+  p{margin:0}
+  :focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:2px}
+
+  /* ── 頁首：分頁切換是主角 ─────────────────────────── */
+  /* 不用 backdrop-filter：在長文件上捲動時是實質的合成成本，
+     而讀者用的多半是公司配的一般筆電。用不透明底色即可。 */
+  .top{position:sticky;top:0;z-index:50;background:var(--paper);border-bottom:1px solid var(--rule)}
+  .top-in{display:flex;align-items:center;gap:18px;height:60px}
+  .brand{display:flex;align-items:baseline;gap:8px;text-decoration:none;white-space:nowrap}
+  .brand b{font-weight:700;letter-spacing:-.02em}
+  .brand span{font-family:var(--mono);font-size:.7rem;color:var(--muted)}
+
+  .pages{display:flex;margin-left:auto;border:1px solid var(--rule);border-radius:3px;overflow:hidden}
+  .pages a{
+    display:flex;flex-direction:column;gap:1px;text-decoration:none;padding:7px 15px 6px;
+    font-size:.88rem;font-weight:600;color:var(--muted);background:transparent;line-height:1.25;
+  }
+  .pages a + a{border-left:1px solid var(--rule)}
+  .pages a small{font-family:var(--mono);font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;opacity:.75;font-weight:500}
+  .pages a:hover{color:var(--ink);background:var(--paper-2)}
+  .pages a.on{background:var(--accent);color:var(--on-accent)}
+  .pages a.on:hover{background:var(--accent);color:var(--on-accent)}
+  .pages a.tool.on{background:var(--tool)}
+
+  .tools{display:flex;align-items:center;gap:8px}
+  .lang{display:inline-flex;border:1px solid var(--rule);border-radius:3px;overflow:hidden}
+  .lang button{border:0;background:transparent;color:var(--muted);font-family:var(--mono);font-size:.72rem;
+               font-weight:500;padding:6px 8px;cursor:pointer;line-height:1}
+  .lang button+button{border-left:1px solid var(--rule)}
+  .lang button.on{background:var(--ink);color:var(--paper)}
+  .lang button:not(.on):hover{color:var(--ink)}
+  .themebtn{width:30px;height:29px;border:1px solid var(--rule);border-radius:3px;background:transparent;
+            color:var(--ink);cursor:pointer;font-size:.85rem;line-height:1}
+  .themebtn:hover{border-color:var(--accent)}
+  @media (max-width:640px){
+    .top-in{height:auto;padding:10px 0;flex-wrap:wrap;gap:10px}
+    .pages{margin-left:0;order:3;width:100%}
+    .pages a{flex:1;align-items:center}
+    .tools{margin-left:auto}
+  }
+
+  /* ── 開場 ───────────────────────────────────────── */
+  .hero{padding:76px 0 54px;border-bottom:1px solid var(--rule)}
+  /* 跟章節共用同一組網格，標題才會跟下面每個 h2 對齊在同一條線上 */
+  .hero-grid{display:grid;grid-template-columns:120px 1fr;gap:44px;align-items:start}
+  .kicker{font-family:var(--mono);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);font-weight:500;display:block;padding-top:10px}
+  .hero h1{font-size:clamp(1.9rem,4.2vw,2.9rem);font-weight:700;line-height:1.2;margin:0;max-width:26ch}
+  .hero .lede{margin-top:20px;max-width:58ch;color:var(--ink-2);font-size:1.06rem}
+  .hero .toc{margin-top:34px;display:flex;flex-wrap:wrap;gap:0 26px;font-family:var(--mono);font-size:.78rem}
+  @media (max-width:820px){
+    .hero{padding:48px 0 36px}
+    .hero-grid{grid-template-columns:1fr;gap:12px}
+    .kicker{padding-top:0}
+  }
+  .hero .toc a{color:var(--muted);text-decoration:none;padding:3px 0}
+  .hero .toc a:hover{color:var(--accent)}
+  .hero .toc a i{font-style:normal;color:var(--accent);margin-right:6px}
+
+  /* ── 章節：左邊欄編號 + 右邊內容 ────────────────────── */
+  .sec{display:grid;grid-template-columns:120px 1fr;gap:44px;padding:56px 0;border-bottom:1px solid var(--rule-soft)}
+  .sec:last-of-type{border-bottom:0}
+  .marg{position:sticky;top:88px;align-self:start}
+  .marg .num{font-family:var(--mono);font-size:1.6rem;font-weight:500;color:var(--accent);line-height:1}
+  .marg .lab{margin-top:6px;font-size:.78rem;color:var(--muted);line-height:1.45}
+  .sec h2{font-size:clamp(1.35rem,2.5vw,1.78rem);font-weight:700;line-height:1.3}
+  .sec .intro{margin-top:14px;color:var(--ink-2);max-width:62ch}
+  @media (max-width:820px){
+    .sec{grid-template-columns:1fr;gap:16px;padding:44px 0}
+    .marg{position:static;display:flex;align-items:baseline;gap:12px}
+    .marg .num{font-size:1.05rem}
+    .marg .lab{margin-top:0}
+  }
+
+  /* ── 兩條路線的對照圖 ──────────────────────────────── */
+  .track{margin-top:26px;border:1px solid var(--rule);border-radius:4px;background:var(--card);padding:18px 20px 20px}
+  .track + .track{margin-top:14px}
+  .track .tag{font-family:var(--mono);font-size:.72rem;letter-spacing:.08em;font-weight:600}
+  .track.bad .tag{color:var(--muted)}
+  .track.good .tag{color:var(--accent)}
+  .steps{display:flex;align-items:stretch;gap:0;margin-top:14px;flex-wrap:wrap}
+  .steps .st{flex:1;min-width:88px;border:1px solid var(--rule);border-right:0;padding:11px 12px;text-align:center}
+  .steps .st:last-child{border-right:1px solid var(--rule)}
+  .steps .st .t{font-weight:600;font-size:.94rem}
+  .steps .st .u{display:block;font-family:var(--mono);font-size:.64rem;letter-spacing:.06em;margin-top:4px;color:var(--muted)}
+  .track.bad .st{background:repeating-linear-gradient(-45deg,transparent,transparent 5px,var(--paper-2) 5px,var(--paper-2) 10px);color:var(--muted)}
+  .track.bad .st:last-child{background:var(--card);color:var(--ink)}
+  .track.good .st{border-color:color-mix(in srgb,var(--accent) 40%,var(--rule));color:var(--ink)}
+  .track.good .st .u{color:var(--accent)}
+  .track .note{margin-top:12px;font-size:.9rem;color:var(--muted)}
+  @media (max-width:600px){.steps .st{border-right:1px solid var(--rule);min-width:calc(50% - 0px)}}
+
+  /* ── 定義列表 ─────────────────────────────────────── */
+  .defs{margin:26px 0 0;display:grid;gap:0}
+  .def{display:grid;grid-template-columns:190px 1fr;gap:28px;padding:18px 0;border-top:1px solid var(--rule-soft)}
+  .def:first-child{border-top:1px solid var(--rule)}
+  .def dt{font-weight:700;font-size:1.02rem}
+  .def dt .en{display:block;font-family:var(--mono);font-size:.7rem;letter-spacing:.06em;color:var(--muted);font-weight:500;margin-top:2px}
+  .def dd{margin:0;color:var(--ink-2);font-size:.96rem;max-width:62ch}
+  .def dd .lens{display:block;color:var(--accent);font-size:.86rem;margin-bottom:5px}
+  @media (max-width:700px){.def{grid-template-columns:1fr;gap:6px}}
+
+  /* ── 條列（帶標題的） ───────────────────────────────── */
+  .points{margin-top:24px;display:grid;gap:0}
+  .pt{padding:16px 0;border-top:1px solid var(--rule-soft);display:grid;grid-template-columns:22px 1fr;gap:14px}
+  .pt:first-child{border-top:1px solid var(--rule)}
+  .pt .i{font-family:var(--mono);font-size:.82rem;color:var(--accent);font-weight:600;padding-top:2px}
+  .pt h3{font-size:1rem;font-weight:650}
+  .pt p{margin-top:5px;color:var(--muted);font-size:.94rem;max-width:60ch}
+
+  /* ── 兩欄比較 ─────────────────────────────────────── */
+  .duo{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:24px}
+  @media (max-width:760px){.duo{grid-template-columns:1fr}}
+  .box{border:1px solid var(--rule);border-radius:4px;padding:18px 20px;background:var(--card)}
+  .box h3{font-size:1rem;font-weight:650}
+  .box p{margin-top:8px;color:var(--muted);font-size:.94rem}
+  .box ul{margin:10px 0 0;padding-left:18px;color:var(--muted);font-size:.94rem}
+  .box ul li{margin-top:5px}
+  .box ul li b{color:var(--ink-2)}
+  .box.yes{border-left:2px solid var(--accent)}
+  .box.no{border-left:2px solid var(--tool)}
+
+  /* ── 表格 ─────────────────────────────────────────── */
+  .tbl{width:100%;border-collapse:collapse;margin-top:24px;font-size:.95rem}
+  .tbl th,.tbl td{text-align:left;padding:12px 14px;border-bottom:1px solid var(--rule-soft);vertical-align:top}
+  .tbl thead th{font-family:var(--mono);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;
+                color:var(--muted);font-weight:500;border-bottom:1px solid var(--rule)}
+  .tbl td:first-child{font-weight:650;white-space:nowrap}
+  .tbl td .en{font-family:var(--mono);font-size:.68rem;color:var(--muted);display:block;font-weight:400}
+  .tbl td:nth-child(2){color:var(--accent)}
+  .tbl td:last-child{color:var(--muted)}
+  .scroller{overflow-x:auto}
+
+  /* ── 提示條 ───────────────────────────────────────── */
+  .note-bar{margin-top:22px;border-left:2px solid var(--accent);background:var(--paper-2);
+            padding:14px 18px;font-size:.95rem;color:var(--ink-2);max-width:70ch}
+  .note-bar b{color:var(--ink)}
+
+  /* ── FAQ ──────────────────────────────────────────── */
+  .faq{margin-top:22px;border-top:1px solid var(--rule)}
+  .faq details{border-bottom:1px solid var(--rule-soft)}
+  .faq summary{cursor:pointer;list-style:none;padding:15px 0;font-weight:650;font-size:.99rem;
+               display:flex;justify-content:space-between;gap:16px;align-items:baseline}
+  .faq summary::-webkit-details-marker{display:none}
+  .faq summary::after{content:"+";font-family:var(--mono);color:var(--accent);font-size:1.1rem}
+  .faq details[open] summary::after{content:"–"}
+  .faq .a{padding:0 0 16px;color:var(--muted);font-size:.95rem;max-width:66ch}
+
+  /* ── 頁尾 ─────────────────────────────────────────── */
+  footer{border-top:1px solid var(--rule);margin-top:20px;padding:34px 0 60px;color:var(--muted);font-size:.86rem}
+  .fr{display:flex;flex-wrap:wrap;gap:8px 20px;align-items:center}
+  .fr a{color:var(--accent)}
+</style>
+
+<div class="top">
+  <div class="wrap top-in">
+    <a class="brand" href="index.html"><b>CAPSULE</b><span>develop</span></a>
+    <nav class="pages" aria-label="頁面">
+      <a class="tool" href="index.html"><small>01</small><span data-i18n="nav.tool">工具箱說明</span></a>
+      <a class="on" href="how.html" aria-current="page"><small>02</small><span data-i18n="nav.how">怎麼運作</span></a>
+    </nav>
+    <div class="tools">
+      <div class="lang" role="group" aria-label="Language">
+        <button data-lang="zh" type="button">中</button>
+        <button data-lang="en" type="button">EN</button>
+        <button data-lang="ja" type="button">日</button>
+      </div>
+      <button class="themebtn" id="themeBtn" aria-label="切換深色/淺色">◐</button>
+    </div>
+  </div>
+</div>
+
+<header class="hero">
+  <div class="wrap hero-grid">
+    <span class="kicker" data-i18n="hero.kicker">背景知識</span>
+    <div>
+    <h1 data-i18n="hero.h1">這些東西是什麼、怎麼運作</h1>
+    <p class="lede" data-i18n="hero.lede">你不需要會寫程式。但下面這幾件事知道了，你跟 Claude 溝通會順很多，做出來的東西也會比較接近你要的。整頁大概十分鐘看完。</p>
+    <div class="toc">
+      <a href="#mvp"><i>01</i><span data-i18n="toc.mvp">做東西的方法</span></a>
+      <a href="#words"><i>02</i><span data-i18n="toc.words">五個名詞</span></a>
+      <a href="#model"><i>03</i><span data-i18n="toc.model">模型與思考深度</span></a>
+      <a href="#parts"><i>04</i><span data-i18n="toc.parts">工具由哪幾塊組成</span></a>
+      <a href="#stack"><i>05</i><span data-i18n="toc.stack">前端與後端</span></a>
+      <a href="#scope"><i>06</i><span data-i18n="toc.scope">做得到什麼</span></a>
+      <a href="#faq"><i>07</i><span data-i18n="toc.faq">常見問題</span></a>
+    </div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- ══ 01 ══════════════════════════════════════════ -->
+  <section class="sec" id="mvp">
+    <div class="marg"><div class="num">01</div><div class="lab" data-i18n="s1.lab">做東西的方法</div></div>
+    <div>
+      <h2 data-i18n="s1.h">先做滑板車，不要先畫汽車設計圖</h2>
+      <p class="intro" data-i18n="s1.p">假設你最後想要一台汽車。有兩種做法，差別大到會決定這件事會不會成功。</p>
+
+      <div class="track bad">
+        <span class="tag" data-i18n="s1.badtag">✗ 大多數人直覺的做法</span>
+        <div class="steps">
+          <div class="st"><span class="t" data-i18n="s1.b1">輪子</span><span class="u" data-i18n="s1.nouse">不能用</span></div>
+          <div class="st"><span class="t" data-i18n="s1.b2">車架</span><span class="u" data-i18n="s1.nouse">不能用</span></div>
+          <div class="st"><span class="t" data-i18n="s1.b3">引擎</span><span class="u" data-i18n="s1.nouse">不能用</span></div>
+          <div class="st"><span class="t" data-i18n="s1.b4">汽車</span><span class="u" data-i18n="s1.canuse">終於能用</span></div>
+        </div>
+        <p class="note" data-i18n="s1.badnote">照零件順序做。問題是前面三步都沒有人能用，也收不到任何回饋——萬一做到一半沒時間了，你手上什麼都沒有。而且做到最後才發現「其實大家要的不是汽車」，前面全白做。</p>
+      </div>
+
+      <div class="track good">
+        <span class="tag" data-i18n="s1.goodtag">✓ 這套工具箱要你走的路</span>
+        <div class="steps">
+          <div class="st"><span class="t" data-i18n="s1.g1">滑板車</span><span class="u" data-i18n="s1.canuse2">能用</span></div>
+          <div class="st"><span class="t" data-i18n="s1.g2">腳踏車</span><span class="u" data-i18n="s1.canuse2">能用</span></div>
+          <div class="st"><span class="t" data-i18n="s1.g3">機車</span><span class="u" data-i18n="s1.canuse2">能用</span></div>
+          <div class="st"><span class="t" data-i18n="s1.g4">汽車</span><span class="u" data-i18n="s1.canuse2">能用</span></div>
+        </div>
+        <p class="note" data-i18n="s1.goodnote">每一階段都是「真的能用、可以拿給同事用」的東西。第一版很陽春沒關係，重點是它會動、你能收到真實回饋，再決定下一步要不要繼續、往哪走。這就是 MVP（最小可用版本）的意思。</p>
+      </div>
+
+      <div class="points">
+        <div class="pt"><span class="i">!</span><div>
+          <h3 data-i18n="s1.t1h">第一次體驗不好，之後就沒人要用了</h3>
+          <p data-i18n="s1.t1p">同事第一次打開你的工具，如果卡卡的、看不懂、資料是錯的，他就不會有第二次。所以第一版寧可只做一件事，但那件事要做到好用。功能少不可怕，難用才可怕。</p>
+        </div></div>
+        <div class="pt"><span class="i">!</span><div>
+          <h3 data-i18n="s1.t2h">大家一開口就是完整版</h3>
+          <p data-i18n="s1.t2p">問需求的時候，聽到的幾乎都是「汽車設計圖」——所有功能一次到位。你的工作是把它切開：這一版先做哪一塊？哪一塊可以之後再說？跟 Claude 說「先做最小可用版本」，它會幫你切。</p>
+        </div></div>
+        <div class="pt"><span class="i">!</span><div>
+          <h3 data-i18n="s1.t3h">腳踏車想升級成機車，往往要重做</h3>
+          <p data-i18n="s1.t3p">如果你心裡的終點是汽車，第一版就要先講出來——不是先做出來，是先講。Claude 知道終點在哪，第一版的地基才不會蓋成之後得整個打掉。</p>
+        </div></div>
+        <div class="pt"><span class="i">!</span><div>
+          <h3 data-i18n="s1.t4h">很多需求其實只需要腳踏車</h3>
+          <p data-i18n="s1.t4p">停下來想一次：這件事真的需要汽車嗎？公司裡大部分的小工具，一台好用的腳踏車就夠了，而且它兩週就能上線、沒人要維護一台生鏽的汽車。真的需要汽車的比你想的少很多。</p>
+        </div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ 02 ══════════════════════════════════════════ -->
+  <section class="sec" id="words">
+    <div class="marg"><div class="num">02</div><div class="lab" data-i18n="s2.lab">五個名詞</div></div>
+    <div>
+      <h2 data-i18n="s2.h">模型、Agent、API、MCP、Skill</h2>
+      <p class="intro" data-i18n="s2.p">這五個詞你之後一定會聽到。用同一個廚房的比喻講一遍，就不會再混淆了。</p>
+
+      <dl class="defs">
+        <div class="def">
+          <dt>模型<span class="en">Model</span></dt>
+          <dd><span class="lens" data-i18n="s2.d1l">＝ 廚師的腦袋</span><span data-i18n="s2.d1">會的菜、懂的原理、判斷力。模型本身只會「想」跟「回答」，它不會自己動手。你在 Claude Code 裡換模型，就是換一顆腦袋——有的想得深但慢，有的反應快但淺。</span></dd>
+        </div>
+        <div class="def">
+          <dt>Agent<span class="en">Agent</span></dt>
+          <dd><span class="lens" data-i18n="s2.d2l">＝ 會自己動手的廚師本人</span><span data-i18n="s2.d2">腦袋加上手腳。它會自己打開檔案、寫東西、執行指令、看結果不對再改。你用的 Claude Code 就是 Agent——這就是為什麼它能真的把專案做出來，而不只是給你一段程式碼要你自己貼。</span></dd>
+        </div>
+        <div class="def">
+          <dt>API<span class="en">API</span></dt>
+          <dd><span class="lens" data-i18n="s2.d3l">＝ 出餐窗口</span><span data-i18n="s2.d3">兩個軟體之間講話的窗口，有固定格式：你按規定遞單子進去，它按規定把東西遞出來。你的工具跟資料庫要資料、跟 Google 確認身分，走的都是 API。你不用懂細節，只要知道「軟體之間是這樣互相叫東西的」。</span></dd>
+        </div>
+        <div class="def">
+          <dt>MCP<span class="en">Model Context Protocol</span></dt>
+          <dd><span class="lens" data-i18n="s2.d4l">＝ 萬用轉接頭</span><span data-i18n="s2.d4">讓 Claude 能接上外面的服務——Slack、Notion、Google Drive、公司自己的系統。接上之後，你可以直接叫它「去看那份 Notion 文件」「把結果貼到 Slack」。沒接就沒有，接了它才看得到那些東西。</span></dd>
+        </div>
+        <div class="def">
+          <dt>Skill<span class="en">Skill</span></dt>
+          <dd><span class="lens" data-i18n="s2.d5l">＝ 寫好的食譜</span><span data-i18n="s2.d5">把一件事的標準步驟寫下來，之後每次都照著做、結果都一樣。你打的 <code>/new-project</code>、<code>/check</code> 就是 skill——它們不是模型「臨場發揮」，是有人先把流程寫好了。這個工具箱本身就是一包 skill。</span></dd>
+        </div>
+      </dl>
+    </div>
+  </section>
+
+  <!-- ══ 03 ══════════════════════════════════════════ -->
+  <section class="sec" id="model">
+    <div class="marg"><div class="num">03</div><div class="lab" data-i18n="s3.lab">模型與思考深度</div></div>
+    <div>
+      <h2 data-i18n="s3.h">什麼時候該換腦袋、什麼時候該讓它想久一點</h2>
+      <p class="intro" data-i18n="s3.p">兩個可以自己調的旋鈕。多數時候維持預設就好，但卡關的時候知道有這兩個旋鈕，會省下很多來回。</p>
+
+      <div class="scroller">
+        <table class="tbl">
+          <thead><tr>
+            <th data-i18n="s3.th1">旋鈕</th><th data-i18n="s3.th2">怎麼調</th><th data-i18n="s3.th3">什麼時候調</th>
+          </tr></thead>
+          <tbody>
+            <tr>
+              <td data-i18n="s3.r1a">換模型<span class="en">model</span></td>
+              <td><code>/model</code></td>
+              <td data-i18n="s3.r1c">換一顆腦袋。強的模型理解複雜需求、處理棘手 bug 比較穩，但比較慢也比較貴；快的模型適合改字、調版面這種明確的小事。</td>
+            </tr>
+            <tr>
+              <td data-i18n="s3.r2a">思考深度<span class="en">effort</span></td>
+              <td><code>/effort</code></td>
+              <td data-i18n="s3.r2c">同一顆腦袋，讓它想久一點再動手。需求很模糊、或它連續改了兩三次都沒改對的時候，調高通常有用。</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="note-bar" data-i18n="s3.note"><b>不是越高越好。</b>想得越久＝越慢、越貴。日常「照著做」的事情用預設最划算；真正值得調高的時機是：<b>需求很模糊</b>、<b>它連續改錯</b>、或<b>這個決定之後很難回頭</b>（例如資料表怎麼設計）。</div>
+    </div>
+  </section>
+
+  <!-- ══ 04 ══════════════════════════════════════════ -->
+  <section class="sec" id="parts">
+    <div class="marg"><div class="num">04</div><div class="lab" data-i18n="s4.lab">組成</div></div>
+    <div>
+      <h2 data-i18n="s4.h">你的工具是由哪幾塊組成的</h2>
+      <p class="intro" data-i18n="s4.p">你會聽到一堆名字。其實就是開一家店會用到的幾樣東西，一個一個對起來就懂了。</p>
+
+      <div class="scroller">
+        <table class="tbl">
+          <thead><tr>
+            <th data-i18n="s4.th1">你會聽到</th><th data-i18n="s4.th2">相當於</th><th data-i18n="s4.th3">它在做什麼</th>
+          </tr></thead>
+          <tbody>
+            <tr><td data-i18n="s4.r1a">Claude Code</td><td data-i18n="s4.r1b">幫你做事的師傅</td><td data-i18n="s4.r1c">你講需求、它動手做。整套流程都在它裡面跑。</td></tr>
+            <tr><td data-i18n="s4.r2a">VS Code<span class="en">或終端機</span></td><td data-i18n="s4.r2b">工作檯</td><td data-i18n="s4.r2c">師傅工作的地方。VS Code 是「有畫面」的工作檯，終端機是「只有文字」的工作檯——兩個做的事完全一樣，看你習慣哪個。</td></tr>
+            <tr><td data-i18n="s4.r3a">git / GitHub</td><td data-i18n="s4.r3b">存檔點與雲端備份</td><td data-i18n="s4.r3c">每做完一段就存一個檔，改壞了可以退回去。GitHub 是把這些存檔放到雲端，換一台電腦也拿得到。</td></tr>
+            <tr><td data-i18n="s4.r4a">Supabase</td><td data-i18n="s4.r4b">倉庫 ＋ 門禁</td><td data-i18n="s4.r4c">資料存在這裡（誰請了假、庫存剩多少），誰能進來、誰能看哪些也是它在管。免費。</td></tr>
+            <tr><td data-i18n="s4.r5a">Cloudflare Pages</td><td data-i18n="s4.r5b">店面地址</td><td data-i18n="s4.r5c">給你一個網址，同事用瀏覽器就打得開。免費。</td></tr>
+            <tr><td data-i18n="s4.r6a">Node.js</td><td data-i18n="s4.r6b">工作檯的電源</td><td data-i18n="s4.r6c">很多開發工具要靠它才能跑。裝一次就好，之後你不會再碰到它。</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="note-bar" data-i18n="s4.note">這六樣裡面，<b>你真正要自己動手的只有兩件事</b>：去 Supabase 註冊一個免費專案、去 Cloudflare 拿一把鑰匙。其餘全部由 Claude 代勞，它會在需要你出手的時候停下來告訴你。</div>
+    </div>
+  </section>
+
+  <!-- ══ 05 ══════════════════════════════════════════ -->
+  <section class="sec" id="stack">
+    <div class="marg"><div class="num">05</div><div class="lab" data-i18n="s5.lab">前端與後端</div></div>
+    <div>
+      <h2 data-i18n="s5.h">「前端」「後端」到底在講什麼</h2>
+      <p class="intro" data-i18n="s5.p">這兩個詞會一直出現。一句話講完，你就知道自己的工具能做到哪、哪些要找幫手。</p>
+
+      <div class="duo">
+        <div class="box">
+          <h3 data-i18n="s5.feh">前端 ＝ 你看得到、點得到的畫面</h3>
+          <p data-i18n="s5.fep">跑在使用者自己的瀏覽器裡：頁面、按鈕、表單、清單。使用者直接看到、直接操作的都是。</p>
+        </div>
+        <div class="box">
+          <h3 data-i18n="s5.beh">後端 ＝ 在雲端幫你跑事情、把關的那一層</h3>
+          <p data-i18n="s5.bep">使用者看不到也改不了：存資料、驗身分、照時間自動做事、保管祕密鑰匙。它在雲端 24 小時待命。</p>
+        </div>
+      </div>
+
+      <div class="note-bar" data-i18n="s5.note"><b>你的 MVP ＝ 前端（畫面）＋ 一套現成的倉庫和門禁（Supabase）。</b>沒有一個「你自己的後端」在雲端待命——這不是缺陷，是刻意的：少一層要顧的東西，你才做得起來。下一段講這個界線會影響什麼。</div>
+    </div>
+  </section>
+
+  <!-- ══ 06 ══════════════════════════════════════════ -->
+  <section class="sec" id="scope">
+    <div class="marg"><div class="num">06</div><div class="lab" data-i18n="s6.lab">能力範圍</div></div>
+    <div>
+      <h2 data-i18n="s6.h">做得到什麼、做不到什麼</h2>
+      <p class="intro" data-i18n="s6.p">先知道界線在哪，就不會做到一半才發現卡住。</p>
+
+      <div class="duo">
+        <div class="box yes">
+          <h3 data-i18n="s6.canh">做得到 —— 大多數內部小工具</h3>
+          <ul data-i18n="s6.can">
+            <li>記錄、清單、搜尋、篩選、分頁</li>
+            <li>新增／編輯／刪除資料</li>
+            <li>公司 Google 帳號登入</li>
+            <li>權限控管：誰能看、誰能改、誰能刪</li>
+            <li>報表畫面、簡單的統計</li>
+          </ul>
+        </div>
+        <div class="box no">
+          <h3 data-i18n="s6.canth">做不到 —— 要「真正的後端」才好做</h3>
+          <ul data-i18n="s6.cant">
+            <li><b>定時自動執行</b>：每天早上自動寄週報、到期自動提醒。要有東西在雲端照時間自己跑。</li>
+            <li><b>要藏密鑰的串接</b>：接金流、寄 email、呼叫別家服務。密鑰不能放在畫面裡，放了誰都看得到。</li>
+            <li><b>大量背景運算</b>：批次匯入匯出、處理圖片。</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="note-bar" data-i18n="s6.note"><b>需要右邊那些怎麼辦？</b>要「把現成平台接起來、自動跑流程」（含排程與通知）→ 用 n8n 那條路。真的要變成公司級的正式功能 → 找 IT，或讓你的工具<b>畢業進母艦</b>，那裡有完整的後端。</div>
+    </div>
+  </section>
+
+  <!-- ══ 07 ══════════════════════════════════════════ -->
+  <section class="sec" id="faq">
+    <div class="marg"><div class="num">07</div><div class="lab" data-i18n="s7.lab">常見問題</div></div>
+    <div>
+      <h2 data-i18n="s7.h">你可能會想問</h2>
+      <div class="faq">
+        <details>
+          <summary data-i18n="faq.q1">我完全不會寫程式，真的可以嗎？</summary>
+          <p class="a" data-i18n="faq.a1">可以。你要會的是「把你想要什麼講清楚」，這件事你比工程師強。程式由 Claude 寫、由它檢查，它還會用白話告訴你怎麼在畫面上驗收。你看不懂的東西不用假裝看得懂——直接問它「這在做什麼」。</p>
+        </details>
+        <details>
+          <summary data-i18n="faq.q2">要花錢嗎？</summary>
+          <p class="a" data-i18n="faq.a2">你會用到的服務都在免費額度內（Supabase、Cloudflare 的免費方案，內部小工具綽綽有餘）。要付費的是 Claude Code 本身，那個公司出。</p>
+        </details>
+        <details>
+          <summary data-i18n="faq.q3">會不會弄壞公司的系統？</summary>
+          <p class="a" data-i18n="faq.a3">碰不到。你的工具用的是你自己的資料庫和網址，跟公司正式系統完全分開。另外工具箱裝好後會自動啟動幾道護欄，擋掉危險操作——例如不小心要刪掉工作成果、或動到公司正式機的設定，它會直接擋下來並告訴你原因。</p>
+        </details>
+        <details>
+          <summary data-i18n="faq.q4">資料安全嗎？可以放真實客戶資料嗎？</summary>
+          <p class="a" data-i18n="faq.a4">只有公司 Google 帳號進得來，資料本身也有多層保護。但<b>測試階段請只放假資料</b>。真的要放真實客戶資料之前，先找 IT——他們會幫你把專案搬進公司帳號底下再開放。</p>
+        </details>
+        <details>
+          <summary data-i18n="faq.q5">我做的東西會不會哪天就不見了？</summary>
+          <p class="a" data-i18n="faq.a5">不會。它存在你自己的雲端倉庫裡。用久了、證明有價值，還可以申請「畢業」搬進公司的大系統長期使用。</p>
+        </details>
+        <details>
+          <summary data-i18n="faq.q6">做到一半卡住怎麼辦？</summary>
+          <p class="a" data-i18n="faq.a6">直接跟 Claude 說「我卡住了」，把畫面上看到的貼給它。真的需要人幫忙的時候（開通登入、接公司帳號、接第三方服務），它會告訴你去找 IT——那不是你做錯了，是那幾件事本來就需要權限。</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap fr">
+    <span><b style="color:var(--ink)">CAPSULE develop</b></span>
+    <span data-i18n="footer.tag">孵化器工具箱 · 給非工程師的 Claude Code 開發套件</span>
+    <span style="margin-left:auto"><a href="index.html" data-i18n="footer.link">工具箱說明與安裝步驟 →</a></span>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var root = document.documentElement;
+  var themeBtn = document.getElementById('themeBtn');
+  function cur() { var t = root.getAttribute('data-theme'); if (t) return t; return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'; }
+  themeBtn.addEventListener('click', function () {
+    var next = cur() === 'dark' ? 'light' : 'dark';
+    root.setAttribute('data-theme', next);
+    try { localStorage.setItem('capsule_theme', next); } catch (e) {}
+  });
+  try { var st = localStorage.getItem('capsule_theme'); if (st) root.setAttribute('data-theme', st); } catch (e) {}
+
+  var I18N = {
+    en: {
+      'meta.title': 'How it works · CAPSULE develop',
+      'nav.tool': 'The toolbox', 'nav.how': 'How it works',
+      'hero.kicker': 'Background',
+      'hero.h1': 'What these things actually are, and how they work',
+      'hero.lede': 'You do not need to write code. But knowing the few things below will make talking to Claude far smoother — and what you get back much closer to what you wanted. About ten minutes to read.',
+      'toc.mvp': 'How to build', 'toc.words': 'Five words', 'toc.model': 'Model &amp; effort',
+      'toc.parts': 'The parts', 'toc.stack': 'Front &amp; back', 'toc.scope': 'What it can do', 'toc.faq': 'FAQ',
+
+      's1.lab': 'How to build', 's1.h': 'Build a skateboard first — not a blueprint for a car',
+      's1.p': 'Say you want a car in the end. There are two ways to get there, and the difference decides whether this succeeds at all.',
+      's1.badtag': '✗ What most people do by instinct',
+      's1.b1': 'Wheels', 's1.b2': 'Chassis', 's1.b3': 'Engine', 's1.b4': 'Car',
+      's1.nouse': 'unusable', 's1.canuse': 'finally usable', 's1.canuse2': 'usable',
+      's1.badnote': 'Build it part by part. The problem: nobody can use the first three steps, so you get no feedback at all — and if you run out of time halfway, you have nothing. Worse, you may only discover at the very end that what people actually wanted was not a car.',
+      's1.goodtag': '✓ The way this toolbox pushes you',
+      's1.g1': 'Skateboard', 's1.g2': 'Bicycle', 's1.g3': 'Motorbike', 's1.g4': 'Car',
+      's1.goodnote': 'Every stage is something real that a colleague can actually use. A bare-bones first version is fine — what matters is that it works, so you get real feedback and can then decide whether to continue and in which direction. That is what MVP (minimum usable version) means.',
+      's1.t1h': 'A bad first experience means there is no second one',
+      's1.t1p': 'If a colleague opens your tool and it is clunky, confusing, or wrong, they will not come back. So the first version should do one thing — and do it well. Few features is fine; hard to use is not.',
+      's1.t2h': 'Everyone describes the finished car',
+      's1.t2p': 'When you ask people what they need, you almost always get the full blueprint — every feature at once. Your job is to slice it: what goes in this version, what can wait? Tell Claude “start with the minimum usable version” and it will help you slice.',
+      's1.t3h': 'Upgrading a bicycle into a motorbike usually means rebuilding',
+      's1.t3p': 'If a car is where you are heading, say so in the first version — not build it, just say it. When Claude knows the destination, the foundation of version one will not have to be torn down later.',
+      's1.t4h': 'Most needs only ever needed a bicycle',
+      's1.t4p': 'Stop and ask once: does this really need a car? Most internal tools are well served by a good bicycle — and it ships in two weeks, with nobody left maintaining a rusting car. Genuine car-sized needs are far rarer than they feel.',
+
+      's2.lab': 'Five words', 's2.h': 'Model, Agent, API, MCP, Skill',
+      's2.p': 'You will hear these five constantly. One kitchen metaphor covers all of them.',
+      's2.d1l': '= the chef’s mind',
+      's2.d1': 'The dishes it knows, the reasoning, the judgement. A model only thinks and answers; it never picks anything up. Switching models in Claude Code swaps the mind — some think deeply but slowly, some react fast but shallowly.',
+      's2.d2l': '= the chef, hands and all',
+      's2.d2': 'A mind plus hands. It opens files, writes, runs commands, sees the result is wrong and fixes it. Claude Code is an agent — which is why it can actually build the project instead of handing you a snippet to paste.',
+      's2.d3l': '= the service window',
+      's2.d3': 'A fixed-format window between two pieces of software: you hand an order in the agreed shape, it hands the result back in the agreed shape. Your tool asking the database for data, or asking Google to confirm identity, both go through an API. You never need the details — just know software talks to software this way.',
+      's2.d4l': '= a universal adapter',
+      's2.d4': 'It lets Claude plug into outside services — Slack, Notion, Google Drive, your company’s own systems. Once connected, you can just say “read that Notion doc” or “post the result to Slack”. Not connected means not visible; connecting is what lets it see them.',
+      's2.d5l': '= a written recipe',
+      's2.d5': 'The standard steps for one job, written down, so it comes out the same every time. <code>/new-project</code> and <code>/check</code> are skills — not the model improvising, but a process someone wrote down first. This whole toolbox is a bundle of skills.',
+
+      's3.lab': 'Model &amp; effort', 's3.h': 'When to swap the mind, when to let it think longer',
+      's3.p': 'Two dials you can turn. Defaults are right most of the time — but knowing they exist saves a lot of back-and-forth when you are stuck.',
+      's3.th1': 'Dial', 's3.th2': 'How', 's3.th3': 'When',
+      's3.r1a': 'Swap model', 's3.r1c': 'Swaps the mind. Stronger models are steadier on complex requirements and stubborn bugs, but slower and pricier; faster ones suit clear-cut small jobs like wording and layout tweaks.',
+      's3.r2a': 'Thinking effort', 's3.r2c': 'Same mind, longer thought before acting. Usually worth raising when the requirement is vague, or when it has failed to get it right two or three times running.',
+      's3.note': '<b>Higher is not better.</b> More thinking means slower and pricier. For routine “just do it” work the default is the best value. The moments genuinely worth raising it: <b>a vague requirement</b>, <b>repeated wrong attempts</b>, or <b>a decision that is hard to reverse later</b> (like how the data tables are shaped).',
+
+      's4.lab': 'The parts', 's4.h': 'What your tool is actually made of',
+      's4.p': 'You will hear a pile of names. They are just the things you need to open a shop — line them up and it clicks.',
+      's4.th1': 'You will hear', 's4.th2': 'Which is', 's4.th3': 'What it does',
+      's4.r1a': 'Claude Code', 's4.r1b': 'the craftsman', 's4.r1c': 'You describe, it builds. The whole flow runs inside it.',
+      's4.r2a': 'VS Code', 's4.r2b': 'the workbench', 's4.r2c': 'Where the craftsman works. VS Code is the workbench with a screen; the terminal is the text-only one. They do exactly the same job — pick what you find comfortable.',
+      's4.r3a': 'git / GitHub', 's4.r3b': 'save points and cloud backup', 's4.r3c': 'Save after each chunk of work so you can roll back when something breaks. GitHub keeps those saves in the cloud, so another machine can pick them up.',
+      's4.r4a': 'Supabase', 's4.r4b': 'warehouse + door', 's4.r4c': 'Where the data lives (who is on leave, how much stock is left), and what decides who gets in and what they may see. Free.',
+      's4.r5a': 'Cloudflare Pages', 's4.r5b': 'the shop address', 's4.r5c': 'Gives you a URL your colleagues can open in a browser. Free.',
+      's4.r6a': 'Node.js', 's4.r6b': 'power for the bench', 's4.r6c': 'A lot of development tooling runs on it. Install it once and you will not think about it again.',
+      's4.note': 'Of those six, <b>only two need your own hands</b>: sign up for a free Supabase project, and fetch one key from Cloudflare. Claude does the rest, and stops to tell you whenever it needs you.',
+
+      's5.lab': 'Front &amp; back', 's5.h': 'What “frontend” and “backend” actually mean',
+      's5.p': 'These two keep coming up. One line each, and you will know what your tool can reach and what needs help.',
+      's5.feh': 'Frontend = the screen you see and click',
+      's5.fep': 'Runs in the user’s own browser: pages, buttons, forms, lists. Everything a user looks at and touches directly.',
+      's5.beh': 'Backend = the cloud layer that runs things and stands guard',
+      's5.bep': 'What users cannot see or change: storing data, verifying identity, doing things on a schedule, holding secret keys. On duty in the cloud around the clock.',
+      's5.note': '<b>Your MVP = the frontend (the screen) + a ready-made warehouse and door (Supabase).</b> There is no backend of your own waiting in the cloud — that is deliberate, not a gap: one less layer to mind is what makes this achievable. The next section covers what that boundary costs you.',
+
+      's6.lab': 'Scope', 's6.h': 'What it can and cannot do',
+      's6.p': 'Know the boundary up front and you will not hit it halfway through.',
+      's6.canh': 'It can — most internal mini-tools',
+      's6.can': '<li>Record, list, search, filter, paginate</li><li>Create / edit / delete data</li><li>Company Google sign-in</li><li>Permissions: who may view, edit, delete</li><li>Report screens and simple stats</li>',
+      's6.canth': 'It cannot — needs a real backend',
+      's6.cant': '<li><b>Scheduled runs</b>: auto-send a weekly report each morning, remind on a due date. Something has to run on a timer in the cloud.</li><li><b>Integrations needing a secret key</b>: payments, sending email, calling another company’s service. Keys cannot sit in the screen, where anyone could read them.</li><li><b>Heavy background work</b>: bulk import/export, image processing.</li>',
+      's6.note': '<b>So what about the right-hand column?</b> To connect existing platforms and automate a flow (schedules and notifications included) → take the n8n route. To make it a genuine company-grade feature → ask IT, or let your tool <b>graduate into the mothership</b>, which has a full backend.',
+
+      's7.lab': 'FAQ', 's7.h': 'You might be wondering',
+      'faq.q1': 'I cannot code at all — can I really do this?',
+      'faq.a1': 'Yes. What you need is the ability to say clearly what you want, and you are better at that than an engineer. Claude writes the code and checks it, then tells you in plain words how to verify it on screen. You do not have to pretend to understand anything — just ask it “what does this do?”.',
+      'faq.q2': 'Does it cost money?',
+      'faq.a2': 'Everything you use sits inside free tiers (the Supabase and Cloudflare free plans are ample for an internal tool). The paid part is Claude Code itself, which the company covers.',
+      'faq.q3': 'Could I break the company’s systems?',
+      'faq.a3': 'You cannot reach them. Your tool uses your own database and URL, entirely separate from company production. The toolbox also installs guardrails that block dangerous operations — such as accidentally throwing away your work, or touching company production settings — and tells you why.',
+      'faq.q4': 'Is the data safe? Can I put real customer data in?',
+      'faq.a4': 'Only company Google accounts can get in, and the data has several layers of protection. But <b>use fake data while testing</b>. Before any real customer data goes in, talk to IT — they will move the project under a company account first.',
+      'faq.q5': 'Could my work disappear one day?',
+      'faq.a5': 'No. It lives in your own cloud warehouse. Once it has proven its worth, you can apply to “graduate” it into the company’s big system for the long term.',
+      'faq.q6': 'What if I get stuck halfway?',
+      'faq.a6': 'Just tell Claude “I am stuck” and paste what you see on screen. When a human really is needed — enabling login, moving to a company account, connecting a third-party service — it will point you to IT. That is not you doing something wrong; those steps simply require permissions.',
+
+      'footer.tag': 'Incubator toolbox · a Claude Code kit for non-engineers',
+      'footer.link': 'Toolbox guide and install steps →'
+    },
+    ja: {
+      'meta.title': '仕組み · CAPSULE develop',
+      'nav.tool': 'ツールボックス', 'nav.how': '仕組み',
+      'hero.kicker': '前提知識',
+      'hero.h1': 'これらは結局なんなのか、どう動いているのか',
+      'hero.lede': 'コードを書ける必要はありません。ただ、以下のことを知っておくと Claude とのやり取りが格段にスムーズになり、出来上がるものも欲しかったものに近づきます。読了およそ 10 分。',
+      'toc.mvp': '作り方', 'toc.words': '5 つの用語', 'toc.model': 'モデルと思考の深さ',
+      'toc.parts': '構成要素', 'toc.stack': 'フロントとバック', 'toc.scope': 'できること', 'toc.faq': 'FAQ',
+
+      's1.lab': '作り方', 's1.h': 'まずキックボードを作る。車の設計図から描かない',
+      's1.p': '最終的に車が欲しいとします。行き方は 2 通りあり、その差がこの取り組みの成否を分けます。',
+      's1.badtag': '✗ 多くの人が直感でやる方法',
+      's1.b1': 'タイヤ', 's1.b2': '車体', 's1.b3': 'エンジン', 's1.b4': '車',
+      's1.nouse': '使えない', 's1.canuse': 'やっと使える', 's1.canuse2': '使える',
+      's1.badnote': '部品の順に作る方法。問題は最初の 3 段階が誰にも使えず、フィードバックがまったく得られないこと。途中で時間切れになれば手元には何も残りません。さらに最後になって「みんなが欲しかったのは車ではなかった」と分かることもあります。',
+      's1.goodtag': '✓ このツールボックスが勧める道',
+      's1.g1': 'キックボード', 's1.g2': '自転車', 's1.g3': 'バイク', 's1.g4': '車',
+      's1.goodnote': 'どの段階も「同僚が実際に使えるもの」です。最初の版が素朴でも構いません。大事なのは動くこと。動けば本物のフィードバックが得られ、続けるか・どちらへ進むかを判断できます。これが MVP（最小限の使える版）です。',
+      's1.t1h': '最初の体験が悪いと、2 回目はない',
+      's1.t1p': '同僚が最初に開いたときに、動きが悪い・分かりにくい・データが違う——それだけで二度と来ません。最初の版は 1 つのことだけを、しっかり使えるように。機能が少ないのは怖くない、使いにくいのが怖い。',
+      's1.t2h': '誰もが完成形から話し始める',
+      's1.t2p': '要望を聞くと、返ってくるのはほぼ「車の設計図」——全機能いっぺんに。あなたの仕事は切り分けです。今回はどこまで？後回しにできるのはどれ？「まず最小限の使える版を」と Claude に言えば、切り分けを手伝ってくれます。',
+      's1.t3h': '自転車をバイクにするには、たいてい作り直しになる',
+      's1.t3p': '最終的に車を目指すなら、最初の版の時点で言っておくこと——作るのではなく、言うだけ。行き先が分かっていれば、版 1 の土台を後で壊さずに済みます。',
+      's1.t4h': '多くの要望は、実は自転車で足りる',
+      's1.t4p': '一度立ち止まって考えてください。本当に車が要りますか。社内ツールの大半は良い自転車で十分で、しかも 2 週間で公開でき、錆びた車の維持に困る人も出ません。本当に車が必要な案件は思うよりずっと少ない。',
+
+      's2.lab': '5 つの用語', 's2.h': 'モデル・Agent・API・MCP・Skill',
+      's2.p': 'この 5 語はこれから何度も出てきます。同じ厨房のたとえで一気に整理します。',
+      's2.d1l': '＝ 料理人の頭脳',
+      's2.d1': '作れる料理、理屈、判断力。モデルは「考えて答える」だけで、自分では何も手に取りません。Claude Code でモデルを替えるのは頭脳を替えること——深く考えるが遅いもの、速いが浅いものがあります。',
+      's2.d2l': '＝ 手足のある料理人本人',
+      's2.d2': '頭脳＋手足。自分でファイルを開き、書き、コマンドを実行し、結果が違えば直します。Claude Code は Agent——だからコード断片を渡すだけでなく、実際にプロジェクトを作れます。',
+      's2.d3l': '＝ 受け渡し窓口',
+      's2.d3': 'ソフト同士が決まった形式でやり取りする窓口。決まった形で注文を出すと、決まった形で返ってきます。あなたのツールがデータベースにデータを求めるのも、Google に本人確認を頼むのも API 経由。詳細は不要、「ソフト同士はこう呼び合う」とだけ知っていれば十分です。',
+      's2.d4l': '＝ 万能アダプタ',
+      's2.d4': 'Claude を外部サービスにつなぐ仕組み——Slack、Notion、Google Drive、社内システムなど。つなげば「その Notion を読んで」「結果を Slack に投げて」と言えます。つないでいなければ見えません。',
+      's2.d5l': '＝ 書き起こしたレシピ',
+      's2.d5': 'ある作業の標準手順を書き留めたもの。毎回同じ結果になります。<code>/new-project</code> や <code>/check</code> は skill——モデルの即興ではなく、誰かが先に手順を書いたものです。このツールボックス自体が skill の束です。',
+
+      's3.lab': 'モデルと思考の深さ', 's3.h': 'いつ頭脳を替え、いつ長く考えさせるか',
+      's3.p': '自分で回せるつまみが 2 つ。ふだんは既定のままで十分ですが、詰まったときに知っていると往復が減ります。',
+      's3.th1': 'つまみ', 's3.th2': '操作', 's3.th3': '使いどころ',
+      's3.r1a': 'モデル変更', 's3.r1c': '頭脳を替える。強いモデルは複雑な要件や厄介な不具合に強い一方、遅く高い。速いモデルは文言修正やレイアウト調整のような明確な小作業向き。',
+      's3.r2a': '思考の深さ', 's3.r2c': '同じ頭脳で、動く前に長く考えさせる。要件が曖昧なとき、あるいは 2〜3 回続けて直し損ねたときに上げると効きます。',
+      's3.note': '<b>高いほど良いわけではありません。</b>長く考える＝遅く・高い。日常の「そのままやる」作業は既定が最もお得。本当に上げる価値があるのは、<b>要件が曖昧</b>・<b>連続で外している</b>・<b>後戻りしにくい判断</b>（データ構造の設計など）のときです。',
+
+      's4.lab': '構成要素', 's4.h': 'あなたのツールは何でできているか',
+      's4.p': '名前がたくさん出てきますが、要は店を開くのに必要なもの。並べれば腑に落ちます。',
+      's4.th1': '耳にする名前', 's4.th2': 'たとえると', 's4.th3': '役割',
+      's4.r1a': 'Claude Code', 's4.r1b': '職人', 's4.r1c': 'あなたが要望を伝え、実際に作る側。一連の流れはすべてこの中で動きます。',
+      's4.r2a': 'VS Code', 's4.r2b': '作業台', 's4.r2c': '職人が働く場所。VS Code は画面のある作業台、ターミナルは文字だけの作業台。やることは同じなので、好きな方でどうぞ。',
+      's4.r3a': 'git / GitHub', 's4.r3b': 'セーブポイントとクラウド保管', 's4.r3c': '区切りごとに保存し、壊れたら戻れるように。GitHub はそれをクラウドに置き、別の端末からも取り出せます。',
+      's4.r4a': 'Supabase', 's4.r4b': '倉庫＋入口', 's4.r4c': 'データの置き場（誰が休みか、在庫はいくつか）と、誰が入れて何を見られるかの管理。無料。',
+      's4.r5a': 'Cloudflare Pages', 's4.r5b': '店の住所', 's4.r5c': '同僚がブラウザで開ける URL を用意します。無料。',
+      's4.r6a': 'Node.js', 's4.r6b': '作業台の電源', 's4.r6c': '多くの開発ツールがこれで動きます。一度入れれば、以後意識することはありません。',
+      's4.note': 'この 6 つのうち<b>自分の手が要るのは 2 つだけ</b>：Supabase の無料プロジェクト作成と、Cloudflare の鍵の取得。あとは Claude がやり、あなたの出番が必要なときは止まって教えてくれます。',
+
+      's5.lab': 'フロントとバック', 's5.h': '「フロントエンド」「バックエンド」とは結局なにか',
+      's5.p': 'この 2 語は何度も出てきます。一言ずつ押さえれば、自分のツールの守備範囲が分かります。',
+      's5.feh': 'フロントエンド ＝ 見えて触れる画面',
+      's5.fep': '利用者のブラウザで動くもの：ページ、ボタン、フォーム、一覧。利用者が直接見て操作するすべて。',
+      's5.beh': 'バックエンド ＝ クラウドで処理し、見張る層',
+      's5.bep': '利用者からは見えず変えられない部分：データ保存、本人確認、時間どおりの自動処理、秘密の鍵の保管。クラウドで 24 時間待機します。',
+      's5.note': '<b>あなたの MVP ＝ フロント（画面）＋ 出来合いの倉庫と入口（Supabase）。</b>自前のバックエンドはクラウドにありません。これは欠陥ではなく意図——見るべき層が 1 つ減るからこそ、あなたにも作れます。その境界の代償は次の節で。',
+
+      's6.lab': 'できる範囲', 's6.h': 'できること・できないこと',
+      's6.p': '境界を先に知っておけば、途中で行き詰まりません。',
+      's6.canh': 'できる —— 社内ミニツールの大半',
+      's6.can': '<li>記録・一覧・検索・絞り込み・ページ送り</li><li>データの追加／編集／削除</li><li>会社 Google アカウントでのログイン</li><li>権限管理：閲覧・編集・削除を誰に許すか</li><li>レポート画面と簡単な集計</li>',
+      's6.canth': 'できない —— 本物のバックエンドが要る',
+      's6.cant': '<li><b>定時実行</b>：毎朝の週報自動送信、期限のリマインド。クラウドで時間どおりに動くものが必要です。</li><li><b>秘密鍵が要る連携</b>：決済、メール送信、他社サービス呼び出し。鍵は画面側に置けません（誰でも読めてしまう）。</li><li><b>重いバックグラウンド処理</b>：一括入出力、画像処理。</li>',
+      's6.note': '<b>右側が必要なときは？</b>既存プラットフォームをつないで自動化（定時・通知含む）したいなら → n8n の道。会社レベルの正式機能にするなら → IT に相談、またはツールを<b>母艦へ卒業</b>させてください。そちらには完全なバックエンドがあります。',
+
+      's7.lab': 'FAQ', 's7.h': 'こんな疑問があるかも',
+      'faq.q1': 'まったくコードが書けませんが、本当にできますか？',
+      'faq.a1': 'できます。必要なのは「欲しいものをはっきり言える」こと。これはエンジニアよりあなたのほうが得意です。コードは Claude が書いて確認し、画面での確かめ方も平易に説明します。分からないものを分かったふりをする必要はありません——「これは何をしているの」と聞いてください。',
+      'faq.q2': 'お金はかかりますか？',
+      'faq.a2': '使うサービスはすべて無料枠の中です（Supabase と Cloudflare の無料プランで社内ツールには十分）。有料なのは Claude Code 本体で、それは会社が負担します。',
+      'faq.q3': '会社のシステムを壊してしまいませんか？',
+      'faq.a3': '触れません。あなたのツールは自分のデータベースと URL を使い、会社の本番とは完全に分離されています。さらにツールボックスは導入時にガードレールを有効化し、危険な操作——作業成果を誤って捨てる、会社本番の設定に触れるなど——を理由付きで止めます。',
+      'faq.q4': 'データは安全ですか？実際の顧客データを入れてもいい？',
+      'faq.a4': '入れるのは会社 Google アカウントだけ、データにも多層の保護があります。ただし<b>テスト中はダミーデータのみ</b>。実際の顧客データを入れる前に IT に相談してください。会社アカウント配下へ移してくれます。',
+      'faq.q5': '作ったものが、ある日消えたりしませんか？',
+      'faq.a5': '消えません。自分のクラウド倉庫に保存されます。価値が証明できれば「卒業」を申請して、会社の大きなシステムで長く使うこともできます。',
+      'faq.q6': '途中で詰まったら？',
+      'faq.a6': 'Claude に「詰まった」と伝え、画面に出ているものを貼ってください。人手が本当に要るとき（ログインの有効化、会社アカウントへの移行、外部サービス連携）は IT に頼るよう案内されます。あなたの間違いではなく、その手順に権限が要るだけです。',
+
+      'footer.tag': 'インキュベーター・ツールボックス · 非エンジニアのための Claude Code キット',
+      'footer.link': 'ツールボックスの説明と導入手順 →'
+    }
+  };
+
+  var titleZh = document.title;
+  var els = document.querySelectorAll('[data-i18n]');
+  var origins = [];
+  els.forEach(function (el) { origins.push(el.innerHTML); });
+  var langBtns = document.querySelectorAll('.lang button');
+
+  function setLang(lang) {
+    if (lang !== 'en' && lang !== 'ja') lang = 'zh';
+    root.setAttribute('lang', lang === 'zh' ? 'zh-Hant' : lang);
+    var d = I18N[lang];
+    els.forEach(function (el, i) {
+      var k = el.getAttribute('data-i18n');
+      el.innerHTML = (lang === 'zh') ? origins[i] : ((d && d[k] != null) ? d[k] : origins[i]);
+    });
+    document.title = (lang === 'zh') ? titleZh : ((d && d['meta.title']) || titleZh);
+    themeBtn.setAttribute('aria-label', lang === 'zh' ? '切換深色/淺色' : (lang === 'ja' ? 'ダーク/ライト切替' : 'Toggle dark/light'));
+    langBtns.forEach(function (b) { b.classList.toggle('on', b.getAttribute('data-lang') === lang); });
+    try { localStorage.setItem('capsule_lang', lang); } catch (e) {}
+  }
+  langBtns.forEach(function (b) { b.addEventListener('click', function () { setLang(b.getAttribute('data-lang')); }); });
+  var saved = null; try { saved = localStorage.getItem('capsule_lang'); } catch (e) {}
+  setLang(saved || 'zh');
+})();
+</script>
+</html>

@@ -3,333 +3,283 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>CAPSULE 開發指引</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #FCFBF9; --panel: #FFFFFF; --panel-2: #F6F3EE; --line: #E9E5DE;
-    --ink: #1C1917; --muted: #6E6862; --accent: #E8590C; --accent-ink: #B5460A;
-    --go: #0D8C80; --go-ink: #0B6E64;
-    --term-bg: #1A1714; --term-ink: #EDE9E2; --term-muted: #9A948B; --term-line: #322D28;
-    --glow: rgba(232,89,12,.14);
-    --sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans TC", "Noto Sans JP", "PingFang TC", "Microsoft JhengHei", sans-serif;
-    --mono: ui-monospace, "SF Mono", "Cascadia Code", "JetBrains Mono", "Segoe UI Mono", Menlo, Consolas, monospace;
-    --maxw: 1060px;
+    --paper:#F7F4EE; --paper-2:#F1ECE3; --card:#FFFDF9; --rule:#DCD5C8; --rule-soft:#E7E1D6;
+    --ink:#17140F; --ink-2:#3C3730; --muted:#726A5E;
+    --tool:#B5450A; --learn:#15606E;
+    --accent:var(--tool); --on-accent:#FFFDF9;
+    --go:#15606E;
+    --sans:"IBM Plex Sans","PingFang TC","Noto Sans TC","Hiragino Sans","Yu Gothic","Microsoft JhengHei",sans-serif;
+    --mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+    --maxw:1080px;
   }
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --bg: #121110; --panel: #1A1815; --panel-2: #211E1A; --line: #2E2A25;
-      --ink: #F0EDE7; --muted: #A29B92; --accent: #FB7A33; --accent-ink: #FB7A33;
-      --go: #2DD4BF; --go-ink: #2DD4BF;
-      --term-bg: #0E0D0B; --term-ink: #EDE9E2; --term-muted: #928C83; --term-line: #262320;
-      --glow: rgba(251,122,51,.16);
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme="light"]){
+      --paper:#131110; --paper-2:#1A1715; --card:#1C1917; --rule:#332E28; --rule-soft:#282420;
+      --ink:#F2EEE6; --ink-2:#D6D0C6; --muted:#948B7F;
+      --tool:#E8823F; --learn:#5CC4C9; --accent:var(--tool); --on-accent:#0F1416; --go:#5CC4C9;
     }
   }
-  :root[data-theme="light"] {
-    --bg: #FCFBF9; --panel: #FFFFFF; --panel-2: #F6F3EE; --line: #E9E5DE;
-    --ink: #1C1917; --muted: #6E6862; --accent: #E8590C; --accent-ink: #B5460A;
-    --go: #0D8C80; --go-ink: #0B6E64;
-    --term-bg: #1A1714; --term-ink: #EDE9E2; --term-muted: #9A948B; --term-line: #322D28;
-    --glow: rgba(232,89,12,.14);
-  }
-  :root[data-theme="dark"] {
-    --bg: #121110; --panel: #1A1815; --panel-2: #211E1A; --line: #2E2A25;
-    --ink: #F0EDE7; --muted: #A29B92; --accent: #FB7A33; --accent-ink: #FB7A33;
-    --go: #2DD4BF; --go-ink: #2DD4BF;
-    --term-bg: #0E0D0B; --term-ink: #EDE9E2; --term-muted: #928C83; --term-line: #262320;
-    --glow: rgba(251,122,51,.16);
+  :root[data-theme="dark"]{
+    --paper:#131110; --paper-2:#1A1715; --card:#1C1917; --rule:#332E28; --rule-soft:#282420;
+    --ink:#F2EEE6; --ink-2:#D6D0C6; --muted:#948B7F;
+    --tool:#E8823F; --learn:#5CC4C9; --accent:var(--tool); --on-accent:#0F1416; --go:#5CC4C9;
   }
 
-  * { box-sizing: border-box; }
-  html { scroll-behavior: smooth; }
-  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
-  body {
-    margin: 0; background: var(--bg); color: var(--ink);
-    font-family: var(--sans); font-size: 16px; line-height: 1.65;
-    -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
-  }
-  .wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 22px; }
-  a { color: inherit; }
-  h1, h2, h3 { text-wrap: balance; margin: 0; }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);
+       font-size:16.5px;line-height:1.75;-webkit-font-smoothing:antialiased}
+  img{max-width:100%;height:auto}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 26px}
+  a{color:inherit}
+  h1,h2,h3{margin:0;text-wrap:balance;letter-spacing:-.015em}
+  p{margin:0}
+  code{font-family:var(--mono);font-size:.9em}
+  :focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:2px}
 
-  .eyebrow {
-    font-family: var(--mono); font-size: .72rem; text-transform: uppercase;
-    letter-spacing: .18em; color: var(--accent-ink); font-weight: 600;
-  }
-
-  /* ---------- top bar ---------- */
-  .bar {
-    position: sticky; top: 0; z-index: 50;
-    backdrop-filter: saturate(1.1) blur(10px);
-    background: color-mix(in srgb, var(--bg) 86%, transparent);
-    border-bottom: 1px solid var(--line);
-  }
-  .bar-in { display: flex; align-items: center; gap: 14px; height: 58px; }
-  .brand { display: flex; align-items: center; gap: 9px; font-weight: 700; letter-spacing: -.01em; }
-  .brand .mk { font-size: 1.15rem; }
-  .brand .sub { font-family: var(--mono); font-size: .72rem; color: var(--muted); font-weight: 500; }
-  .bar nav { margin-left: auto; display: flex; gap: 4px; }
-  .bar nav a {
-    text-decoration: none; color: var(--muted); font-size: .86rem; font-weight: 550;
-    padding: 7px 11px; border-radius: 8px;
-  }
-  .bar nav a:hover { color: var(--ink); background: var(--panel-2); }
-  .bar-tools { display: flex; align-items: center; gap: 8px; }
-  .langsw { display: inline-flex; border: 1px solid var(--line); border-radius: 9px; overflow: hidden; }
-  .langsw button {
-    border: 0; background: var(--panel); color: var(--muted);
-    font-family: var(--sans); font-size: .76rem; font-weight: 650; line-height: 1;
-    padding: 6px 10px; cursor: pointer;
-  }
-  .langsw button + button { border-left: 1px solid var(--line); }
-  .langsw button.on { background: var(--accent); color: #fff; }
-  .langsw button:not(.on):hover { color: var(--ink); background: var(--panel-2); }
-  .toggle {
-    display: inline-flex; align-items: center; justify-content: center;
-    width: 34px; height: 34px; border-radius: 9px; cursor: pointer;
-    border: 1px solid var(--line); background: var(--panel); color: var(--ink);
-    font-size: .95rem;
-  }
-  .toggle:hover { border-color: var(--accent); }
-  @media (max-width: 720px) { .bar nav { display: none; } }
-
-  /* ---------- hero ---------- */
-  .hero { position: relative; padding: 74px 0 34px; overflow: hidden; }
-  .hero::before {
-    content: ""; position: absolute; inset: -20% 20% 40% 20%;
-    background: radial-gradient(60% 60% at 50% 30%, var(--glow), transparent 70%);
-    pointer-events: none;
-  }
-  .hero h1 {
-    font-size: clamp(2.35rem, 6vw, 4.1rem); font-weight: 800; letter-spacing: -.025em;
-    line-height: 1.03; margin: 16px 0 0; max-width: 15ch;
-  }
-  .hero .lede { font-size: clamp(1.02rem, 1.6vw, 1.2rem); color: var(--muted); margin: 20px 0 0; max-width: 52ch; }
-  .hero-cta { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-top: 28px; }
-
-  .btn {
-    display: inline-flex; align-items: center; gap: 8px; text-decoration: none;
-    font-weight: 650; font-size: .92rem; padding: 11px 17px; border-radius: 10px;
-    border: 1px solid transparent; cursor: pointer;
-  }
-  .btn-primary { background: var(--accent); color: #fff; }
-  .btn-primary:hover { filter: brightness(1.06); transform: translateY(-1px); }
-  .btn-ghost { background: var(--panel); color: var(--ink); border-color: var(--line); }
-  .btn-ghost:hover { border-color: var(--accent); }
-
-  /* ---------- journey ---------- */
-  .journey {
-    margin-top: 46px; display: grid; grid-template-columns: 1fr auto 1fr auto 1fr; gap: 0;
-    align-items: stretch;
-  }
-  .stage {
-    background: var(--panel); border: 1px solid var(--line); border-radius: 16px;
-    padding: 22px 20px; position: relative;
-  }
-  .stage.mid { border-color: color-mix(in srgb, var(--accent) 45%, var(--line)); box-shadow: 0 8px 30px -18px var(--accent); }
-  .stage .cap { font-size: 1.5rem; }
-  .stage h3 { font-size: 1.02rem; margin-top: 10px; font-weight: 700; }
-  .stage p { margin: 6px 0 0; font-size: .86rem; color: var(--muted); line-height: 1.5; }
-  .stage .tag {
-    position: absolute; top: -10px; left: 20px; font-family: var(--mono); font-size: .64rem;
-    letter-spacing: .12em; text-transform: uppercase; padding: 3px 8px; border-radius: 20px;
-    background: var(--panel-2); border: 1px solid var(--line); color: var(--muted);
-  }
-  .stage.mid .tag { background: var(--accent); color: #fff; border-color: var(--accent); }
-  .arrow { display: flex; align-items: center; justify-content: center; color: var(--accent); padding: 0 6px; font-size: 1.3rem; }
-  @media (max-width: 780px) {
-    .journey { grid-template-columns: 1fr; gap: 8px; }
-    .arrow { transform: rotate(90deg); padding: 2px 0; }
+  /* ── 頁首：分頁切換是主角 ─────────────────────────── */
+  .top{position:sticky;top:0;z-index:50;background:var(--paper);border-bottom:1px solid var(--rule)}
+  .top-in{display:flex;align-items:center;gap:18px;height:60px}
+  .brand{display:flex;align-items:baseline;gap:8px;text-decoration:none;white-space:nowrap}
+  .brand b{font-weight:700;letter-spacing:-.02em}
+  .brand span{font-family:var(--mono);font-size:.7rem;color:var(--muted)}
+  .pages{display:flex;margin-left:auto;border:1px solid var(--rule);border-radius:3px;overflow:hidden}
+  .pages a{display:flex;flex-direction:column;gap:1px;text-decoration:none;padding:7px 15px 6px;
+           font-size:.88rem;font-weight:600;color:var(--muted);line-height:1.25}
+  .pages a + a{border-left:1px solid var(--rule)}
+  .pages a small{font-family:var(--mono);font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;opacity:.75;font-weight:500}
+  .pages a:hover{color:var(--ink);background:var(--paper-2)}
+  .pages a.on{background:var(--tool);color:var(--on-accent)}
+  .pages a.learn.on{background:var(--learn)}
+  .tools{display:flex;align-items:center;gap:8px}
+  .lang{display:inline-flex;border:1px solid var(--rule);border-radius:3px;overflow:hidden}
+  .lang button{border:0;background:transparent;color:var(--muted);font-family:var(--mono);font-size:.72rem;
+               font-weight:500;padding:6px 8px;cursor:pointer;line-height:1}
+  .lang button+button{border-left:1px solid var(--rule)}
+  .lang button.on{background:var(--ink);color:var(--paper)}
+  .lang button:not(.on):hover{color:var(--ink)}
+  .themebtn{width:30px;height:29px;border:1px solid var(--rule);border-radius:3px;background:transparent;
+            color:var(--ink);cursor:pointer;font-size:.85rem;line-height:1}
+  .themebtn:hover{border-color:var(--accent)}
+  @media (max-width:640px){
+    .top-in{height:auto;padding:10px 0;flex-wrap:wrap;gap:10px}
+    .pages{margin-left:0;order:3;width:100%}
+    .pages a{flex:1;align-items:center}
+    .tools{margin-left:auto}
   }
 
-  /* ---------- sections ---------- */
-  section { padding: 52px 0; border-top: 1px solid var(--line); }
-  .sec-head { max-width: 60ch; margin-bottom: 26px; }
-  .sec-head h2 { font-size: clamp(1.5rem, 3vw, 2.05rem); font-weight: 780; letter-spacing: -.015em; margin-top: 8px; }
-  .sec-head p { color: var(--muted); margin: 12px 0 0; }
-
-  .grid { display: grid; gap: 14px; }
-  .g3 { grid-template-columns: repeat(3, 1fr); }
-  .g2 { grid-template-columns: repeat(2, 1fr); }
-  .skills { grid-template-columns: repeat(auto-fill, minmax(232px, 1fr)); }
-  @media (max-width: 760px) { .g3, .g2 { grid-template-columns: 1fr; } }
-
-  .card {
-    background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 20px;
+  /* ── 開場 ───────────────────────────────────────── */
+  .hero{padding:76px 0 54px;border-bottom:1px solid var(--rule)}
+  .hero-grid{display:grid;grid-template-columns:120px 1fr;gap:44px;align-items:start}
+  .eyebrow{font-family:var(--mono);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;
+           color:var(--accent);font-weight:500;display:block;padding-top:10px}
+  .hero h1{font-size:clamp(1.9rem,4.2vw,2.9rem);font-weight:700;line-height:1.2;margin:0;max-width:26ch}
+  .hero .lede{margin-top:20px;max-width:58ch;color:var(--ink-2);font-size:1.06rem}
+  .hero-cta{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
+  .btn{display:inline-flex;align-items:center;gap:8px;text-decoration:none;font-weight:600;font-size:.9rem;
+       padding:9px 16px;border-radius:3px;border:1px solid var(--rule);cursor:pointer}
+  .btn-primary{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
+  .btn-ghost{background:transparent;color:var(--ink)}
+  .btn-ghost:hover{border-color:var(--accent);color:var(--accent)}
+  @media (max-width:820px){
+    .hero{padding:44px 0 34px}
+    .hero-grid{grid-template-columns:1fr;gap:12px}
+    .eyebrow{padding-top:0}
   }
-  .card h3 { font-size: 1.02rem; font-weight: 700; }
-  .card p { color: var(--muted); font-size: .9rem; margin: 8px 0 0; line-height: 1.55; }
-  .card .ic { font-size: 1.35rem; }
 
-  .skill { transition: transform .16s ease, border-color .16s ease; }
-  .skill:hover { transform: translateY(-2px); border-color: color-mix(in srgb, var(--accent) 55%, var(--line)); }
-  .skill .cmd-name {
-    font-family: var(--mono); font-weight: 650; color: var(--accent-ink); font-size: .95rem;
+  /* 種子 → 膠囊 → 母艦：改成一條有刻度的線，不用發光卡片 */
+  /* .arrow 設了 display:none 就不再是 grid item，所以這裡只需要三欄。
+     用 minmax(0,1fr) 而不是 1fr，否則內容較長的那格會把欄寬撐開。 */
+  .journey{margin-top:34px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));align-items:stretch;gap:0}
+  .stage{border:1px solid var(--rule);border-right:0;padding:16px 18px;background:var(--card)}
+  .stage:last-child{border-right:1px solid var(--rule)}
+  .stage.mid{border-color:color-mix(in srgb,var(--accent) 45%,var(--rule));background:var(--paper-2)}
+  .stage .tag{font-family:var(--mono);font-size:.63rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+  .stage.mid .tag{color:var(--accent)}
+  .stage .cap{display:none}
+  .stage h3{font-size:.98rem;margin-top:7px;font-weight:650}
+  .stage p{margin-top:5px;font-size:.87rem;color:var(--muted);line-height:1.55}
+  .arrow{display:none}
+  @media (max-width:780px){
+    .journey{grid-template-columns:1fr}
+    .stage{border-right:1px solid var(--rule);border-bottom:0}
+    .stage:last-child{border-bottom:1px solid var(--rule)}
   }
-  .skill p { margin-top: 7px; }
 
-  /* ---------- terminal / command cards ---------- */
-  .term {
-    background: var(--term-bg); border: 1px solid var(--term-line); border-radius: 13px;
-    overflow: hidden; color: var(--term-ink); font-family: var(--mono);
+  /* ── 章節：左邊欄編號 + 右邊內容 ────────────────────── */
+  .sec{display:grid;grid-template-columns:120px 1fr;gap:44px;padding:56px 0;border-bottom:1px solid var(--rule-soft)}
+  .sec:last-of-type{border-bottom:0}
+  .marg{position:sticky;top:88px;align-self:start}
+  .marg .num{font-family:var(--mono);font-size:1.6rem;font-weight:500;color:var(--accent);line-height:1}
+  .marg .lab{margin-top:6px;font-size:.78rem;color:var(--muted);line-height:1.45}
+  .sec h2{font-size:clamp(1.35rem,2.5vw,1.78rem);font-weight:700;line-height:1.3}
+  .sec .intro{margin-top:14px;color:var(--ink-2);max-width:62ch}
+  @media (max-width:820px){
+    .sec{grid-template-columns:1fr;gap:16px;padding:44px 0}
+    .marg{position:static;display:flex;align-items:baseline;gap:12px}
+    .marg .num{font-size:1.05rem}
+    .marg .lab{margin-top:0}
   }
-  .term-top { display: flex; align-items: center; gap: 7px; padding: 10px 14px; border-bottom: 1px solid var(--term-line); }
-  .dot { width: 10px; height: 10px; border-radius: 50%; background: #4a443d; }
-  .dot.r { background: #E8590C; } .dot.y { background: #d6a419; } .dot.g { background: #0D8C80; }
-  .term-title { margin-left: 6px; font-size: .72rem; color: var(--term-muted); letter-spacing: .04em; }
-  .cmd { display: flex; align-items: flex-start; gap: 10px; padding: 13px 14px; font-size: .88rem; line-height: 1.6; }
-  .cmd + .cmd { border-top: 1px solid var(--term-line); }
-  .cmd .prompt { color: var(--accent); user-select: none; }
-  .cmd code { color: var(--term-ink); white-space: pre-wrap; word-break: break-word; flex: 1; }
-  .cmd .cmt { color: var(--term-muted); }
-  .copy {
-    margin-left: auto; border: 1px solid var(--term-line); background: transparent; color: var(--term-muted);
-    font-family: var(--mono); font-size: .68rem; padding: 4px 9px; border-radius: 7px; cursor: pointer; flex: none;
-  }
-  .copy:hover { color: var(--term-ink); border-color: var(--accent); }
 
-  /* ---------- steps ---------- */
-  .steps { counter-reset: step; display: grid; gap: 2px; }
-  .step {
-    display: grid; grid-template-columns: 54px 1fr; gap: 18px; align-items: start;
-    padding: 18px 0; border-top: 1px dashed var(--line);
-  }
-  .step:first-child { border-top: none; }
-  .step .num {
-    counter-increment: step; font-family: var(--mono); font-size: 1.1rem; font-weight: 700;
-    color: var(--accent); padding-top: 2px;
-  }
-  .step .num::before { content: counter(step, decimal-leading-zero); }
-  .step h3 { font-size: 1rem; font-weight: 700; }
-  .step p { color: var(--muted); font-size: .9rem; margin: 5px 0 0; }
-  .step code { font-family: var(--mono); font-size: .84em; background: var(--panel-2); padding: 1px 6px; border-radius: 5px; color: var(--accent-ink); }
+  /* ── 卡片：改成無圖示的分隔式區塊 ───────────────────── */
+  .grid{display:grid;gap:0;margin-top:24px}
+  .g3,.g2{grid-template-columns:1fr}
+  .card{border-top:1px solid var(--rule-soft);padding:16px 0}
+  .card:first-child{border-top:1px solid var(--rule)}
+  .card .ic{display:none}
+  .card h3{font-size:1rem;font-weight:650}
+  .card p{color:var(--muted);font-size:.94rem;margin-top:5px;max-width:62ch}
 
-  /* ---------- rules ---------- */
-  .rules { display: grid; gap: 10px; }
-  .rule {
-    display: grid; grid-template-columns: 26px 1fr; gap: 13px; align-items: start;
-    background: var(--panel); border: 1px solid var(--line); border-radius: 11px; padding: 14px 16px;
-  }
-  .rule .k { color: var(--go); font-weight: 800; padding-top: 1px; }
-  .rule b { font-weight: 650; }
-  .rule span { color: var(--muted); }
+  /* ── 提示條 ───────────────────────────────────────── */
+  .callout,.howto-note,.ip-note{margin-top:20px;border-left:2px solid var(--accent);background:var(--paper-2);
+            padding:14px 18px;font-size:.94rem;color:var(--ink-2);line-height:1.7;max-width:74ch}
+  .callout b,.howto-note b{color:var(--ink)}
 
-  .guards { display: grid; gap: 12px; grid-template-columns: repeat(3,1fr); }
-  @media (max-width: 760px) { .guards { grid-template-columns: 1fr; } }
-  .guard { background: var(--panel-2); border: 1px solid var(--line); border-left: 3px solid var(--accent); border-radius: 10px; padding: 15px 16px; }
-  .guard h3 { font-family: var(--mono); font-size: .85rem; color: var(--ink); }
-  .guard p { color: var(--muted); font-size: .85rem; margin-top: 6px; }
+  /* ── 分頁（安裝方式） ──────────────────────────────── */
+  .tabs{display:flex;gap:0;border-bottom:1px solid var(--rule);margin:24px 0 22px;flex-wrap:wrap}
+  .tab{border:0;background:transparent;color:var(--muted);font-family:var(--sans);font-size:.93rem;
+       font-weight:600;padding:10px 16px;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px}
+  .tab:hover{color:var(--ink)}
+  .tab.on{color:var(--accent);border-bottom-color:var(--accent)}
+  .tabpanel[hidden]{display:none}
 
-  .inside { display: grid; gap: 10px; grid-template-columns: repeat(2,1fr); }
-  @media (max-width: 700px) { .inside { grid-template-columns: 1fr; } }
-  .inside li { list-style: none; display: flex; gap: 10px; align-items: baseline; font-size: .92rem; color: var(--muted); }
-  .inside li b { color: var(--ink); font-weight: 600; }
-  .inside li::before { content: "▪"; color: var(--accent); }
-  ul.inside { padding: 0; margin: 0; }
+  /* ── 圖解步驟 ─────────────────────────────────────── */
+  .dsteps{display:grid;gap:0}
+  .dstep{border-top:1px solid var(--rule-soft);padding:20px 0}
+  .dstep:first-child{border-top:1px solid var(--rule)}
+  .dstep-h{display:grid;grid-template-columns:26px 1fr;gap:12px;align-items:baseline}
+  .dn{font-family:var(--mono);font-size:.85rem;font-weight:600;color:var(--accent)}
+  .dstep-h p{font-size:.96rem;max-width:62ch}
+  .dshot{margin-top:14px;margin-left:38px;border:1px solid var(--rule);border-radius:3px;
+         max-width:min(100%,620px);display:block}
+  @media (max-width:640px){.dshot{margin-left:0}}
 
-  .callout {
-    background: color-mix(in srgb, var(--go) 8%, var(--panel));
-    border: 1px solid color-mix(in srgb, var(--go) 32%, var(--line));
-    border-radius: 12px; padding: 16px 18px; font-size: .92rem;
-  }
-  .callout b { color: var(--go-ink); }
+  /* ── 步驟清單 ─────────────────────────────────────── */
+  /* 編號是 CSS counter 產生的，<span class="num"> 本身是空的——別把 ::before 拿掉 */
+  .steps{display:grid;gap:0;margin-top:20px;counter-reset:step}
+  .step{display:grid;grid-template-columns:26px 1fr;gap:12px;border-top:1px solid var(--rule-soft);padding:14px 0}
+  .step:first-child{border-top:1px solid var(--rule)}
+  .step .num{counter-increment:step;font-family:var(--mono);font-size:.85rem;font-weight:600;color:var(--accent)}
+  .step .num::before{content:counter(step,decimal-leading-zero)}
+  .step h3{font-size:1rem;font-weight:650}
+  .step p{font-size:.95rem;color:var(--muted);max-width:62ch}
+  .step b{color:var(--ink-2)}
 
-  /* ---------- how-to chat illustration ---------- */
-  .howto-wrap { display: grid; grid-template-columns: 1.15fr 1fr; gap: 26px; align-items: center; margin-bottom: 8px; }
-  @media (max-width: 820px) { .howto-wrap { grid-template-columns: 1fr; } }
-  .chatmock { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; box-shadow: 0 22px 50px -34px rgba(0,0,0,.5); }
-  .chatmock-top { display: flex; align-items: center; gap: 7px; padding: 11px 14px; border-bottom: 1px solid var(--line); background: var(--panel-2); }
-  .chatmock-top .d { width: 10px; height: 10px; border-radius: 50%; background: #cfc8bf; }
-  .chatmock-top .d.r { background: #E8590C; } .chatmock-top .d.y { background: #d6a419; } .chatmock-top .d.g { background: #0D8C80; }
-  .chatmock-top .t { margin-left: 6px; font-family: var(--mono); font-size: .72rem; color: var(--muted); }
-  .chatmock-body { padding: 18px 16px; display: grid; gap: 11px; }
-  .bubble { max-width: 84%; padding: 10px 13px; border-radius: 13px; font-size: .9rem; line-height: 1.5; }
-  .bubble.you { justify-self: end; background: var(--accent); color: #fff; border-bottom-right-radius: 4px; font-family: var(--mono); font-size: .84rem; }
-  .bubble.ai { justify-self: start; background: var(--panel-2); color: var(--ink); border: 1px solid var(--line); border-bottom-left-radius: 4px; }
-  .chatmock-input { display: flex; align-items: center; gap: 10px; margin: 2px 16px 18px; padding: 10px 12px; border: 2px solid var(--accent); border-radius: 12px; background: var(--bg); }
-  .chatmock-input .plus { width: 26px; height: 26px; flex: none; border-radius: 8px; border: 1px solid var(--line); display: inline-flex; align-items: center; justify-content: center; color: var(--accent-ink); font-size: 1.05rem; font-weight: 600; }
-  .chatmock-input .ph { color: var(--muted); font-size: .88rem; flex: 1; }
-  .chatmock-input .ent { font-family: var(--mono); font-size: .68rem; color: var(--muted); border: 1px solid var(--line); border-radius: 6px; padding: 3px 7px; flex: none; }
-  .howto-cap { text-align: center; color: var(--muted); font-size: .76rem; margin-top: 10px; }
-  .howto-notes { display: grid; gap: 16px; }
-  .howto-note { display: grid; grid-template-columns: 32px 1fr; gap: 12px; align-items: start; }
-  .howto-note .n { font-family: var(--mono); font-weight: 700; color: var(--accent); font-size: 1.15rem; line-height: 1.3; }
-  .howto-note p { margin: 0; color: var(--muted); font-size: .95rem; line-height: 1.55; }
-  .howto-note b { color: var(--ink); font-weight: 600; }
+  /* ── 終端機／指令 ─────────────────────────────────── */
+  .term{border:1px solid var(--rule);border-radius:3px;background:var(--card);overflow:hidden;margin-top:16px}
+  .term-top{display:flex;align-items:center;gap:8px;padding:8px 14px;border-bottom:1px solid var(--rule);background:var(--paper-2)}
+  .term-title{font-family:var(--mono);font-size:.72rem;color:var(--muted)}
+  .term .dot{width:8px;height:8px;border-radius:50%;background:var(--rule)}
+  .cmd{display:flex;align-items:center;gap:10px;padding:10px 14px;border-top:1px solid var(--rule-soft);font-family:var(--mono);font-size:.84rem}
+  .cmd:first-of-type{border-top:0}
+  .cmd .prompt{color:var(--accent)}
+  .cmd code{flex:1;word-break:break-all}
+  .copy{border:1px solid var(--rule);background:transparent;color:var(--muted);font-family:var(--sans);
+        font-size:.72rem;font-weight:600;padding:4px 9px;border-radius:3px;cursor:pointer}
+  .copy:hover{border-color:var(--accent);color:var(--accent)}
 
-  /* ---------- install path cards ---------- */
-  .ip-title { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 1.02rem; }
-  .ip-steps { margin: 12px 0 0; padding: 0; list-style: none; counter-reset: ip; display: grid; gap: 10px; }
-  .ip-steps li { display: grid; grid-template-columns: 22px 1fr; gap: 10px; font-size: .9rem; color: var(--muted); line-height: 1.5; }
-  .ip-steps li::before { counter-increment: ip; content: counter(ip); font-family: var(--mono); font-weight: 700; color: var(--accent); }
-  .ip-steps b { color: var(--ink); font-weight: 600; }
-  .ip-note { color: var(--muted); font-size: .78rem; margin: 13px 0 0; line-height: 1.5; }
+  /* ── 對話示意 ─────────────────────────────────────── */
+  .chatmock{border:1px solid var(--rule);border-radius:3px;background:var(--card);overflow:hidden;margin-top:8px}
+  .chatmock-top{padding:8px 14px;border-bottom:1px solid var(--rule);background:var(--paper-2);
+                font-family:var(--mono);font-size:.72rem;color:var(--muted)}
+  .chatmock-body{padding:16px;display:grid;gap:10px}
+  .bubble{border:1px solid var(--rule);border-radius:3px;padding:10px 13px;font-size:.92rem;max-width:82%}
+  .bubble.you{justify-self:end;background:var(--paper-2)}
+  .bubble.ai{justify-self:start;background:transparent;color:var(--muted)}
+  .chatmock-input{border-top:1px solid var(--rule);padding:10px 14px;display:flex;align-items:center;gap:10px;
+                  font-size:.88rem;color:var(--muted)}
+  .chatmock-input .plus{font-family:var(--mono);color:var(--accent)}
+  .chatmock-input .ent{margin-left:auto;font-family:var(--mono);font-size:.72rem}
+  .howto-wrap{margin-top:20px}
+  .howto-cap{margin-top:10px;font-size:.85rem;color:var(--muted)}
+  .howto-notes{display:grid;gap:0;margin-top:20px}
+  .cmt{font-family:var(--mono);font-size:.8rem;color:var(--muted)}
 
-  /* ---------- install tabs ---------- */
-  img { max-width: 100%; height: auto; }
-  .tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--line); margin-bottom: 22px; flex-wrap: wrap; }
-  .tab { border: 0; background: transparent; color: var(--muted); font-family: var(--sans); font-size: .92rem; font-weight: 650; padding: 10px 15px; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; display: inline-flex; align-items: center; gap: 7px; }
-  .tab:hover { color: var(--ink); }
-  .tab.on { color: var(--accent-ink); border-bottom-color: var(--accent); }
-  .tabpanel[hidden] { display: none; }
-  .dsteps { display: grid; gap: 24px; }
-  .dstep { display: grid; gap: 11px; }
-  .dstep-h { display: grid; grid-template-columns: 26px 1fr; gap: 10px; align-items: baseline; }
-  .dstep-h .dn { font-family: var(--mono); font-weight: 700; color: var(--accent); font-size: 1.05rem; }
-  .dstep-h p { margin: 0; font-size: .95rem; line-height: 1.55; }
-  .dstep-h b { color: var(--ink); font-weight: 600; }
-  .dstep-h code { font-family: var(--mono); font-size: .84em; background: var(--panel-2); padding: 1px 6px; border-radius: 5px; color: var(--accent-ink); }
-  .dshot { display: block; width: 100%; max-width: 680px; margin-left: 36px; border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 14px 40px -28px rgba(0,0,0,.6); }
-  @media (max-width: 640px) { .dshot { margin-left: 0; } }
-  .ide-note { color: var(--muted); font-size: .95rem; line-height: 1.6; }
-  .ide-note b { color: var(--ink); }
+  /* ── 技能表 ───────────────────────────────────────── */
+  .skills{display:grid;gap:0;margin-top:22px}
+  .skill{display:grid;grid-template-columns:190px 1fr;gap:24px;border-top:1px solid var(--rule-soft);padding:14px 0}
+  .skill:first-child{border-top:1px solid var(--rule)}
+  .cmd-name{font-family:var(--mono);font-size:.92rem;font-weight:600;color:var(--accent)}
+  .skill p{font-size:.94rem;color:var(--muted);max-width:60ch}
+  @media (max-width:700px){.skill{grid-template-columns:1fr;gap:4px}}
 
-  footer { border-top: 1px solid var(--line); padding: 34px 0 56px; color: var(--muted); font-size: .85rem; }
-  footer .fr { display: flex; flex-wrap: wrap; gap: 6px 18px; align-items: center; }
-  footer code { font-family: var(--mono); color: var(--accent-ink); }
+  /* ── 契約條文 ─────────────────────────────────────── */
+  .rules{display:grid;gap:0;margin-top:22px;counter-reset:rule}
+  .rule{display:grid;grid-template-columns:26px 1fr;gap:12px;border-top:1px solid var(--rule-soft);padding:13px 0}
+  .rule:first-child{border-top:1px solid var(--rule)}
+  .rule .k{counter-increment:rule;font-family:var(--mono);font-size:.85rem;font-weight:600;color:var(--accent)}
+  .rule .k::before{content:counter(rule)}
+  .rule p{font-size:.94rem;color:var(--muted);max-width:64ch}
+  .rule b{color:var(--ink-2)}
 
-  .reveal { opacity: 0; transform: translateY(14px); transition: opacity .5s ease, transform .5s ease; }
-  .reveal.in { opacity: 1; transform: none; }
-  @media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; transition: none; } }
+  /* ── 護欄 ─────────────────────────────────────────── */
+  .guards{display:grid;gap:0;margin-top:22px}
+  .guard{border-top:1px solid var(--rule-soft);padding:15px 0}
+  .guard:first-child{border-top:1px solid var(--rule)}
+  .guard h3{font-size:.98rem;font-weight:650}
+  .guard p{font-size:.93rem;color:var(--muted);margin-top:5px;max-width:62ch}
 
-  .toast {
-    position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%) translateY(20px);
-    background: var(--ink); color: var(--bg); font-size: .82rem; font-weight: 600;
-    padding: 9px 16px; border-radius: 20px; opacity: 0; pointer-events: none; transition: all .25s ease; z-index: 80;
-  }
-  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  /* ── 範本內容 ─────────────────────────────────────── */
+  .inside{display:grid;gap:0;margin:22px 0 0;padding:0;list-style:none}
+  .inside li{display:grid;grid-template-columns:16px 1fr;gap:10px;border-top:1px solid var(--rule-soft);
+             padding:13px 0;font-size:.94rem;color:var(--muted);max-width:66ch}
+  .inside li:first-child{border-top:1px solid var(--rule)}
+  .inside li::before{content:"—";color:var(--accent);font-family:var(--mono)}
+  .inside b{color:var(--ink-2)}
 
-  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+  /* ── 頁尾 ─────────────────────────────────────────── */
+  footer{border-top:1px solid var(--rule);margin-top:20px;padding:34px 0 60px;color:var(--muted);font-size:.86rem}
+  .fr{display:flex;flex-wrap:wrap;gap:8px 20px;align-items:center}
+  .fr a{color:var(--accent)}
+
+  /* JS 加的是 .show（不是 .on），別改名 */
+  .toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%);background:var(--ink);color:var(--paper);
+         padding:8px 16px;border-radius:3px;font-size:.85rem;opacity:0;pointer-events:none;transition:opacity .2s}
+  .toast.show{opacity:1}
+
+  /* 終端機／對話示意裡的小圓點與標題 */
+  .dot.r{background:var(--accent)}
+  .chatmock-top .d{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--rule);margin-right:5px}
+  .chatmock-top .d.r{background:var(--accent)}
+  .chatmock-top .t{margin-left:6px}
+  .chatmock-input .ph{color:var(--muted)}
+  .cmd .cmt{color:var(--muted)}
+  .cmd + .cmd{border-top:1px solid var(--rule-soft)}
+  .step code,.dstep-h code,.rule code{font-family:var(--mono);font-size:.86em;
+       background:var(--paper-2);padding:1px 5px;border-radius:2px}
+  .howto-note .n{font-family:var(--mono);color:var(--accent);font-weight:600;margin-right:6px}
+  .howto-note p{margin-top:6px}
+  .ip-title{font-weight:650;margin-top:18px}
 </style>
 
-<div class="bar">
-  <div class="wrap bar-in">
-    <span class="brand"><span class="mk">🧪</span> CAPSULE <span class="sub">develop</span></span>
-    <nav>
-      <a href="why.html" data-i18n="nav.whypage">為什麼?</a>
-      <a href="#what" data-i18n="nav.what">是什麼</a>
-      <a href="#install" data-i18n="nav.install">安裝</a>
-      <a href="#howto" data-i18n="nav.howto">操作</a>
-      <a href="#start" data-i18n="nav.start">開始</a>
-      <a href="#supabase" data-i18n="nav.db">資料庫</a>
-      <a href="#skills" data-i18n="nav.skills">技能</a>
-      <a href="#path" data-i18n="nav.path">流程</a>
-      <a href="#contract" data-i18n="nav.contract">契約</a>
-      <a href="#deploy" data-i18n="nav.deploy">上線</a>
-      <a href="#how" data-i18n="nav.how">運作</a>
+<div class="top">
+  <div class="wrap top-in">
+    <a class="brand" href="index.html"><b>CAPSULE</b><span>develop</span></a>
+    <nav class="pages" aria-label="頁面">
+      <a class="on" href="index.html" aria-current="page"><small>01</small><span data-i18n="nav.tool">工具箱說明</span></a>
+      <a class="learn" href="how.html"><small>02</small><span data-i18n="nav.how2">怎麼運作</span></a>
     </nav>
-    <div class="bar-tools">
-      <div class="langsw" role="group" aria-label="Language / 語言 / 言語">
+    <div class="tools">
+      <div class="lang" role="group" aria-label="Language">
         <button data-lang="zh" type="button">中</button>
         <button data-lang="en" type="button">EN</button>
         <button data-lang="ja" type="button">日</button>
       </div>
-      <button class="toggle" id="themeBtn" aria-label="切換深色/淺色">◐</button>
+      <button class="themebtn" id="themeBtn" aria-label="切換深色/淺色">◐</button>
     </div>
   </div>
 </div>
 
 <header class="hero">
-  <div class="wrap">
+  <div class="wrap hero-grid">
     <span class="eyebrow" data-i18n="hero.eyebrow">CAPSULE 星球孵化器</span>
+    <div>
     <h1 data-i18n="hero.h1">不會寫程式，也能做出自己的內部工具。</h1>
     <p class="lede" data-i18n="hero.lede">
       裝上這個工具箱，你就能用 Claude Code 開發一個屬於自己的小系統——用你自己的免費資料庫、自己的免費網址，
@@ -341,58 +291,60 @@
     </div>
 
     <div class="journey">
-      <div class="stage reveal">
+      <div class="stage">
         <span class="tag" data-i18n="jr.1.tag">起點</span>
-        <div class="cap">🌱</div>
+        
         <h3 data-i18n="jr.1.h">種子範本</h3>
         <p data-i18n="jr.1.p">一個現成的最小專案：畫面、登入、權限、一個完整範例功能都已備好。</p>
       </div>
-      <div class="arrow reveal" aria-hidden="true">→</div>
-      <div class="stage mid reveal">
+      <div class="arrow" aria-hidden="true">→</div>
+      <div class="stage mid">
         <span class="tag" data-i18n="jr.2.tag">你在這裡</span>
-        <div class="cap">🧪</div>
+        
         <h3 data-i18n="jr.2.h">你的膠囊 MVP</h3>
         <p data-i18n="jr.2.p">用你自己的 Supabase + Cloudflare 獨立開發。做壞了只影響自己，碰不到公司系統。</p>
       </div>
-      <div class="arrow reveal" aria-hidden="true">→</div>
-      <div class="stage reveal">
+      <div class="arrow" aria-hidden="true">→</div>
+      <div class="stage">
         <span class="tag" data-i18n="jr.3.tag">畢業</span>
-        <div class="cap">🛰️</div>
+        
         <h3 data-i18n="jr.3.h">回收進母艦</h3>
         <p data-i18n="jr.3.p">穩定使用幾個月後，平台團隊把它整包搬進母艦。</p>
       </div>
     </div>
   </div>
+  </div>
 </header>
 
 <main class="wrap">
 
-  <section id="what">
-    <div class="sec-head reveal">
-      <span class="eyebrow" data-i18n="what.eyebrow">為什麼這樣設計</span>
-      <h2 data-i18n="what.h2">你的沙盒，你的節奏</h2>
-      <p data-i18n="what.p">你不需要懂伺服器、不需要碰公司正式機。你只要會描述「我想要一個可以⋯⋯的功能」，其餘交給 Claude。</p>
-    </div>
+  <section class="sec" id="what">
+    <div class="marg"><div class="num">01</div><div class="lab" data-i18n="what.eyebrow">為什麼這樣設計</div></div>
+    <div>
+    <h2 data-i18n="what.h2">你的沙盒，你的節奏</h2>
+      <p class="intro" data-i18n="what.p">你不需要懂伺服器、不需要碰公司正式機。你只要會描述「我想要一個可以⋯⋯的功能」，其餘交給 Claude。</p>
+    
     <div class="grid g3">
-      <div class="card reveal"><div class="ic">🧪</div><h3 data-i18n="what.c1h">完全獨立的沙盒</h3><p data-i18n="what.c1p">每個 MVP 用自己的免費資料庫與網址。實驗、失敗、重來，都不影響任何人。</p></div>
-      <div class="card reveal"><div class="ic">🤖</div><h3 data-i18n="what.c2h">Claude 當你的工程師</h3><p data-i18n="what.c2p">用業務語言講需求，Claude 照著已經備好的規則寫程式，不會長歪。</p></div>
-      <div class="card reveal"><div class="ic">🛰️</div><h3 data-i18n="what.c3h">成熟就能回收</h3><p data-i18n="what.c3p">範本強制的慣例，讓你的成果天生就是「可以裝回大系統的形狀」。</p></div>
+      <div class="card"><h3 data-i18n="what.c1h">完全獨立的沙盒</h3><p data-i18n="what.c1p">每個 MVP 用自己的免費資料庫與網址。實驗、失敗、重來，都不影響任何人。</p></div>
+      <div class="card"><h3 data-i18n="what.c2h">Claude 當你的工程師</h3><p data-i18n="what.c2p">用業務語言講需求，Claude 照著已經備好的規則寫程式，不會長歪。</p></div>
+      <div class="card"><h3 data-i18n="what.c3h">成熟就能回收</h3><p data-i18n="what.c3p">範本強制的慣例，讓你的成果天生就是「可以裝回大系統的形狀」。</p></div>
     </div>
+  </div>
   </section>
 
-  <section id="install">
-    <div class="sec-head reveal">
-      <span class="eyebrow" data-i18n="install.eyebrow">選一種做法</span>
-      <h2 data-i18n="install.h2">安裝工具箱</h2>
-      <p data-i18n="install.p">工具箱只要裝一次。看你用哪種 Claude Code，選一種做法。</p>
-    </div>
-    <div class="callout reveal" style="margin-bottom:16px" data-i18n="install.step0">
+  <section class="sec" id="install">
+    <div class="marg"><div class="num">02</div><div class="lab" data-i18n="install.eyebrow">選一種做法</div></div>
+    <div>
+    <h2 data-i18n="install.h2">安裝工具箱</h2>
+      <p class="intro" data-i18n="install.p">工具箱只要裝一次。看你用哪種 Claude Code，選一種做法。</p>
+    
+    <div class="callout" style="margin-bottom:16px" data-i18n="install.step0">
       <b>開始前你需要（Step 0）：</b>這是整個流程裡<b style="color:var(--ink)">唯一需要你自己動手裝東西的地方</b>——做完之後，從頭到尾都只要「跟 Claude 說話」。作業系統 Windows 或 Mac 皆可，三種安裝方式都照同一個順序。<br><b style="color:var(--ink)">① 先裝 git 與 Node.js（LTS）</b>：之後開發一定會用到——Node 跑你的專案，git 做版控。Windows 在 PowerShell 打 <code style="font-family:var(--mono)">winget install Git.Git</code> 與 <code style="font-family:var(--mono)">winget install OpenJS.NodeJS.LTS</code>；Mac 打 <code style="font-family:var(--mono)">xcode-select --install</code> 再到 nodejs.org 下載 LTS。裝完關掉視窗重開，讓設定生效。<b style="color:var(--ink)">電腦上已經有舊版 Node（v18 以下）務必一併升級</b>，否則可能連 Claude Code 都登不進去（打 <code style="font-family:var(--mono)">node --version</code> 看一眼）。<br><b style="color:var(--ink)">② 裝 Claude Code 並登入</b>：用<b style="color:var(--ink)">付費方案</b>（Pro／Max，或 API 計費）——這整套工具就是在它裡面跑的。<br><b style="color:var(--ink)">③ 裝下面的工具箱</b>，然後打 <code style="font-family:var(--mono)">/doctor</code> 讓它確認環境沒問題。<br>公司電腦是 IT 發的話，可以請 IT 直接把 ①② 做好，你打開就能用。<b style="color:var(--ink)">裝不起來、被權限擋住、或看到跟 <code style="font-family:var(--mono)">node</code> 有關的錯誤 → 別自己想辦法，截圖找 IT。</b>
     </div>
     <div class="tabs" role="tablist">
-      <button class="tab on" type="button" data-tab="desktop">🖥️ <span data-i18n="tab.desktop">Claude 桌面版</span></button>
-      <button class="tab" type="button" data-tab="terminal">⌨️ <span data-i18n="tab.terminal">終端機</span></button>
-      <button class="tab" type="button" data-tab="ide">🧩 <span data-i18n="tab.ide">IDE 版</span></button>
+      <button class="tab on" type="button" data-tab="desktop"><span data-i18n="tab.desktop">Claude 桌面版</span></button>
+      <button class="tab" type="button" data-tab="terminal"><span data-i18n="tab.terminal">終端機</span></button>
+      <button class="tab" type="button" data-tab="ide"><span data-i18n="tab.ide">IDE 版</span></button>
     </div>
 
     <div class="tabpanel" data-panel="desktop">
@@ -471,15 +423,16 @@
       <p class="ip-note" data-i18n="ide.note">版本不同，標籤可能略有差異；也可以像「終端機」分頁那樣，直接在面板輸入框貼上那兩行 <code style="font-family:var(--mono)">/plugin …</code>。</p>
     </div>
 
+  </div>
   </section>
 
-  <section id="howto">
-    <div class="sec-head reveal">
-      <span class="eyebrow" data-i18n="howto.eyebrow">看圖照做</span>
-      <h2 data-i18n="howto.h2">裝好之後，怎麼開始？</h2>
-      <p data-i18n="howto.p">裝好工具箱後，你<b>大多不用打 <code>/指令</code></b>——直接在輸入框用一句話說你要什麼，Claude 就會挑對的技能、帶你一步步做。要貼 token 時也是貼進同一個框。</p>
-    </div>
-    <div class="howto-wrap reveal">
+  <section class="sec" id="howto">
+    <div class="marg"><div class="num">03</div><div class="lab" data-i18n="howto.eyebrow">看圖照做</div></div>
+    <div>
+    <h2 data-i18n="howto.h2">裝好之後，怎麼開始？</h2>
+      <p class="intro" data-i18n="howto.p">裝好工具箱後，你<b>大多不用打 <code>/指令</code></b>——直接在輸入框用一句話說你要什麼，Claude 就會挑對的技能、帶你一步步做。要貼 token 時也是貼進同一個框。</p>
+    
+    <div class="howto-wrap">
       <div>
         <div class="chatmock">
           <div class="chatmock-top"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="t">Claude Code</span></div>
@@ -501,142 +454,152 @@
       </div>
     </div>
     <div class="steps" style="margin-top:8px">
-      <div class="step reveal"><div class="num"></div><div><h3 data-i18n="howto.s1h">找到最下面的輸入框</h3><p data-i18n="howto.s1p">Claude Desktop 開好後，畫面最下面那條就是「輸入框」——你跟 Claude 講的話都打在這裡。</p></div></div>
-      <div class="step reveal"><div class="num"></div><div><h3 data-i18n="howto.s2h">用一句話說你要什麼</h3><p data-i18n="howto.s2p">在框裡用白話說「幫我做一個○○」、按 Enter，Claude 就會挑對的技能、帶你把它建起來。（想打 <code>/new-project</code> 也行，但不是必須。）</p></div></div>
-      <div class="step reveal"><div class="num"></div><div><h3 data-i18n="howto.s3h">要你貼東西時，貼回同一個框</h3><p data-i18n="howto.s3p">Claude 有時會請你貼一段 token（例如 Supabase 的）。複製後，貼回這個輸入框、按 Enter 就好——不用開任何設定檔。</p></div></div>
+      <div class="step"><div class="num"></div><div><h3 data-i18n="howto.s1h">找到最下面的輸入框</h3><p data-i18n="howto.s1p">Claude Desktop 開好後，畫面最下面那條就是「輸入框」——你跟 Claude 講的話都打在這裡。</p></div></div>
+      <div class="step"><div class="num"></div><div><h3 data-i18n="howto.s2h">用一句話說你要什麼</h3><p data-i18n="howto.s2p">在框裡用白話說「幫我做一個○○」、按 Enter，Claude 就會挑對的技能、帶你把它建起來。（想打 <code>/new-project</code> 也行，但不是必須。）</p></div></div>
+      <div class="step"><div class="num"></div><div><h3 data-i18n="howto.s3h">要你貼東西時，貼回同一個框</h3><p data-i18n="howto.s3p">Claude 有時會請你貼一段 token（例如 Supabase 的）。複製後，貼回這個輸入框、按 Enter 就好——不用開任何設定檔。</p></div></div>
     </div>
+  </div>
   </section>
 
-  <section id="start">
-    <div class="sec-head reveal">
-      <span class="eyebrow" data-i18n="start.eyebrow">第一步</span>
-      <h2 data-i18n="start.h2">長出一個新專案</h2>
-      <p data-i18n="start.p">在一個空資料夾開 Claude Code，直接跟它說「<b style="color:var(--ink)">幫我開一個新專案</b>」（或打 <code>/new-project</code>）。它會問你專案名稱、帶你建立自己的免費 Supabase、把本地開發環境跑起來（第一次會先確認 Step 0 裝的 git 與 Node 都就緒）。</p>
-    </div>
-    <div class="term reveal">
+  <section class="sec" id="start">
+    <div class="marg"><div class="num">04</div><div class="lab" data-i18n="start.eyebrow">第一步</div></div>
+    <div>
+    <h2 data-i18n="start.h2">長出一個新專案</h2>
+      <p class="intro" data-i18n="start.p">在一個空資料夾開 Claude Code，直接跟它說「<b style="color:var(--ink)">幫我開一個新專案</b>」（或打 <code>/new-project</code>）。它會問你專案名稱、帶你建立自己的免費 Supabase、把本地開發環境跑起來（第一次會先確認 Step 0 裝的 git 與 Node 都就緒）。</p>
+    
+    <div class="term">
       <div class="term-top"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="term-title" data-i18n="start.termtitle">在一個空資料夾</span></div>
       <div class="cmd"><span class="prompt">&gt;</span><code>/new-project</code><button class="copy" data-i18n="ui.copy">複製</button></div>
       <div class="cmd"><span class="cmt" data-i18n="start.cmt"># 之後：/task-brief 講需求 → /new-feature 做出來 → /check 檢查 → /deploy 上線</span></div>
     </div>
+  </div>
   </section>
 
-  <section id="supabase">
-    <div class="sec-head reveal">
-      <span class="eyebrow" data-i18n="db.eyebrow">你的資料存在哪</span>
-      <h2 data-i18n="db.h2">接上免費的資料庫（約 3 分鐘）</h2>
-      <p data-i18n="db.p">每個 MVP 用一個自己的免費雲端資料庫（Supabase），放資料、管登入，跟別人完全分開。你不用懂它——照下面做、把兩個值貼給 Claude 就好。</p>
-    </div>
+  <section class="sec" id="supabase">
+    <div class="marg"><div class="num">05</div><div class="lab" data-i18n="db.eyebrow">你的資料存在哪</div></div>
+    <div>
+    <h2 data-i18n="db.h2">接上免費的資料庫（約 3 分鐘）</h2>
+      <p class="intro" data-i18n="db.p">每個 MVP 用一個自己的免費雲端資料庫（Supabase），放資料、管登入，跟別人完全分開。你不用懂它——照下面做、把兩個值貼給 Claude 就好。</p>
+    
     <div class="steps">
-      <div class="step reveal"><div class="num"></div><div><h3 data-i18n="db.s1h">免費註冊</h3><p data-i18n="db.s1p">打開 <a href="https://supabase.com" target="_blank" rel="noopener" style="color:var(--accent-ink);text-decoration:underline">supabase.com</a>，用 Google 或 email 免費登入。</p></div></div>
-      <div class="step reveal"><div class="num"></div><div><h3 data-i18n="db.s2h">New project</h3><p data-i18n="db.s2p">按綠色的 <b style="color:var(--ink)">New project</b>，取個名字、區域選 <b style="color:var(--ink)">Southeast Asia (Singapore)</b>、設一組資料庫密碼（記起來）。等約 1 分鐘讓它建好。</p></div></div>
-      <div class="step reveal"><div class="num"></div><div><h3 data-i18n="db.s3h">產一個 token 貼給 Claude</h3><p data-i18n="db.s3p">到 <a href="https://supabase.com/dashboard/account/tokens" target="_blank" rel="noopener" style="color:var(--accent-ink);text-decoration:underline">account/tokens</a> 產一個 access token，貼回聊天視窗。Claude 會自動幫你建好資料表、把畫面跑起來——你不用碰任何設定。</p></div></div>
+      <div class="step"><div class="num"></div><div><h3 data-i18n="db.s1h">免費註冊</h3><p data-i18n="db.s1p">打開 <a href="https://supabase.com" target="_blank" rel="noopener" style="color:var(--accent-ink);text-decoration:underline">supabase.com</a>，用 Google 或 email 免費登入。</p></div></div>
+      <div class="step"><div class="num"></div><div><h3 data-i18n="db.s2h">New project</h3><p data-i18n="db.s2p">按綠色的 <b style="color:var(--ink)">New project</b>，取個名字、區域選 <b style="color:var(--ink)">Southeast Asia (Singapore)</b>、設一組資料庫密碼（記起來）。等約 1 分鐘讓它建好。</p></div></div>
+      <div class="step"><div class="num"></div><div><h3 data-i18n="db.s3h">產一個 token 貼給 Claude</h3><p data-i18n="db.s3p">到 <a href="https://supabase.com/dashboard/account/tokens" target="_blank" rel="noopener" style="color:var(--accent-ink);text-decoration:underline">account/tokens</a> 產一個 access token，貼回聊天視窗。Claude 會自動幫你建好資料表、把畫面跑起來——你不用碰任何設定。</p></div></div>
     </div>
-    <div class="callout reveal" style="margin-top:16px" data-i18n="db.callout">做到看見<b style="color:var(--ink)">登入頁</b>後，把你的網址拿去找工程師開通公司 Google 登入（一道刻意的人工把關）。<b>提醒</b>：這是測試沙盒，只放假資料，別放真實客戶資料。</div>
+    <div class="callout" style="margin-top:16px" data-i18n="db.callout">做到看見<b style="color:var(--ink)">登入頁</b>後，把你的網址拿去找工程師開通公司 Google 登入（一道刻意的人工把關）。<b>提醒</b>：這是測試沙盒，只放假資料，別放真實客戶資料。</div>
+  </div>
   </section>
 
-  <section id="skills">
-    <div class="sec-head reveal">
-      <span class="eyebrow" data-i18n="skills.eyebrow">你會多出這些指令</span>
-      <h2 data-i18n="skills.h2">八個技能</h2>
-      <p data-i18n="skills.p">你不用記這些指令、也不用自己打——<b style="color:var(--ink)">直接用一句話跟 Claude 說你想做什麼</b>（例如「幫我開一個新專案」「幫我做一個管理庫存的小工具」），它就會挑對的技能、一步步帶你做。</p>
-    </div>
+  <section class="sec" id="skills">
+    <div class="marg"><div class="num">06</div><div class="lab" data-i18n="skills.eyebrow">你會多出這些指令</div></div>
+    <div>
+    <h2 data-i18n="skills.h2">八個技能</h2>
+      <p class="intro" data-i18n="skills.p">你不用記這些指令、也不用自己打——<b style="color:var(--ink)">直接用一句話跟 Claude 說你想做什麼</b>（例如「幫我開一個新專案」「幫我做一個管理庫存的小工具」），它就會挑對的技能、一步步帶你做。</p>
+    
     <div class="grid skills">
-      <div class="card skill reveal"><div class="cmd-name">/doctor</div><p data-i18n="skills.doctor">確認你的電腦環境沒問題（git、Node.js 版本），有缺或太舊會告訴你怎麼處理。</p></div>
-      <div class="card skill reveal"><div class="cmd-name">/new-project</div><p data-i18n="skills.newproject">從範本長出一個全新的 MVP 專案骨架。</p></div>
-      <div class="card skill reveal"><div class="cmd-name">/task-brief</div><p data-i18n="skills.taskbrief">用業務選擇題訪談你的需求，整理成規格。</p></div>
-      <div class="card skill reveal"><div class="cmd-name">/new-feature</div><p data-i18n="skills.newfeature">照範例模組長出你要的新功能（列表／表單／權限／測試一整套）。</p></div>
-      <div class="card skill reveal"><div class="cmd-name">/next-migration</div><p data-i18n="skills.nextmig">幫你建立資料庫變更檔，自動取號。</p></div>
-      <div class="card skill reveal"><div class="cmd-name">/check</div><p data-i18n="skills.check">跑測試＋型別＋契約檢查，全綠才算完成。</p></div>
-      <div class="card skill reveal"><div class="cmd-name">/deploy</div><p data-i18n="skills.deploy">部署到你自己的 Cloudflare Pages（免費）。</p></div>
-      <div class="card skill reveal"><div class="cmd-name">/graduate</div><p data-i18n="skills.graduate">產生「畢業申請包」，交給 IT 評估是否收進大系統。</p></div>
-      <div class="card skill reveal"><div class="cmd-name">/update</div><p data-i18n="skills.update">把工具箱更新到最新版；有新版時開場會自動提醒你。</p></div>
+      <div class="card skill"><div class="cmd-name">/doctor</div><p data-i18n="skills.doctor">確認你的電腦環境沒問題（git、Node.js 版本），有缺或太舊會告訴你怎麼處理。</p></div>
+      <div class="card skill"><div class="cmd-name">/new-project</div><p data-i18n="skills.newproject">從範本長出一個全新的 MVP 專案骨架。</p></div>
+      <div class="card skill"><div class="cmd-name">/task-brief</div><p data-i18n="skills.taskbrief">用業務選擇題訪談你的需求，整理成規格。</p></div>
+      <div class="card skill"><div class="cmd-name">/new-feature</div><p data-i18n="skills.newfeature">照範例模組長出你要的新功能（列表／表單／權限／測試一整套）。</p></div>
+      <div class="card skill"><div class="cmd-name">/next-migration</div><p data-i18n="skills.nextmig">幫你建立資料庫變更檔，自動取號。</p></div>
+      <div class="card skill"><div class="cmd-name">/check</div><p data-i18n="skills.check">跑測試＋型別＋契約檢查，全綠才算完成。</p></div>
+      <div class="card skill"><div class="cmd-name">/deploy</div><p data-i18n="skills.deploy">部署到你自己的 Cloudflare Pages（免費）。</p></div>
+      <div class="card skill"><div class="cmd-name">/graduate</div><p data-i18n="skills.graduate">產生「畢業申請包」，交給 IT 評估是否收進大系統。</p></div>
+      <div class="card skill"><div class="cmd-name">/update</div><p data-i18n="skills.update">把工具箱更新到最新版；有新版時開場會自動提醒你。</p></div>
     </div>
+  </div>
   </section>
 
-  <section id="path">
-    <div class="sec-head reveal">
-      <span class="eyebrow" data-i18n="path.eyebrow">每個新功能都走這條</span>
-      <h2 data-i18n="path.h2">黃金路徑</h2>
-      <p data-i18n="path.p">你只要描述想要什麼，Claude 會依序把每一步做完，並在每步後告訴你怎麼在畫面上驗收。</p>
-    </div>
+  <section class="sec" id="path">
+    <div class="marg"><div class="num">07</div><div class="lab" data-i18n="path.eyebrow">每個新功能都走這條</div></div>
+    <div>
+    <h2 data-i18n="path.h2">黃金路徑</h2>
+      <p class="intro" data-i18n="path.p">你只要描述想要什麼，Claude 會依序把每一步做完，並在每步後告訴你怎麼在畫面上驗收。</p>
+    
     <div class="steps">
-      <div class="step reveal"><div class="num"></div><div><h3 data-i18n="path.s1h">講清楚需求</h3><p data-i18n="path.s1p"><code>/task-brief</code>：用生活化的問題確認要記錄哪些資料、誰能看誰能改。</p></div></div>
-      <div class="step reveal"><div class="num"></div><div><h3 data-i18n="path.s2h">建立資料</h3><p data-i18n="path.s2p"><code>/next-migration</code> 建資料表，套進你自己的 Supabase。</p></div></div>
-      <div class="step reveal"><div class="num"></div><div><h3 data-i18n="path.s3h">做出畫面</h3><p data-i18n="path.s3p">照 <code>items</code> 範例長出列表、表單、明細——全用現成的共用元件，不會長歪。</p></div></div>
-      <div class="step reveal"><div class="num"></div><div><h3 data-i18n="path.s4h">檢查</h3><p data-i18n="path.s4p"><code>/check</code> 全綠；再自己在畫面上點過一遍（新增／編輯／刪除）。</p></div></div>
-      <div class="step reveal"><div class="num"></div><div><h3 data-i18n="path.s5h">上線</h3><p data-i18n="path.s5p"><code>/deploy</code> 推上你自己的網址，同事用公司信箱就能登入使用。</p></div></div>
+      <div class="step"><div class="num"></div><div><h3 data-i18n="path.s1h">講清楚需求</h3><p data-i18n="path.s1p"><code>/task-brief</code>：用生活化的問題確認要記錄哪些資料、誰能看誰能改。</p></div></div>
+      <div class="step"><div class="num"></div><div><h3 data-i18n="path.s2h">建立資料</h3><p data-i18n="path.s2p"><code>/next-migration</code> 建資料表，套進你自己的 Supabase。</p></div></div>
+      <div class="step"><div class="num"></div><div><h3 data-i18n="path.s3h">做出畫面</h3><p data-i18n="path.s3p">照 <code>items</code> 範例長出列表、表單、明細——全用現成的共用元件，不會長歪。</p></div></div>
+      <div class="step"><div class="num"></div><div><h3 data-i18n="path.s4h">檢查</h3><p data-i18n="path.s4p"><code>/check</code> 全綠；再自己在畫面上點過一遍（新增／編輯／刪除）。</p></div></div>
+      <div class="step"><div class="num"></div><div><h3 data-i18n="path.s5h">上線</h3><p data-i18n="path.s5p"><code>/deploy</code> 推上你自己的網址，同事用公司信箱就能登入使用。</p></div></div>
     </div>
+  </div>
   </section>
 
-  <section id="contract">
-    <div class="sec-head reveal">
-      <span class="eyebrow" data-i18n="contract.eyebrow">為什麼未來能被回收</span>
-      <h2 data-i18n="contract.h2">回收契約：七條</h2>
-      <p data-i18n="contract.p">你不用背這些——Claude 會遵守，護欄會把關。它們讓你的獨立成果天生就能裝回母艦。</p>
-    </div>
+  <section class="sec" id="contract">
+    <div class="marg"><div class="num">08</div><div class="lab" data-i18n="contract.eyebrow">為什麼未來能被回收</div></div>
+    <div>
+    <h2 data-i18n="contract.h2">回收契約：七條</h2>
+      <p class="intro" data-i18n="contract.p">你不用背這些——Claude 會遵守，護欄會把關。它們讓你的獨立成果天生就能裝回母艦。</p>
+    
     <div class="rules">
-      <div class="rule reveal"><span class="k">✓</span><div data-i18n="contract.r1"><b>業務資料表用專屬名稱</b> <span>— 未來整包搬進大系統不會撞名。</span></div></div>
-      <div class="rule reveal"><span class="k">✓</span><div data-i18n="contract.r2"><b>畫面只用現成的共用元件</b> <span>— 長相跟大系統一致，不自造設計。</span></div></div>
-      <div class="rule reveal"><span class="k">✓</span><div data-i18n="contract.r3"><b>資料存取走固定寫法</b> <span>— 回收時直接可插。</span></div></div>
-      <div class="rule reveal"><span class="k">✓</span><div data-i18n="contract.r4"><b>權限走內建平台</b> <span>— 管理員／主管／員工三種角色，回收即對接。</span></div></div>
-      <div class="rule reveal"><span class="k">✓</span><div data-i18n="contract.r5"><b>所有資料庫變更都是檔案</b> <span>— 在網站上手點的設定「視為不存在」。</span></div></div>
-      <div class="rule reveal"><span class="k">✓</span><div data-i18n="contract.r6"><b>不改平台共用的部分</b> <span>— 要改就開 issue 給 IT，讓所有人受惠。</span></div></div>
-      <div class="rule reveal"><span class="k">✓</span><div data-i18n="contract.r7"><b>秘密只放 .env</b> <span>— 程式碼裡永遠沒有金鑰。</span></div></div>
+      <div class="rule"><span class="k">✓</span><div data-i18n="contract.r1"><b>業務資料表用專屬名稱</b> <span>— 未來整包搬進大系統不會撞名。</span></div></div>
+      <div class="rule"><span class="k">✓</span><div data-i18n="contract.r2"><b>畫面只用現成的共用元件</b> <span>— 長相跟大系統一致，不自造設計。</span></div></div>
+      <div class="rule"><span class="k">✓</span><div data-i18n="contract.r3"><b>資料存取走固定寫法</b> <span>— 回收時直接可插。</span></div></div>
+      <div class="rule"><span class="k">✓</span><div data-i18n="contract.r4"><b>權限走內建平台</b> <span>— 管理員／主管／員工三種角色，回收即對接。</span></div></div>
+      <div class="rule"><span class="k">✓</span><div data-i18n="contract.r5"><b>所有資料庫變更都是檔案</b> <span>— 在網站上手點的設定「視為不存在」。</span></div></div>
+      <div class="rule"><span class="k">✓</span><div data-i18n="contract.r6"><b>不改平台共用的部分</b> <span>— 要改就開 issue 給 IT，讓所有人受惠。</span></div></div>
+      <div class="rule"><span class="k">✓</span><div data-i18n="contract.r7"><b>秘密只放 .env</b> <span>— 程式碼裡永遠沒有金鑰。</span></div></div>
     </div>
+  </div>
   </section>
 
-  <section id="guards">
-    <div class="sec-head reveal">
-      <span class="eyebrow" data-i18n="guards.eyebrow">安裝後自動生效</span>
-      <h2 data-i18n="guards.h2">三道護欄</h2>
-      <p data-i18n="guards.p">這些會擋在你（和 Claude）前面。被擋下來，就代表這件事該找 IT，而不是想辦法繞過。</p>
-    </div>
+  <section class="sec" id="guards">
+    <div class="marg"><div class="num">09</div><div class="lab" data-i18n="guards.eyebrow">安裝後自動生效</div></div>
+    <div>
+    <h2 data-i18n="guards.h2">三道護欄</h2>
+      <p class="intro" data-i18n="guards.p">這些會擋在你（和 Claude）前面。被擋下來，就代表這件事該找 IT，而不是想辦法繞過。</p>
+    
     <div class="guards">
-      <div class="guard reveal"><h3>guard-prod</h3><p data-i18n="guards.g1p">任何碰到公司正式機或測試機的操作，一律硬擋——你的沙盒本來就摸不到。</p></div>
-      <div class="guard reveal"><h3>guard-platform-area</h3><p data-i18n="guards.g2p">擋掉改動共用元件、權限地基、設定檔——落實回收契約第六條。</p></div>
-      <div class="guard reveal"><h3>guard-git</h3><p data-i18n="guards.g3p">擋掉會覆蓋歷史、難以復原的危險 git 操作。</p></div>
+      <div class="guard"><h3>guard-prod</h3><p data-i18n="guards.g1p">任何碰到公司正式機或測試機的操作，一律硬擋——你的沙盒本來就摸不到。</p></div>
+      <div class="guard"><h3>guard-platform-area</h3><p data-i18n="guards.g2p">擋掉改動共用元件、權限地基、設定檔——落實回收契約第六條。</p></div>
+      <div class="guard"><h3>guard-git</h3><p data-i18n="guards.g3p">擋掉會覆蓋歷史、難以復原的危險 git 操作。</p></div>
     </div>
+  </div>
   </section>
 
-  <section id="deploy">
-    <div class="sec-head reveal">
-      <span class="eyebrow" data-i18n="deploy.eyebrow">全部免費</span>
-      <h2 data-i18n="deploy.h2">上線到你自己的網址</h2>
-      <p data-i18n="deploy.p">MVP 是純靜態網站，Cloudflare Pages 免費層綽綽有餘。一次設定 Cloudflare 金鑰，之後每次更新只要再跑一次 <code style="font-family:var(--mono)">/deploy</code>，網址不變。</p>
-    </div>
+  <section class="sec" id="deploy">
+    <div class="marg"><div class="num">10</div><div class="lab" data-i18n="deploy.eyebrow">全部免費</div></div>
+    <div>
+    <h2 data-i18n="deploy.h2">上線到你自己的網址</h2>
+      <p class="intro" data-i18n="deploy.p">MVP 是純靜態網站，Cloudflare Pages 免費層綽綽有餘。一次設定 Cloudflare 金鑰，之後每次更新只要再跑一次 <code style="font-family:var(--mono)">/deploy</code>，網址不變。</p>
+    
     <div class="grid g2">
-      <div class="card reveal"><div class="ic">🌐</div><h3 data-i18n="deploy.c1h">Cloudflare Pages（免費）</h3><p data-i18n="deploy.c1p">跑 <code style="font-family:var(--mono)">/deploy</code>：你產一次 Cloudflare 金鑰，Claude 就用它把網站上傳，給你一個 <code style="font-family:var(--mono)">*.pages.dev</code> 網址。要更新就再跑一次。</p></div>
-      <div class="card reveal"><div class="ic">🔒</div><h3 data-i18n="deploy.c2h">只有公司的人進得來</h3><p data-i18n="deploy.c2p">登入採<b style="color:var(--ink)">公司 Google 帳號</b>（限 @capsulecorporation.cc），資料也逐筆受保護。上線後只有公司同事登得進去、看得到資料，不用另外設定。</p></div>
+      <div class="card"><h3 data-i18n="deploy.c1h">Cloudflare Pages（免費）</h3><p data-i18n="deploy.c1p">跑 <code style="font-family:var(--mono)">/deploy</code>：你產一次 Cloudflare 金鑰，Claude 就用它把網站上傳，給你一個 <code style="font-family:var(--mono)">*.pages.dev</code> 網址。要更新就再跑一次。</p></div>
+      <div class="card"><h3 data-i18n="deploy.c2h">只有公司的人進得來</h3><p data-i18n="deploy.c2p">登入採<b style="color:var(--ink)">公司 Google 帳號</b>（限 @capsulecorporation.cc），資料也逐筆受保護。上線後只有公司同事登得進去、看得到資料，不用另外設定。</p></div>
     </div>
+  </div>
   </section>
 
-  <section id="inside">
-    <div class="sec-head reveal">
-      <span class="eyebrow" data-i18n="inside.eyebrow">範本裡已經有什麼</span>
-      <h2 data-i18n="inside.h2">你不是從零開始</h2>
-      <p data-i18n="inside.p">新專案一長出來就是一個能跑的系統，附一個完整的範例功能 <code>items</code> 供你照抄。</p>
-    </div>
+  <section class="sec" id="inside">
+    <div class="marg"><div class="num">11</div><div class="lab" data-i18n="inside.eyebrow">範本裡已經有什麼</div></div>
+    <div>
+    <h2 data-i18n="inside.h2">你不是從零開始</h2>
+      <p class="intro" data-i18n="inside.p">新專案一長出來就是一個能跑的系統，附一個完整的範例功能 <code>items</code> 供你照抄。</p>
+    
     <ul class="inside">
-      <li class="reveal"><span data-i18n="inside.li1"><b>登入與權限</b>：公司 Google 帳號登入（限 @capsulecorporation.cc），第一個登入者自動是管理員，三種角色現成。</span></li>
-      <li class="reveal"><span data-i18n="inside.li2"><b>一整套 UI 元件</b>：表格、彈窗、表單、分頁、按鈕都備好了。</span></li>
-      <li class="reveal"><span data-i18n="inside.li3"><b>items 範例功能</b>：列表＋新增＋編輯＋刪除＋權限，完整可跑。</span></li>
-      <li class="reveal"><span data-i18n="inside.li4"><b>側邊選單自動聚合</b>：加一個新功能，選單自動出現，不用改共用檔。</span></li>
-      <li class="reveal"><span data-i18n="inside.li5"><b>回收契約 CLAUDE.md</b>：Claude 每次都會讀，保證不長歪。</span></li>
-      <li class="reveal"><span data-i18n="inside.li6"><b>已驗證可跑</b>：安裝、型別檢查、正式打包全部通過。</span></li>
+      <li><span data-i18n="inside.li1"><b>登入與權限</b>：公司 Google 帳號登入（限 @capsulecorporation.cc），第一個登入者自動是管理員，三種角色現成。</span></li>
+      <li><span data-i18n="inside.li2"><b>一整套 UI 元件</b>：表格、彈窗、表單、分頁、按鈕都備好了。</span></li>
+      <li><span data-i18n="inside.li3"><b>items 範例功能</b>：列表＋新增＋編輯＋刪除＋權限，完整可跑。</span></li>
+      <li><span data-i18n="inside.li4"><b>側邊選單自動聚合</b>：加一個新功能，選單自動出現，不用改共用檔。</span></li>
+      <li><span data-i18n="inside.li5"><b>回收契約 CLAUDE.md</b>：Claude 每次都會讀，保證不長歪。</span></li>
+      <li><span data-i18n="inside.li6"><b>已驗證可跑</b>：安裝、型別檢查、正式打包全部通過。</span></li>
     </ul>
+  </div>
   </section>
 
-  <section id="how">
-    <div class="sec-head reveal">
-      <span class="eyebrow" data-i18n="how.eyebrow">這東西住在哪、怎麼來的</span>
-      <h2 data-i18n="how.h2">運作方式</h2>
-      <p data-i18n="how.p">整個工具箱放在公司自己的 GitHub，安裝就是從那裡拿一份到你電腦；之後有更新也從同一個地方來。你不用管細節，但想知道的話——</p>
-    </div>
+  <section class="sec" id="how">
+    <div class="marg"><div class="num">12</div><div class="lab" data-i18n="how.eyebrow">這東西住在哪、怎麼來的</div></div>
+    <div>
+    <h2 data-i18n="how.h2">運作方式</h2>
+      <p class="intro" data-i18n="how.p">整個工具箱放在公司自己的 GitHub，安裝就是從那裡拿一份到你電腦；之後有更新也從同一個地方來。你不用管細節，但想知道的話——</p>
+    
     <div class="grid g3">
-      <div class="card reveal"><div class="ic">📦</div><h3 data-i18n="how.c1h">住在公司 GitHub</h3><p data-i18n="how.c1p">工具箱本體在 <code style="font-family:var(--mono)">capsule-taiwan/capsule-develop</code>（公司的公開 repo）。技能、安全護欄、專案範本、還有你正在看的這頁，全都在裡面。</p></div>
-      <div class="card reveal"><div class="ic">⬇️</div><h3 data-i18n="how.c2h">安裝＝從那裡拿一份</h3><p data-i18n="how.c2p">你打的那兩行指令，就是叫 Claude Code 去那個 repo 把工具箱抓一份到你電腦、把技能與護欄裝起來。</p></div>
-      <div class="card reveal"><div class="ic">🔄</div><h3 data-i18n="how.c3h">更新＝再抓一次</h3><p data-i18n="how.c3p">平台團隊把新版推上 GitHub 後，你用 <code style="font-family:var(--mono)">/plugin</code> 更新一下就拿到最新的技能與範本；你已經做好的專案不受影響。</p></div>
+      <div class="card"><h3 data-i18n="how.c1h">住在公司 GitHub</h3><p data-i18n="how.c1p">工具箱本體在 <code style="font-family:var(--mono)">capsule-taiwan/capsule-develop</code>（公司的公開 repo）。技能、安全護欄、專案範本、還有你正在看的這頁，全都在裡面。</p></div>
+      <div class="card"><h3 data-i18n="how.c2h">安裝＝從那裡拿一份</h3><p data-i18n="how.c2p">你打的那兩行指令，就是叫 Claude Code 去那個 repo 把工具箱抓一份到你電腦、把技能與護欄裝起來。</p></div>
+      <div class="card"><h3 data-i18n="how.c3h">更新＝再抓一次</h3><p data-i18n="how.c3p">平台團隊把新版推上 GitHub 後，你用 <code style="font-family:var(--mono)">/plugin</code> 更新一下就拿到最新的技能與範本；你已經做好的專案不受影響。</p></div>
     </div>
+  </div>
   </section>
 
 </main>
@@ -669,6 +632,7 @@
     // ---------- i18n (zh default in HTML; en/ja from dict) ----------
     var I18N = {
       en: {
+        'nav.tool': 'The toolbox', 'nav.how2': 'How it works',
         'meta.title': 'CAPSULE develop — build your own internal tools',
         'meta.themeAria': 'Toggle dark/light',
         'ui.copy': 'Copy', 'ui.copied': 'Copied to clipboard',
@@ -792,6 +756,7 @@
         'footer.install': 'Install: <code>/plugin install capsule-develop@capsule-tools</code>'
       },
       ja: {
+        'nav.tool': 'ツールボックス', 'nav.how2': '仕組み',
         'meta.title': 'CAPSULE develop — 自分の社内ツールを作る',
         'meta.themeAria': 'ダーク/ライト切替',
         'ui.copy': 'コピー', 'ui.copied': 'クリップボードにコピーしました',
@@ -920,7 +885,7 @@
     var i18nEls = document.querySelectorAll('[data-i18n]');
     var origins = [];
     i18nEls.forEach(function (el) { origins.push(el.innerHTML); });
-    var langBtns = document.querySelectorAll('.langsw button');
+    var langBtns = document.querySelectorAll('.lang button');
 
     function setLang(lang) {
       if (lang !== 'en' && lang !== 'ja') lang = 'zh';
@@ -968,19 +933,6 @@
       });
     });
 
-    // ---------- scroll reveal ----------
-    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    var els = document.querySelectorAll('.reveal');
-    if (reduce || !('IntersectionObserver' in window)) {
-      els.forEach(function (e) { e.classList.add('in'); });
-    } else {
-      var io = new IntersectionObserver(function (entries) {
-        entries.forEach(function (en) {
-          if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); }
-        });
-      }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
-      els.forEach(function (e) { io.observe(e); });
-    }
   })();
 </script>
 </html>
