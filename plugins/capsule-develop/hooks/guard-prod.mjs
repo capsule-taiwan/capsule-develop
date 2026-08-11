@@ -35,6 +35,21 @@ const PROD_MARKERS = [
   // 核心流程鎖死。這裡只擋「公司正式機」的識別字（上面兩條），不擋「有沒有 token」本身。
 ]
 
+// 回收契約第 8 條：接 Google Sheet 一律走 IT 給的 service account。
+// 金鑰本身（JSON 檔內容或 PEM 私鑰）永遠不該出現在程式碼或版控裡——
+// 進了版控就等於公開，而且 service account 通常有跨專案的存取權。
+// 只擋「金鑰內容」，不擋「提到 service account」這幾個字，否則連文件都寫不了。
+const KEY_MARKERS = [
+  { re: /"type"\s*:\s*"service_account"/, what: 'service account 的 JSON 金鑰檔內容' },
+  { re: /-----BEGIN [A-Z ]*PRIVATE KEY-----/, what: '私鑰（PRIVATE KEY）內容' },
+]
+
+for (const m of KEY_MARKERS) {
+  if (m.re.test(haystack)) {
+    deny(`偵測到${m.what}。金鑰不能寫進程式碼或版控——一旦 commit 出去就等於公開，而且 service account 常常不只能存取一份 Sheet。\n請改成：金鑰檔放在專案外、或路徑寫在 .env（已 gitignore），程式只讀路徑。不確定怎麼設定就找平台團隊（IT），這組 service account 本來就是他們產的。`)
+  }
+}
+
 for (const m of PROD_MARKERS) {
   if (m.re.test(haystack)) {
     deny(`偵測到「${m.what}」的識別字。你的 MVP 是獨立沙盒，不該接觸公司正式或測試系統。這個操作已被擋下——如果你覺得真的需要，請找平台團隊（IT）。`)

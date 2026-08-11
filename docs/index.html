@@ -529,7 +529,7 @@
   <section class="sec" id="contract">
     <div class="marg"><div class="num">08</div><div class="lab" data-i18n="contract.eyebrow">為什麼未來能被回收</div></div>
     <div>
-    <h2 data-i18n="contract.h2">回收契約：七條</h2>
+    <h2 data-i18n="contract.h2">回收契約：八條</h2>
       <p class="intro" data-i18n="contract.p">你不用背這些——Claude 會遵守，護欄會把關。它們的用途是讓你的成果好維護、換人接手也看得懂；萬一哪天真的要收進母艦，也不用重寫。</p>
     
     <div class="rules">
@@ -540,6 +540,7 @@
       <div class="rule"><span class="k">✓</span><div data-i18n="contract.r5"><b>所有資料庫變更都是檔案</b> <span>— 在網站上手點的設定「視為不存在」。</span></div></div>
       <div class="rule"><span class="k">✓</span><div data-i18n="contract.r6"><b>不改平台共用的部分</b> <span>— 要改就開 issue 給 IT，讓所有人受惠。</span></div></div>
       <div class="rule"><span class="k">✓</span><div data-i18n="contract.r7"><b>秘密只放 .env</b> <span>— 程式碼裡永遠沒有金鑰。</span></div></div>
+      <div class="rule"><span class="k">✓</span><div data-i18n="contract.r8"><b>接 Google Sheet 走 IT 給的 service account</b> <span>— 不綁在個人帳號上，權限給得剛好也收得回來。</span></div></div>
     </div>
   </div>
   </section>
@@ -551,7 +552,7 @@
       <p class="intro" data-i18n="guards.p">這些會擋在你（和 Claude）前面。被擋下來，就代表這件事該找 IT，而不是想辦法繞過。</p>
     
     <div class="guards">
-      <div class="guard"><h3>guard-prod</h3><p data-i18n="guards.g1p">任何碰到公司正式機或測試機的操作，一律硬擋——你的沙盒本來就摸不到。</p></div>
+      <div class="guard"><h3>guard-prod</h3><p data-i18n="guards.g1p">任何碰到公司正式機或測試機的操作一律硬擋；service account 金鑰、私鑰被寫進程式碼或版控時也會擋下來。</p></div>
       <div class="guard"><h3>guard-platform-area</h3><p data-i18n="guards.g2p">擋掉改動共用元件、權限地基、設定檔——落實回收契約第六條。</p></div>
       <div class="guard"><h3>guard-git</h3><p data-i18n="guards.g3p">擋掉會覆蓋歷史、難以復原的危險 git 操作。</p></div>
     </div>
@@ -649,6 +650,7 @@
     // ---------- i18n (zh default in HTML; en/ja from dict) ----------
     var I18N = {
       en: {
+        'contract.r8': '<b>Google Sheets goes through the service account IT gives you</b> <span>— not tied to a personal account; access granted narrowly and revocable.</span>',
         'sheet.eyebrow': 'Talking to Sheets', 'sheet.h2': 'Google Sheets: one rule, one recommendation',
         'sheet.p': 'Most tools end up exchanging data with Google Sheets. There is exactly one hard rule; the rest is your call.',
         'sheet.rule': '<b>Hard rule: always use a service account, and always get that account from an engineer.</b> Do not authorise with your own Google account, and do not create one yourself in Google Cloud. Tell IT which Sheet you need and whether you need read or write; they will hand you a service account and the setup.<br>Why: it is not tied to a person (your tool breaks the day they leave), access is granted only to the specific Sheets it should touch, and edits are attributable.',
@@ -746,7 +748,7 @@
         'path.s3h': 'Build the screens', 'path.s3p': 'Grow the list, form, and detail from the <code>items</code> example — all with ready-made shared components, so nothing goes off-style.',
         'path.s4h': 'Check', 'path.s4p': '<code>/check</code> all green; then click through it yourself (create/edit/delete).',
         'path.s5h': 'Ship', 'path.s5p': '<code>/deploy</code> pushes to your own URL; colleagues log in with their company account.',
-        'contract.eyebrow': 'Why it can be reclaimed later', 'contract.h2': 'The reclaim contract: 7 rules',
+        'contract.eyebrow': 'Why it can be reclaimed later', 'contract.h2': 'The reclaim contract: 8 rules',
         'contract.p': 'You don’t memorize these — Claude follows them and the guards enforce them. Their purpose is to keep your work maintainable and legible to whoever picks it up next; and if it ever does move into the mothership, nothing has to be rewritten.',
         'contract.r1': '<b>Business tables use a dedicated prefix</b> <span>— so moving wholesale into the big system never clashes.</span>',
         'contract.r2': '<b>UI uses only ready-made shared components</b> <span>— it looks consistent with the big system; no custom design.</span>',
@@ -757,7 +759,7 @@
         'contract.r7': '<b>Secrets live only in .env</b> <span>— never any keys in the code.</span>',
         'guards.eyebrow': 'Active automatically after install', 'guards.h2': 'Three guards',
         'guards.p': 'These stand in front of you (and Claude). Getting blocked means it’s a job for IT — not something to work around.',
-        'guards.g1p': 'Hard-blocks any operation touching company production or staging — your sandbox can’t reach them anyway.',
+        'guards.g1p': 'Hard-blocks anything touching company production or staging, and blocks service-account keys or private keys from being written into code or version control.',
         'guards.g2p': 'Blocks edits to shared components, the permissions foundation, and config files — enforcing reclaim-contract rule 6.',
         'guards.g3p': 'Blocks dangerous git operations that overwrite history and are hard to undo.',
         'deploy.eyebrow': 'All free', 'deploy.h2': 'Ship to your own URL',
@@ -781,6 +783,7 @@
         'footer.install': 'Install: <code>/plugin install capsule-develop@capsule-tools</code>'
       },
       ja: {
+        'contract.r8': '<b>Google Sheets 連携は IT が発行する service account を使う</b> <span>— 個人アカウントに紐づかず、権限は必要な分だけ、取り消しも可能。</span>',
         'sheet.eyebrow': 'Sheet とのやり取り', 'sheet.h2': 'Google Sheets 連携：ルール 1 つ、推奨 1 つ',
         'sheet.p': '多くのツールは最終的に Google Sheets とデータをやり取りします。絶対のルールは 1 つだけ、あとは判断にお任せします。',
         'sheet.rule': '<b>ルール：必ず service account を使い、そのアカウントは必ずエンジニアから受け取ること。</b>自分の Google アカウントでの認可も、Google Cloud で自作するのも不可。どの Sheet に、読み取りか書き込みかを IT に伝えてください。<br>理由：個人に紐づかない（その人の退職でツールが壊れない）、触るべき Sheet だけに権限を渡せる、誰が変更したか追える。',
@@ -878,7 +881,7 @@
         'path.s3h': '画面を作る', 'path.s3p': '<code>items</code> サンプルに沿って一覧・フォーム・詳細を生成——既製の共通コンポーネントだけなので崩れません。',
         'path.s4h': 'チェック', 'path.s4p': '<code>/check</code> が全グリーン；その後、自分で画面を操作（追加/編集/削除）。',
         'path.s5h': '公開', 'path.s5p': '<code>/deploy</code> で自分の URL へ公開。同僚は会社アカウントでログインして利用。',
-        'contract.eyebrow': '後で回収できる理由', 'contract.h2': '回収規約：7 か条',
+        'contract.eyebrow': '後で回収できる理由', 'contract.h2': '回収規約：8 か条',
         'contract.p': '覚える必要はありません——Claude が守り、ガードが監視します。狙いは、保守しやすく引き継ぎやすい形にすること。将来もし母艦へ取り込むことになっても書き直さずに済みます。',
         'contract.r1': '<b>業務テーブルは専用の接頭辞</b> <span>— 大システムへ丸ごと移しても名前が衝突しません。</span>',
         'contract.r2': '<b>画面は既製の共通コンポーネントのみ</b> <span>— 大システムと見た目が揃い、独自デザインはしません。</span>',
@@ -889,7 +892,7 @@
         'contract.r7': '<b>秘密情報は .env だけ</b> <span>— コード内に鍵は一切置きません。</span>',
         'guards.eyebrow': '導入後、自動で有効', 'guards.h2': '3 つのガード',
         'guards.p': 'これらはあなた（と Claude）の前に立ちます。ブロックされたら、それは IT に頼む案件——回避しようとしないこと。',
-        'guards.g1p': '会社の本番・検証環境に触れる操作は一律ブロック——サンドボックスからは元々届きません。',
+        'guards.g1p': '会社の本番・検証環境に触れる操作を一律ブロック。service account の鍵や秘密鍵がコードや版管理に書き込まれるのも止めます。',
         'guards.g2p': '共通コンポーネント・権限基盤・設定ファイルの変更をブロック——回収規約 6 か条目を徹底。',
         'guards.g3p': '履歴を上書きする復元困難な危険な git 操作をブロック。',
         'deploy.eyebrow': 'すべて無料', 'deploy.h2': '自分の URL へ公開',

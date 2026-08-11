@@ -531,7 +531,7 @@
       <div class="step reveal"><div class="num"></div><div><h3 data-i18n="db.s2h">New project</h3><p data-i18n="db.s2p">按綠色的 <b style="color:var(--ink)">New project</b>，取個名字、區域選 <b style="color:var(--ink)">Southeast Asia (Singapore)</b>、設一組資料庫密碼（記起來）。等約 1 分鐘讓它建好。</p></div></div>
       <div class="step reveal"><div class="num"></div><div><h3 data-i18n="db.s3h">產一個 token 貼給 Claude</h3><p data-i18n="db.s3p">到 <a href="https://supabase.com/dashboard/account/tokens" target="_blank" rel="noopener" style="color:var(--accent-ink);text-decoration:underline">account/tokens</a> 產一個 access token，貼回聊天視窗。Claude 會自動幫你建好資料表、把畫面跑起來——你不用碰任何設定。</p></div></div>
     </div>
-    <div class="callout reveal" style="margin-top:16px" data-i18n="db.callout">做到看見<b style="color:var(--ink)">登入頁</b>後，把你的網址拿去找工程師開通公司 Google 登入（一道刻意的人工把關）。<b>提醒</b>：這是測試沙盒，只放假資料，別放真實客戶資料。</div>
+    <div class="callout reveal" style="margin-top:16px" data-i18n="db.callout">做到看見<b style="color:var(--ink)">登入頁</b>後，把你的網址拿去找工程師開通公司 Google 登入（一道刻意的人工把關）。<b>建議</b>：請直接用<b style="color:var(--ink)">真實的資料與真實的流程</b>來測——假資料測不出真問題。只有薪資、個資、合約金額這類特別敏感的，動之前先問 IT。</div>
   </section>
 
   <section id="skills">
@@ -570,7 +570,7 @@
   <section id="contract">
     <div class="sec-head reveal">
       <span class="eyebrow" data-i18n="contract.eyebrow">為什麼未來能被回收</span>
-      <h2 data-i18n="contract.h2">回收契約：七條</h2>
+      <h2 data-i18n="contract.h2">回收契約：八條</h2>
       <p data-i18n="contract.p">你不用背這些——Claude 會遵守，護欄會把關。它們讓你的獨立成果天生就能裝回母艦。</p>
     </div>
     <div class="rules">
@@ -591,7 +591,7 @@
       <p data-i18n="guards.p">這些會擋在你（和 Claude）前面。被擋下來，就代表這件事該找 IT，而不是想辦法繞過。</p>
     </div>
     <div class="guards">
-      <div class="guard reveal"><h3>guard-prod</h3><p data-i18n="guards.g1p">任何碰到公司正式機或測試機的操作，一律硬擋——你的沙盒本來就摸不到。</p></div>
+      <div class="guard reveal"><h3>guard-prod</h3><p data-i18n="guards.g1p">任何碰到公司正式機或測試機的操作一律硬擋；service account 金鑰、私鑰被寫進程式碼或版控時也會擋下來。</p></div>
       <div class="guard reveal"><h3>guard-platform-area</h3><p data-i18n="guards.g2p">擋掉改動共用元件、權限地基、設定檔——落實回收契約第六條。</p></div>
       <div class="guard reveal"><h3>guard-git</h3><p data-i18n="guards.g3p">擋掉會覆蓋歷史、難以復原的危險 git 操作。</p></div>
     </div>
@@ -668,6 +668,7 @@
     // ---------- i18n (zh default in HTML; en/ja from dict) ----------
     var I18N = {
       en: {
+        'contract.r8': '<b>Google Sheets goes through the service account IT gives you</b> <span>— not tied to a personal account; access granted narrowly and revocable.</span>',
         'meta.title': 'CAPSULE develop — build your own internal tools',
         'meta.themeAria': 'Toggle dark/light',
         'ui.copy': 'Copy', 'ui.copied': 'Copied to clipboard',
@@ -737,7 +738,7 @@
         'db.s1h': 'Sign up free', 'db.s1p': 'Open <a href="https://supabase.com" target="_blank" rel="noopener" style="color:var(--accent-ink);text-decoration:underline">supabase.com</a> and sign in free with Google or email.',
         'db.s2h': 'New project', 'db.s2p': 'Click the green <b style="color:var(--ink)">New project</b>, give it a name, pick region <b style="color:var(--ink)">Southeast Asia (Singapore)</b>, and set a database password (remember it). Wait ~1 minute for it to build.',
         'db.s3h': 'Create a token, paste to Claude', 'db.s3p': 'Go to <a href="https://supabase.com/dashboard/account/tokens" target="_blank" rel="noopener" style="color:var(--accent-ink);text-decoration:underline">account/tokens</a>, create an access token, and paste it back into the chat. Claude sets up the tables and gets the UI running — you touch no settings.',
-        'db.callout': 'Once you see the <b style="color:var(--ink)">login page</b>, take your URL to an engineer to enable company Google login (a deliberate human checkpoint). <b>Note</b>: this is a test sandbox — use fake data only, never real customer data.',
+        'db.callout': 'Once you see the <b style="color:var(--ink)">login page</b>, take your URL to an engineer to enable company Google login (a deliberate human checkpoint). <b>Note</b>: test with <b style="color:var(--ink)">real data and the real workflow</b> — fake data will not reveal the messy formats and exceptions that matter. Only for genuinely sensitive data (salaries, personal identity data, contract values) check with IT first.',
         'skills.eyebrow': 'The commands you’ll gain', 'skills.h2': 'Eight skills',
         'skills.p': 'You don’t need to remember or type these — just <b style="color:var(--ink)">tell Claude what you want in a sentence</b> (e.g. “help me start a new project”, “help me build a little inventory tool”), and it picks the right skill and walks you through it.',
         'skills.doctor': 'Confirms your environment is good (git, Node.js version) and tells you what to do if something is missing or too old.',
@@ -755,7 +756,7 @@
         'path.s3h': 'Build the screens', 'path.s3p': 'Grow the list, form, and detail from the <code>items</code> example — all with ready-made shared components, so nothing goes off-style.',
         'path.s4h': 'Check', 'path.s4p': '<code>/check</code> all green; then click through it yourself (create/edit/delete).',
         'path.s5h': 'Ship', 'path.s5p': '<code>/deploy</code> pushes to your own URL; colleagues log in with their company account.',
-        'contract.eyebrow': 'Why it can be reclaimed later', 'contract.h2': 'The reclaim contract: 7 rules',
+        'contract.eyebrow': 'Why it can be reclaimed later', 'contract.h2': 'The reclaim contract: 8 rules',
         'contract.p': 'You don’t memorize these — Claude follows them and the guards enforce them. They make your independent work natively fit back into the mothership.',
         'contract.r1': '<b>Business tables use a dedicated prefix</b> <span>— so moving wholesale into the big system never clashes.</span>',
         'contract.r2': '<b>UI uses only ready-made shared components</b> <span>— it looks consistent with the big system; no custom design.</span>',
@@ -766,7 +767,7 @@
         'contract.r7': '<b>Secrets live only in .env</b> <span>— never any keys in the code.</span>',
         'guards.eyebrow': 'Active automatically after install', 'guards.h2': 'Three guards',
         'guards.p': 'These stand in front of you (and Claude). Getting blocked means it’s a job for IT — not something to work around.',
-        'guards.g1p': 'Hard-blocks any operation touching company production or staging — your sandbox can’t reach them anyway.',
+        'guards.g1p': 'Hard-blocks anything touching company production or staging, and blocks service-account keys or private keys from being written into code or version control.',
         'guards.g2p': 'Blocks edits to shared components, the permissions foundation, and config files — enforcing reclaim-contract rule 6.',
         'guards.g3p': 'Blocks dangerous git operations that overwrite history and are hard to undo.',
         'deploy.eyebrow': 'All free', 'deploy.h2': 'Ship to your own URL',
@@ -790,6 +791,7 @@
         'footer.install': 'Install: <code>/plugin install capsule-develop@capsule-tools</code>'
       },
       ja: {
+        'contract.r8': '<b>Google Sheets 連携は IT が発行する service account を使う</b> <span>— 個人アカウントに紐づかず、権限は必要な分だけ、取り消しも可能。</span>',
         'meta.title': 'CAPSULE develop — 自分の社内ツールを作る',
         'meta.themeAria': 'ダーク/ライト切替',
         'ui.copy': 'コピー', 'ui.copied': 'クリップボードにコピーしました',
@@ -859,7 +861,7 @@
         'db.s1h': '無料登録', 'db.s1p': '<a href="https://supabase.com" target="_blank" rel="noopener" style="color:var(--accent-ink);text-decoration:underline">supabase.com</a> を開き、Google か email で無料サインイン。',
         'db.s2h': 'New project', 'db.s2p': '緑の <b style="color:var(--ink)">New project</b> を押し、名前を付け、リージョンは <b style="color:var(--ink)">Southeast Asia (Singapore)</b>、DB パスワードを設定（控えておく）。約 1 分で作成完了。',
         'db.s3h': 'トークンを作って Claude に貼る', 'db.s3p': '<a href="https://supabase.com/dashboard/account/tokens" target="_blank" rel="noopener" style="color:var(--accent-ink);text-decoration:underline">account/tokens</a> で access token を作り、チャットに貼り戻します。Claude がテーブル作成から画面表示まで自動で行い、設定はいじりません。',
-        'db.callout': '<b style="color:var(--ink)">ログイン画面</b>が見えたら、URL をエンジニアに渡して会社 Google ログインを有効化してもらいます（意図的な人手の確認ゲート）。<b>注意</b>：これはテスト用サンドボックス。ダミーデータのみで、実顧客データは入れないこと。',
+        'db.callout': '<b style="color:var(--ink)">ログイン画面</b>が見えたら、URL をエンジニアに渡して会社 Google ログインを有効化してもらいます（意図的な人手の確認ゲート）。<b>注意</b>：<b style="color:var(--ink)">実際のデータと実際の業務フロー</b>で試してください——ダミーデータでは本当の問題が出ません。給与・個人情報・契約金額など特に機微なものだけ、動かす前に IT へ一声を。',
         'skills.eyebrow': '使えるようになるコマンド', 'skills.h2': '8 つのスキル',
         'skills.p': 'これらを覚えたり打ったりする必要はありません——<b style="color:var(--ink)">やりたいことを一言 Claude に伝える</b>だけ（例：「新しいプロジェクトを作って」「在庫管理の小さなツールを作って」）。適切なスキルを選び、順に案内します。',
         'skills.doctor': 'PC の環境（git・Node.js のバージョン）を確認し、足りない/古い場合の対処を教えます。',
@@ -877,7 +879,7 @@
         'path.s3h': '画面を作る', 'path.s3p': '<code>items</code> サンプルに沿って一覧・フォーム・詳細を生成——既製の共通コンポーネントだけなので崩れません。',
         'path.s4h': 'チェック', 'path.s4p': '<code>/check</code> が全グリーン；その後、自分で画面を操作（追加/編集/削除）。',
         'path.s5h': '公開', 'path.s5p': '<code>/deploy</code> で自分の URL へ公開。同僚は会社アカウントでログインして利用。',
-        'contract.eyebrow': '後で回収できる理由', 'contract.h2': '回収規約：7 か条',
+        'contract.eyebrow': '後で回収できる理由', 'contract.h2': '回収規約：8 か条',
         'contract.p': '覚える必要はありません——Claude が守り、ガードが監視します。これにより独立した成果物が最初から母艦に戻せる形になります。',
         'contract.r1': '<b>業務テーブルは専用の接頭辞</b> <span>— 大システムへ丸ごと移しても名前が衝突しません。</span>',
         'contract.r2': '<b>画面は既製の共通コンポーネントのみ</b> <span>— 大システムと見た目が揃い、独自デザインはしません。</span>',
@@ -888,7 +890,7 @@
         'contract.r7': '<b>秘密情報は .env だけ</b> <span>— コード内に鍵は一切置きません。</span>',
         'guards.eyebrow': '導入後、自動で有効', 'guards.h2': '3 つのガード',
         'guards.p': 'これらはあなた（と Claude）の前に立ちます。ブロックされたら、それは IT に頼む案件——回避しようとしないこと。',
-        'guards.g1p': '会社の本番・検証環境に触れる操作は一律ブロック——サンドボックスからは元々届きません。',
+        'guards.g1p': '会社の本番・検証環境に触れる操作を一律ブロック。service account の鍵や秘密鍵がコードや版管理に書き込まれるのも止めます。',
         'guards.g2p': '共通コンポーネント・権限基盤・設定ファイルの変更をブロック——回収規約 6 か条目を徹底。',
         'guards.g3p': '履歴を上書きする復元困難な危険な git 操作をブロック。',
         'deploy.eyebrow': 'すべて無料', 'deploy.h2': '自分の URL へ公開',

@@ -110,6 +110,19 @@ A('guard-prod.mjs', 'sbp_ token（刻意不擋，是 MVP 自己的）', write('/
 A('guard-prod.mjs', '一般內容', write('/proj/app/pages/index.vue', '<template><div>hi</div></template>'))
 A('guard-prod.mjs', '一般指令', bash('npm run dev'))
 
+// service account 金鑰（回收契約第 8 條）——這種東西進版控就等於公開
+const SA_BEGIN = '-----BEGIN ' + 'PRIVATE KEY-----'
+B('guard-prod.mjs', 'service account JSON 金鑰檔',
+  write('/proj/credentials.json', '{\n  "type": "service_account",\n  "project_id": "capsule-x"\n}'))
+B('guard-prod.mjs', 'PEM 私鑰貼進程式碼',
+  write('/proj/app/utils/sheets.ts', `const KEY = \`${SA_BEGIN}\nMIIEvQIBADANBgkq\`\n`))
+B('guard-prod.mjs', '用指令把金鑰檔倒進專案',
+  bash(`echo '${SA_BEGIN}...' > sa.pem`))
+A('guard-prod.mjs', '只是「提到」service account（文件、說明）',
+  write('/proj/docs/specs/sheet.md', '接 Sheet 要跟 IT 拿一組 service account，不要自己開。'))
+A('guard-prod.mjs', '.env 放 service account 檔名（不是金鑰內容）',
+  write('/proj/.env', 'GOOGLE_SA_KEY_PATH=./secrets/sa.json'))
+
 // ─────────────────────────── welcome ─────────────────────────────
 // CLAUDE_PLUGIN_ROOT 指到空的暫存目錄 → 找不到 welcome.html → 不會真的開瀏覽器
 const tmp = mkdtempSync(join(tmpdir(), 'capsule-hooks-test-'))
