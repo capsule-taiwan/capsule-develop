@@ -157,6 +157,33 @@ stdout，所以「裝得起來、skills 齊全、SessionStart hook 有跑」這�
 clone 只會帶受版控的檔案，跟使用者從 GitHub 裝到的內容一致。
 （同理：你自己在本機用 `claude plugin marketplace add ./` 測試時也會踩到這個。）
 
+### 要動 lockfile 的話
+
+兩件事會咬人，都踩過了：
+
+**一、不要在 Windows 上產生 lockfile。** npm 在 Windows 解出來的樹會少掉 Linux 才需要的
+頂層 optional 相依（`@emnapi/core`、`@emnapi/runtime`…），CI 的 `npm ci` 就會 EUSAGE：
+
+```
+npm error Missing: @emnapi/core@1.11.3 from lock file
+```
+
+`npm install --package-lock-only` 在 Windows 上也救不了（解出來反而更少）。
+用容器產：
+
+```bash
+docker run --rm -v "$PWD:/w" -w /w node:22 npm install --package-lock-only
+```
+
+**二、不要先刪掉 lockfile 再重產。** 刪掉之後所有版本都會往上浮到最新——
+實測會把 `vite 7.3.6 → 8.2.1`、`nuxt 4.4.8 → 4.5.2` 一起拉上去，而 vitest 3.2 不支援
+vite 8，測試會失敗成一個沒有訊息的 `Unknown Error: [object Object]`，非常難查。
+
+保留既有 lockfile 再跑 `npm install --package-lock-only`，npm 只會補缺的項目、
+不動已經解好的版本。
+
+CI 的 `lockfile` job 就是守這件事的。
+
 ### typecheck 曾經是假的
 
 `npm run typecheck` 原本直接跑 `nuxt typecheck`，而它會這樣收場：
