@@ -41,7 +41,7 @@ if (!existsSync(tsconfigPath)) {
   process.exit(1)
 }
 
-const raw = readFileSync(tsconfigPath, 'utf8').replace(/^﻿/, '')
+const raw = readFileSync(tsconfigPath, 'utf8').replace(/^\uFEFF/, '')
 const tsconfig = JSON.parse(raw)
 const plugins = tsconfig.vueCompilerOptions?.plugins ?? []
 
