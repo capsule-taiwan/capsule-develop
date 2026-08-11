@@ -75,6 +75,15 @@ test -x /Library/Developer/CommandLineTools/usr/bin/git && echo CLT_OK || echo C
 
 **升級後仍是舊版本**，代表 PATH 順序有問題 → 停下來，請使用者截圖 `where.exe node`（或 `which -a node`）的輸出找 IT，不要自己改 PATH。
 
+## 2C. 安裝要等的時候，請他順手辦 GitHub
+
+winget / brew / 官方安裝包都要跑一兩分鐘。趁這個空檔跟使用者說：
+
+> 順便先去辦一個 GitHub 帳號吧（<https://github.com>，免費、一分鐘）。
+> 等一下要用到的 Supabase 和 Cloudflare 都可以直接用 GitHub 登入，先辦好就不用中途停下來。
+
+已經有帳號就跳過。這不是環境檢查的一部分，純粹是利用等待時間。
+
 ## 3. 驗證
 - **請使用者關掉再重開 Claude Code（或終端機）**，讓 PATH 生效。
 - 重跑：`node -v` ≥ v20、`git --version` 有輸出。都通過才算完成。

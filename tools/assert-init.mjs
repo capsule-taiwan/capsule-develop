@@ -55,6 +55,7 @@ if (!init) {
   // 少一個 skill 就是使用者打了 /xxx 沒反應，而且沒有任何錯誤訊息
   const WANT = [
     'check',
+    'connect-login',
     'deploy',
     'doctor',
     'enable-login',

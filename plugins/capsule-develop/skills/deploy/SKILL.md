@@ -11,7 +11,7 @@ allowed-tools: Bash, Read, PowerShell
 
 ## 步驟
 1. **打包**：先跑 `/check`，再 `npm run generate`。SPA 靜態檔輸出到 **`.output/public`**（Nuxt 4 就是這個目錄，不是 `dist`）。Supabase 網址與金鑰會在打包當下烤進 HTML，所以 Cloudflare 端不用另設環境變數。
-2. 請使用者產一次 **Cloudflare API token**：Cloudflare → 右上頭像 → **My Profile → API Tokens → Create Token** → 用 **"Edit Cloudflare Pages"** 範本 → 建立 → 複製貼回聊天。也請他複製 **Account ID**（Workers & Pages 頁右側，或之後用 `wrangler whoami` 看）。
+2. 請使用者到 <https://dash.cloudflare.com> 註冊／登入（**可以直接用 GitHub 帳號**，不用另辦），然後產一次 **Cloudflare API token**：右上頭像 → **My Profile → API Tokens → Create Token** → 用 **"Edit Cloudflare Pages"** 範本 → 建立 → 複製貼回聊天。也請他複製 **Account ID**（Workers & Pages 頁右側，或之後用 `wrangler whoami` 看）。
 3. **部署（全部你做）**（`export CLOUDFLARE_API_TOKEN=<token>`、`export CLOUDFLARE_ACCOUNT_ID=<id>`）：
    - 第一次：`npx --yes wrangler pages project create <專案代號> --production-branch main`
    - 部署：`npx --yes wrangler pages deploy .output/public --project-name <專案代號> --branch=main --commit-dirty=true`
@@ -23,7 +23,8 @@ allowed-tools: Bash, Read, PowerShell
      - `GET https://api.supabase.com/v1/projects/<ref>/config/auth` 讀出現有 `uri_allow_list`。
      - `PATCH .../config/auth`，body：`site_url` = `https://<專案代號>.pages.dev`；`uri_allow_list` = 既有值再 append `,https://<專案代號>.pages.dev,https://<專案代號>.pages.dev/**,https://*.<專案代號>.pages.dev/**`。
      - 用 `GET` 複驗白名單有含新網址。
-   - 部署者不是 IT／沒有 Supabase token → 請使用者帶 pages.dev 網址找 IT，用 `/enable-login` 一併把網址加進白名單（與登入開通同一道人工關卡）。
+   - 找不到 token → 請使用者到 <https://supabase.com/dashboard/account/tokens> 再產一個。**那是他自己的專案，不用問任何人、也不用等 IT。**
+   - 登入還沒開通也照樣上線，不要等——網址先有，之後 `/connect-login` 一接上，本機與線上同時就能登入。
 5. **只有公司的人進得來**：上線後只有公司 Google 帳號登得進去（登入本來就限 `@capsulecorporation.cc`）、資料受 RLS 保護，不用再另外設定存取限制。
 6. 之後每次更新：重跑 `/check` → `npm run generate` → `npx --yes wrangler pages deploy .output/public --project-name <專案代號> --branch=main --commit-dirty=true`。網址不變。
 

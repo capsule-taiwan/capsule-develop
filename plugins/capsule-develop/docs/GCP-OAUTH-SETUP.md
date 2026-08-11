@@ -47,7 +47,8 @@ CAPSULE 星球 MVP 的「公司 Google 登入」建立在一個 GCP 專案的 **
 
 改成一案一組後：secret 只開自己那扇門、redirect URI 各自獨立、可單獨撤銷、稽核看得出來源。
 
-代價是 IT 每個專案多花約兩分鐘建 client——**而這些步驟本來就是 IT 在做**（`/enable-login` 是人工驗證關卡），
+代價是 IT 每個專案多花約兩分鐘建 client——**而這一步本來就只有 IT 做得到**（只有 IT 有 GCP 權限；`/enable-login` 就是這一步）。
+寫進 Supabase 那一段則由開發者自己的 Claude 用 `/connect-login` 完成，IT 不需要碰他的 token，
 非工程同事的流程完全沒變。
 
 > **已經用共用 client 開通過的 MVP**：不必立刻停用，但下次維護時逐案換成專屬 client

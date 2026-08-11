@@ -1,6 +1,6 @@
 ---
 name: new-project
-description: 建立一個新的 CAPSULE 內部工具 MVP 專案骨架。當使用者說「開新專案」「new project」「scaffold」「我想做一個新的內部工具」時使用。用「一次憑證、其餘全自動」的方式接上資料庫並跑到登入頁，再交給工程師開通登入。
+description: 建立一個新的 CAPSULE 內部工具 MVP 專案骨架。當使用者說「開新專案」「new project」「scaffold」「我想做一個新的內部工具」時使用。用「一次憑證、其餘全自動」的方式接上資料庫、先讓專案上線，再接公司 Google 登入。
 allowed-tools: Bash, Read, Write, Edit, PowerShell
 ---
 
@@ -9,40 +9,75 @@ allowed-tools: Bash, Read, Write, Edit, PowerShell
 你要幫一位**非工程師**從零長出一個獨立的內部工具 MVP。全程用**業務語言**、正體中文、一步一步帶。
 
 ## 核心原則（整個流程都遵守）
+
 **每個外部服務，只讓使用者做「產一次憑證（token/key）」與「用瀏覽器點幾下建立帳號」這種最必要的動作；其餘所有操作——建表、填設定、跑指令——都由你用 CLI（supabase / wrangler）或 API 自動完成。絕對不要叫使用者自己貼 SQL、手改設定檔、或在 dashboard 裡摸索。**
 
-## 步驟 0：環境
+**盡早讓專案上線。** 有一個真的打得開的網址，使用者才有東西可以拿給同事看、才知道自己在做什麼。登入還沒開通不影響上線——先上線，登入後面接。
+
+## 步驟 0：環境與帳號
+
 - 跑 `node --version`（需 v20+）與 `git --version`。缺任何一個，先用 `/doctor` 幫使用者裝好再繼續。
+- **確認他有 GitHub 帳號**（<https://github.com>，免費）。等一下 Supabase 與 Cloudflare 都可以直接用 GitHub 登入，不用再各辦一組帳號密碼。沒有的話請他現在辦一個，一分鐘的事。
 - 確認目前資料夾是空的（或請使用者確認要在這裡建）。
 
 ## 步驟 1：訪談（業務選擇題）
+
 記下：專案中文名、專案代號（英文小寫連字號）、第一個資料的代號（英文小寫單數，當表前綴與權限名）。
 
 ## 步驟 2：複製範本
+
 `cp -r "${CLAUDE_PLUGIN_ROOT}/template/." .`（要放子資料夾就 cp 到 ./<代號> 再 cd 進去）。**保留 items 範例別刪**。
 
 ## 步驟 3：填入專案資訊
+
 把 **package.json 的 `name`** 填成專案代號、**README** 填成中文名、**`.env` 的 `NUXT_PUBLIC_APP_NAME`** 填成中文名。
 **不要改 `CLAUDE.md`**——它是平台維護區、受護欄保護（硬改會被擋）；專案名稱由 package.json 與 `.env` 提供即可。
 
 ## 步驟 4：接上 Supabase（一次 token，其餘你全自動）
-1. 請使用者到 https://supabase.com 免費登入，按 **New project** 建一個（取名、區域選 Southeast Asia (Singapore)、設一組 DB 密碼）。等約 1 分鐘。
-2. 請使用者產一個 **access token**（一次就好）：https://supabase.com/dashboard/account/tokens → **Generate new token** → 複製貼回聊天。
+
+1. 請使用者到 <https://supabase.com> 登入（**按 Continue with GitHub 最快**），按 **New project** 建一個（取名、區域選 Southeast Asia (Singapore)、設一組 DB 密碼）。等約 1 分鐘。
+2. 請使用者產一個 **access token**（一次就好）：<https://supabase.com/dashboard/account/tokens> → **Generate new token** → 複製貼回聊天。**這把 token 之後接登入還會用到，請他自己留著。**
 3. 之後**全部你做**（`export SUPABASE_ACCESS_TOKEN=<token>`）：
    - 取專案 ref（從 URL `https://<ref>.supabase.co`，或 `GET https://api.supabase.com/v1/projects`）。
    - 取 anon/publishable 金鑰：`GET https://api.supabase.com/v1/projects/<ref>/api-keys`，連同 URL 寫進 `.env`。
    - 建資料表：把 `supabase/migrations/` 的每個 `.sql`（依檔名順序）用 `POST https://api.supabase.com/v1/projects/<ref>/database/query` 送出（body `{"query":"<SQL>"}`，header 帶 access token）。這條免 login/link/DB 密碼；之後 `/new-feature`、`/next-migration` 套新 migration 也走同一條，不要叫使用者去 `supabase login/link`。
-   - **注意：不要在這裡設定 Google 登入**。登入是由工程師開通（見步驟 6），這是刻意的人工關卡。
+   - Google 登入這時候還沒辦法設——金鑰要跟工程師拿（步驟 7）。其餘照做，不用等。
 
 ## 步驟 5：安裝與啟動
-`npm install` → `npm run dev` → 請使用者開 http://localhost:3000。會看到**登入頁**（一顆「使用 Google 登入」）。**現在還登不進去**——因為公司 Google 登入要由工程師開通。
 
-## 步驟 6：帶 URL 找工程師開通登入（人工驗證關卡）
-- 請使用者**複製他的 Supabase 網址**（`https://<ref>.supabase.co`），**拿去找工程師 / IT**。
-- 工程師確認這個專案沒問題後，會用 `/enable-login` 幫他把公司 Google 登入接上。**這是刻意的人工把關**——確保只有正當的專案能拿到公司登入。
-- 開通後，使用者回來用**公司 Google 帳號登入**（**第一個登入者 = 管理員**），看到左側「項目（範例）」即成功。
+`npm install` → `npm run dev` → 請使用者開 <http://localhost:3000>。會看到**登入頁**（一顆「使用 Google 登入」）。
+**現在還登不進去**是正常的，因為登入金鑰還沒拿到。這不影響下一步。
 
-## 步驟 7：git 與交棒
-`git init && git add -A && git commit -m "chore: scaffold MVP"`。告訴使用者下一步：`/task-brief` → `/new-feature` 開發，`/check` 檢查，`/deploy` 上線。
+## 步驟 6：先上線（不要等登入）
+
+直接跑 `/deploy`，把它部署到使用者自己的 Cloudflare Pages（免費）。Cloudflare 一樣可以**用 GitHub 帳號登入**。
+
+上線之後他就有一個 `https://<專案代號>.pages.dev` 的網址。現在打開會停在登入頁——沒關係，重點是**東西已經在線上了**，之後每次更新只要再跑一次 `/deploy`，網址不變。
+
+`/deploy` 會順手把這個網址加進 Supabase 的登入白名單，所以登入一開通，線上與本機同時就能用。
+
+## 步驟 7：跟工程師拿登入金鑰
+
+請使用者把下面兩樣**貼給工程師 / IT**：
+
+- 專案代號（例如 `shipping-console`）
+- 他的 Supabase 網址：`https://<ref>.supabase.co`
+
+工程師會在 GCP 產一組這個專案專屬的 Google OAuth 金鑰（client ID + secret）交給他。**一案一組，不共用。**
+
+> 你要做的就是把這兩個值整理好、告訴使用者要拿去給誰。不要在這裡停下來等——如果他還有別的功能想做，可以先繼續。
+
+## 步驟 8：拿到金鑰 → 直接接上
+
+使用者把 client ID 與 secret 貼回來之後，用 **`/connect-login`** 把它寫進他自己的 Supabase。
+
+> **拿到金鑰並交給你，就是授權完成。**不要再要求他去跟工程師確認一次——那道關卡在工程師產金鑰、親手交給他的時候就已經過了。直接做完，讓他登入。
+
+登入成功後：**第一個登入的人自動成為管理員**，看到左側「項目（範例）」即成功。
+
+## 步驟 9：git 與交棒
+
+`git init && git add -A && git commit -m "chore: scaffold MVP"`。
+告訴使用者下一步：`/task-brief` 談需求 → `/new-feature` 開發 → `/check` 檢查 → `/deploy` 再上線一次。
 
 全程遵守專案根目錄 `CLAUDE.md` 的回收契約。
