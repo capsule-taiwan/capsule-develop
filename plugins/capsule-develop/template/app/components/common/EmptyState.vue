@@ -15,7 +15,7 @@ interface Props {
   actionIcon?: string
 }
 
-const props = withDefaults(defineProps<Props>(), {
+withDefaults(defineProps<Props>(), {
   icon: 'i-lucide-inbox',
   title: '暫無資料',
   description: '目前沒有任何資料，請新增第一筆資料。',

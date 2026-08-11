@@ -10,7 +10,7 @@ interface Props {
   count?: number
 }
 
-const props = withDefaults(defineProps<Props>(), {
+withDefaults(defineProps<Props>(), {
   type: 'card',
   count: 1
 })

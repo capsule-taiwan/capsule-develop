@@ -14,8 +14,8 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 const emit = defineEmits<{
-  (event: 'update:modelValue', value: boolean): void
-  (event: 'update:model-value', value: boolean): void
+  // camelCase 與 kebab-case 都收，父層兩種寫法都能用
+  (event: 'update:modelValue' | 'update:model-value', value: boolean): void
 }>()
 
 const handleUpdate = (value: boolean) => {

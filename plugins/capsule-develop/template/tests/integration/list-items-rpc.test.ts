@@ -54,8 +54,9 @@ describe.skipIf(!URL || !KEY)('list_items RPC', () => {
   it('分頁不重疊：第 1 頁與第 2 頁的 id 沒有交集', async () => {
     const p1 = await rpc('list_items', { p_user_id: ANY_USER, p_page: 1, p_page_size: 3 })
     const p2 = await rpc('list_items', { p_user_id: ANY_USER, p_page: 2, p_page_size: 3 })
-    const ids1 = new Set(p1.items.map((x: any) => x.id))
-    const overlap = p2.items.filter((x: any) => ids1.has(x.id))
+    type Row = { id: string | number }
+    const ids1 = new Set(p1.items.map((x: Row) => x.id))
+    const overlap = p2.items.filter((x: Row) => ids1.has(x.id))
     expect(overlap.length).toBe(0)
   })
 })

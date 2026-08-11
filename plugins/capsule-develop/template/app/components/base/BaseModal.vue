@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { ModalProps } from '@nuxt/ui/components/Modal.vue'
 /**
  * BaseModal - 彈窗元件的基礎封裝
  * 封裝 UModal，提供統一的彈窗介面
@@ -40,11 +41,12 @@ const isOpen = computed({
 })
 
 const modalUi = computed(() => {
-  const baseUi: Record<string, any> = props.ui ? { ...props.ui } : {}
-  // 如果已經有自定義 content 樣式，就不添加 size 類
-  if (!baseUi.content || !baseUi.content.includes('max-w')) {
+  const baseUi: NonNullable<ModalProps['ui']> = props.ui ? { ...props.ui } : {}
+  // ui 的值不一定是字串（也可能是陣列或 replacer 函式），所以先確認型別再判斷
+  const contentClass = typeof baseUi.content === 'string' ? baseUi.content : ''
+  if (!contentClass.includes('max-w')) {
     const sizeClass = widthBySize[props.size] ?? widthBySize.md
-    baseUi.content = [sizeClass, baseUi.content ?? ''].filter(Boolean).join(' ')
+    baseUi.content = [sizeClass, contentClass].filter(Boolean).join(' ')
   }
   // footer 加上 flex-wrap + overflow-hidden，避免小螢幕按鈕溢出
   baseUi.footer = [baseUi.footer ?? '', 'flex-wrap overflow-hidden'].filter(Boolean).join(' ')

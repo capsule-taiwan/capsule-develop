@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { DashboardSidebarProps } from '@nuxt/ui/components/DashboardSidebar.vue'
 /**
  * BaseDashboardSidebar - Dashboard 側邊欄元件的基礎封裝
  * 封裝 UDashboardSidebar，提供統一的 Dashboard 側邊欄介面
@@ -14,10 +15,10 @@ interface Props {
   /** 是否可調整大小 */
   resizable?: boolean
   /** 自定義 UI 配置 */
-  ui?: Record<string, any>
+  ui?: DashboardSidebarProps['ui']
 }
 
-const props = withDefaults(defineProps<Props>(), {
+withDefaults(defineProps<Props>(), {
   collapsible: false,
   resizable: false,
 })

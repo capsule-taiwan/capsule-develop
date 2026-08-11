@@ -1,6 +1,7 @@
-<script setup lang="ts" generic="T extends Record<string, any>">
+<script setup lang="ts" generic="T extends TableData">
 import { computed, onMounted, onBeforeUnmount, nextTick, ref, watch } from 'vue'
 import { useScroll } from '@vueuse/core'
+import type { TableProps, TableRow, TableColumn, TableData } from '@nuxt/ui/components/Table.vue'
 
 /**
  * BaseTable - 表格元件的基礎封裝
@@ -12,25 +13,38 @@ interface Column {
   label: string
   sortable?: boolean
   class?: string
+  meta?: Record<string, unknown>
+}
+
+/**
+ * 規範化後要交給 UTable（TanStack Table）的欄位形狀。
+ * 我們只碰得到這幾個欄位，其餘由 UTable 自己處理。
+ */
+interface NormalizedColumn {
+  id?: string
+  accessorKey?: string
+  header?: string
+  size?: number
+  meta?: Record<string, unknown>
 }
 
 interface Props {
   /** 表格數據 (rows 模式) */
   rows?: T[]
   /** 表格數據 (data 模式，TanStack Table) */
-  data?: any[]
+  data?: TableProps<T>['data']
   /** 表格列定義 */
-  columns?: Column[] | any[]
+  columns?: Column[] | NormalizedColumn[]
   /** 是否載入中 */
   loading?: boolean
   /** 空狀態文字 */
   emptyState?: string
   /** 自定義 UI 配置 */
-  ui?: Record<string, any>
+  ui?: TableProps<T>['ui']
   /** 傳給 UTable 的 meta（如 meta.class.tr 可依 row 回傳列 class） */
-  meta?: Record<string, any>
+  meta?: TableProps<T>['meta']
   /** 穩定列 id，避免動態增減列時下一列顯示被蓋掉（TanStack Table getRowId） */
-  getRowId?: (row: any, index: number) => string
+  getRowId?: (row: T, index: number) => string
   /** 欄位凍結設定 { left: ['col1'], right: ['col2'] } */
   pinnedColumns?: { left?: string[], right?: string[] }
   /** Row selection 狀態 (TanStack Table row-selection) */
@@ -48,8 +62,10 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 const emit = defineEmits<{
-  'select': [row: any]
-  'edit': [row: any]
+  // UTable 的 slot 與 onSelect 給的是 TableRow<T>（要拿原始資料用 row.original），
+  // 這裡照實傳出去，消費端行為不變。
+  'select': [row: TableRow<T>]
+  'edit': [row: TableRow<T>]
   'update:rowSelection': [value: Record<string, boolean>]
 }>()
 
@@ -67,10 +83,10 @@ const defaultTableUi = {
 
 // 頁面若自帶 :ui，仍強制把 overflow-hidden + text-ellipsis 併入「td」，確保全站一致截斷
 // （th 不動，避免破壞 sticky thead）
-const mergedUi = computed<Record<string, any>>(() => {
+const mergedUi = computed<NonNullable<TableProps['ui']>>(() => {
   if (!props.ui) return defaultTableUi
-  const u: Record<string, any> = { ...props.ui }
-  const ensureClip = (cls?: string) => {
+  const u: Record<string, unknown> = { ...props.ui }
+  const ensureClip = (cls?: string | null) => {
     let out = cls ?? ''
     if (!/(^|\s)overflow-hidden(\s|$)/.test(out)) out += ' overflow-hidden'
     if (!/(^|\s)text-ellipsis(\s|$)/.test(out)) out += ' text-ellipsis'
@@ -80,12 +96,12 @@ const mergedUi = computed<Record<string, any>>(() => {
   return u
 })
 
-const handleEditClick = (row: any) => {
+const handleEditClick = (row: TableRow<T>) => {
   emit('edit', row)
 }
 
 // Nuxt UI 4.1+ 的 UTable onSelect 改為 (event, row) 簽名
-const handleSelect = (_event: Event, row: any) => {
+const handleSelect = (_event: Event, row: TableRow<T>) => {
   emit('select', row)
 }
 
@@ -101,7 +117,7 @@ const paddedRows = computed(() => {
 // 檢查是否有 actions 欄位
 const hasActionsColumn = computed(() => {
   if (!props.columns) return false
-  return props.columns.some((col: any) => 
+  return (props.columns as Array<Column & NormalizedColumn>).some((col) =>
     col.id === 'actions' || col.key === 'actions' || col.accessorKey === 'actions'
   )
 })
@@ -339,21 +355,23 @@ watch(
 )
 
 // 規範化為 Nuxt UI v4 / TanStack Table 欄位格式
-const normalizedColumns = computed<any>(() => {
+const normalizedColumns = computed<TableColumn<T>[]>(() => {
   if (!props.columns) return []
 
   // 如果是已經格式化的 columns (data 模式)
-  if (props.columns.length > 0 && ('accessorKey' in props.columns[0] || 'id' in props.columns[0])) {
-    return props.columns
+  const first = props.columns[0]
+  if (first && ('accessorKey' in first || 'id' in first)) {
+    return props.columns as TableColumn<T>[]
   }
 
   // 否則轉換為標準格式 (rows 模式)，Nuxt UI 用 meta.class.th / meta.class.td
-  return props.columns?.map((col: any) => ({
+  // TS 無法證明 col.key 是 keyof T（欄位是執行時才給的），所以這裡明確轉一次型別
+  return (props.columns as Column[]).map((col) => ({
     id: col.key,
     accessorKey: col.key,
     header: col.label,
     meta: col.meta ?? (col.class ? { class: { th: col.class, td: col.class } } : {})
-  })) as any
+  })) as TableColumn<T>[]
 })
 
 // 動態計算 pinned 欄位的 left/right 偏移 CSS（根據 DOM 量測的實際寬度累加）
@@ -372,7 +390,7 @@ const pinnedOffsetCss = computed(() => {
   const leftIds = columnPinning.value.left
   for (let i = 0; i < leftIds.length; i++) {
     const id = leftIds[i]
-    const idx = cols.findIndex((c: any) => (c.id ?? c.accessorKey) === id)
+    const idx = cols.findIndex((c) => { const n = c as NormalizedColumn; return (n.id ?? n.accessorKey) === id })
     if (idx === -1) continue
     rules.push(`${sel(idx + 1)} { left: ${cumLeft}px !important; }`)
     cumLeft += (leftWidths[i] ?? cols[idx]?.size ?? 150)
@@ -384,7 +402,7 @@ const pinnedOffsetCss = computed(() => {
   let cumRight = 0
   for (let i = 0; i < rightIds.length; i++) {
     const id = rightIds[i]
-    const idx = cols.findIndex((c: any) => (c.id ?? c.accessorKey) === id)
+    const idx = cols.findIndex((c) => { const n = c as NormalizedColumn; return (n.id ?? n.accessorKey) === id })
     if (idx === -1) continue
     rules.push(`${sel(idx + 1)} { right: ${cumRight}px !important; }`)
     // rightWidths 是原始順序，需要反轉後對應
@@ -496,8 +514,11 @@ const onColHandlePointerDown = (e: PointerEvent, th: HTMLElement, index: number)
 const onColHandleDblClick = (e: MouseEvent, index: number) => {
   e.preventDefault()
   e.stopPropagation()
-  const next = { ...columnWidths.value }
-  delete next[index]
+  // 用「挑出要留的」取代 delete 動態鍵：型別更明確，也不會留下 undefined 洞
+  const next: Record<number, number> = {}
+  for (const [key, width] of Object.entries(columnWidths.value)) {
+    if (Number(key) !== index) next[Number(key)] = width
+  }
   columnWidths.value = next
   persistColumnWidths()
   nextTick(() => measureShadowMetrics())

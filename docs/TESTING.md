@@ -157,25 +157,29 @@ stdout，所以「裝得起來、skills 齊全、SessionStart hook 有跑」這�
 clone 只會帶受版控的檔案，跟使用者從 GitHub 裝到的內容一致。
 （同理：你自己在本機用 `claude plugin marketplace add ./` 測試時也會踩到這個。）
 
-### 已知欠債：範本的 lint 有 52 個 error
+### typecheck 曾經是假的
 
-`template` job 的 lint 步驟目前是 `continue-on-error`。這是範本本來就欠的債，不是測試寫壞了——
-意思是**每個新 scaffold 出來的 MVP 一開始就有 52 個 lint error**。
-
-大宗是 `@typescript-eslint/no-explicit-any` 與 components 裡宣告了卻沒用到的 `props`。
-其中一個不只是風格問題：
+`npm run typecheck` 原本直接跑 `nuxt typecheck`，而它會這樣收場：
 
 ```
-app/components/common/LoadingSpinner.vue:22
-  :class="class"   ← class 是 JS 保留字，模板編譯不過（vue/no-parsing-error）
+[Vue] Resolve plugin path failed: vue-router/volar/sfc-route-blocks
+Error: Cannot find module 'vue-router/volar/sfc-route-blocks'
 ```
 
-而且那個 `class` prop 宣告本身是多餘的——Vue 的 fallthrough attrs 本來就會把 class 帶下去，
-宣告成 prop 反而擋掉了自動繼承。
+**印完錯誤之後 exit 0。** 也就是說它看起來有跑，實際上一個型別都沒檢查——
+CI 綠燈、`/check` 綠燈、CLAUDE.md 裡「typecheck 全新專案零既有錯誤，紅了就是你弄壞的」
+那句話，全都是空的。
 
-這些檔案都在平台共用區、受 `guard-platform-area` 保護，要另外開一輪處理。
-`/check` 目前也沒有跑 lint（只跑 test / test:integration / typecheck），所以影響是
-「新人看不到，但債一直在」。修完之後把 workflow 裡的 `continue-on-error` 拿掉。
+根因是 hoisting：`vue-router` 被裝在 `node_modules/nuxt/node_modules/` 底下，而
+`@vue/language-core` 是從**自己的位置**去 resolve 那個 Volar plugin，看不到巢狀的那份。
+把 vue-router 提成直接依賴會連帶要求把 pinia 升到 v3（peerOptional），代價太大。
+
+現在 `typecheck` 走 `scripts/typecheck.mjs`：`nuxt prepare` → 濾掉**解析不到的** Volar
+plugin（只濾解析不到的，上游修好會自動恢復）→ 用那份 tsconfig 跑 vue-tsc，如實回傳 exit code。
+那個 plugin 只負責 SFC 的 `<route>` 區塊，範本沒用到。
+
+驗證它真的會擋：故意在 `app/utils/result.ts` 塞一行 `const x: number = '字串'`，
+`npm run typecheck` 應該要 exit 2 並指出行號。
 
 ### 已知的維護摩擦：護欄會擋住這個 repo 自己
 

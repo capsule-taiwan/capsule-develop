@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { SelectMenuProps } from '@nuxt/ui/components/SelectMenu.vue'
 /**
  * BaseSelect - 選擇器元件的基礎封裝
  * 封裝 USelectMenu，提供統一的選擇器介面
@@ -11,7 +12,9 @@ interface Option {
   value: string | number
   icon?: string
   disabled?: boolean
-  [key: string]: any // 允許額外的屬性（如 config）
+  // 允許額外的屬性（如 config）。用 unknown 而不是 any：拿出來用之前要先自己收窄，
+  // 才不會把型別檢查整個關掉。
+  [key: string]: unknown
 }
 
 interface Props {
@@ -20,7 +23,7 @@ interface Props {
   /** 選項列表 */
   options?: Option[]
   /** items 列表（Nuxt UI 格式，如果有則優先使用） */
-  items?: any[]
+  items?: Option[]
   /** value-key */
   valueKey?: string
   /** 佔位符 */
@@ -36,7 +39,7 @@ interface Props {
   /** 尺寸 */
   size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl'
   /** 自定義 UI 配置 */
-  ui?: Record<string, any>
+  ui?: SelectMenuProps['ui']
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -55,7 +58,7 @@ const selected = computed({
   set: (val) => {
     // 多選時，按 options 順序排序已選取的值
     if (props.multiple && Array.isArray(val) && items.value.length > 0) {
-      const orderMap = new Map(items.value.map((item: any, idx: number) => [item.value, idx]))
+      const orderMap = new Map(items.value.map((item: Option, idx: number) => [item.value, idx]))
       const sorted = [...val].sort((a, b) => (orderMap.get(a) ?? Infinity) - (orderMap.get(b) ?? Infinity))
       emit('update:modelValue', sorted as string[] | number[])
     } else {
@@ -91,8 +94,13 @@ const disabledUi = {
   base: 'disabled:bg-gray-100 disabled:dark:bg-gray-800/60 disabled:text-gray-500 disabled:dark:text-gray-400 disabled:ring-gray-300 disabled:dark:ring-gray-600 disabled:opacity-100 disabled:cursor-not-allowed'
 }
 
+// USelectMenu 的 value-key 型別只收 Option 上「明確宣告」的鍵，
+// 但我們對外允許任意字串（Option 有索引簽章，使用者可能拿 id 之類的欄位當 value）。
+// 執行時 USelectMenu 本來就吃得下任意鍵，所以把這個落差集中在這一行轉掉。
+const valueKeyProp = computed(() => props.valueKey as 'value')
+
 const mergedUi = computed(() => {
-  const ui: Record<string, any> = { ...props.ui }
+  const ui: Record<string, unknown> = { ...props.ui }
   // checkbox 模式: 隱藏 USelectMenu 預設的右側打勾 (改用左側方框)
   if (props.checkbox) ui.itemTrailingIcon = ['hidden', props.ui?.itemTrailingIcon].filter(Boolean).join(' ')
   if (props.disabled) ui.base = [props.ui?.base, disabledUi.base].filter(Boolean).join(' ')
@@ -100,10 +108,11 @@ const mergedUi = computed(() => {
 })
 
 // checkbox 模式: 判斷選項是否已選 (對應左側方框的勾選狀態)
-function isItemSelected(item: any): boolean {
-  const v = item?.[props.valueKey]
+// 從 slot 拿到的 item 型別由 USelectMenu 決定，這裡收窄成我們自己的 Option
+function isItemSelected(item: unknown): boolean {
+  const v = (item as Option | null | undefined)?.[props.valueKey]
   const sel = props.modelValue
-  return Array.isArray(sel) ? (sel as any[]).includes(v) : sel === v
+  return Array.isArray(sel) ? (sel as unknown[]).includes(v) : sel === v
 }
 
 // 以 " / " 或 " - " 分隔中日文選項，首段為主標題、其餘為副標題
@@ -125,7 +134,7 @@ function splitLabel(label: string): { main: string, sub: string } | null {
     v-model="selected"
     :class="($attrs.class as string) || 'w-full'"
     :items="items"
-    :value-key="valueKey"
+    :value-key="valueKeyProp"
     :placeholder="placeholder"
     :multiple="multiple"
     :search-input="searchable !== false"

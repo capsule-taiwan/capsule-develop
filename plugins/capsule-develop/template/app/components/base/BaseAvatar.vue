@@ -19,7 +19,7 @@ interface Props {
   dashed?: boolean
 }
 
-const props = withDefaults(defineProps<Props>(), {
+withDefaults(defineProps<Props>(), {
   size: 'md',
   dashed: false
 })

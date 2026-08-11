@@ -31,7 +31,8 @@ interface Inputs {
 export function useItemsServerPaginated(inputs: Inputs) {
   const supabase = useSupabaseClient()
   const { user } = useAuth()
-  const repo = new ItemRepository(supabase as any)
+  // useSupabaseClient() 回的 client 沒帶 Database 泛型，這裡轉成 Repository 要的形狀
+  const repo = new ItemRepository(supabase as unknown as ConstructorParameters<typeof ItemRepository>[0])
 
   const buildFilters = (): ListItemsFilters => {
     const out: ListItemsFilters = {}

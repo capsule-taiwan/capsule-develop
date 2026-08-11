@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { DashboardPanelProps } from '@nuxt/ui/components/DashboardPanel.vue'
 /**
  * BaseDashboardPanel - Dashboard 面板元件的基礎封裝
  * 封裝 UDashboardPanel，提供統一的 Dashboard 面板介面
@@ -22,10 +23,10 @@ interface Props {
   /** 是否自動增長 */
   grow?: boolean
   /** 自定義 UI 配置 */
-  ui?: Record<string, any>
+  ui?: DashboardPanelProps['ui']
 }
 
-const props = withDefaults(defineProps<Props>(), {
+withDefaults(defineProps<Props>(), {
   resizable: false,
   collapsible: false,
   collapsed: false,

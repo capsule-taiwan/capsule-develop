@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { CheckboxProps } from '@nuxt/ui/components/Checkbox.vue'
 /**
  * BaseCheckbox - Checkbox 元件的基礎封裝
  * 封裝 UCheckbox，提供統一的 Checkbox 介面
@@ -24,7 +25,7 @@ interface Props {
   /** 不確定狀態（用於全選/部分選中） */
   indeterminate?: boolean
   /** 自定義 UI 配置 */
-  ui?: Record<string, any>
+  ui?: CheckboxProps['ui']
 }
 
 const props = withDefaults(defineProps<Props>(), {

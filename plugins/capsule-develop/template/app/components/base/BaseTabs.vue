@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { TabsProps } from '@nuxt/ui/components/Tabs.vue'
 /**
  * BaseTabs - Tabs 元件的基礎封裝
  * 封裝 UTabs，提供統一的標籤頁介面
@@ -27,7 +28,7 @@ interface Props {
 	/** 尺寸 */
 	size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl'
 	/** 自定義 UI 配置 */
-	ui?: Record<string, any>
+	ui?: TabsProps['ui']
 }
 
 const props = defineProps<Props>()

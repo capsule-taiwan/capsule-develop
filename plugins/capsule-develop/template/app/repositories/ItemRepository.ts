@@ -9,6 +9,17 @@ import { createLogger } from '~/utils/logger'
 
 type Supabase = SupabaseClient<Database>
 
+/**
+ * list_items 這支 RPC 不在 generated types 裡（它是我們自己的 migration 建的），
+ * 所以要用一個最小的呼叫介面把它描述出來——比整個 client 轉成 any 精確得多。
+ */
+type RpcCaller = {
+  rpc: (fn: string, args: Record<string, unknown>) => Promise<{
+    data: unknown
+    error: { message?: string } | null
+  }>
+}
+
 export type ItemSortKey = 'name' | 'status' | 'amount' | 'created_at' | 'updated_at'
 
 export interface ListItemsFilters {
@@ -55,7 +66,7 @@ export class ItemRepository {
       for (const [key, value] of Object.entries(params.filters)) {
         if (Array.isArray(value) && value.length > 0) filtersPayload[key] = value
       }
-      const { data, error } = await (this.supabase as any).rpc('list_items', {
+      const { data, error } = await (this.supabase as unknown as RpcCaller).rpc('list_items', {
         p_user_id: params.userId,
         p_search: params.search,
         p_filters: filtersPayload,
@@ -69,9 +80,10 @@ export class ItemRepository {
         return { data: null, error: { message: error.message || '項目列表查詢失敗' } }
       }
       return { data: data as unknown as ListItemsResult, error: null }
-    } catch (error: any) {
+    } catch (error: unknown) {
       this.log.error('list_items unexpected error', error)
-      return { data: null, error: { message: error.message || '項目列表查詢失敗' } }
+      const message = error instanceof Error ? error.message : '項目列表查詢失敗'
+      return { data: null, error: { message } }
     }
   }
 }

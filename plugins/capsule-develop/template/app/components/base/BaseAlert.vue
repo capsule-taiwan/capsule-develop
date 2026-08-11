@@ -4,6 +4,8 @@
  * 封裝 UAlert，提供統一的警示訊息介面
  */
 
+import type { AlertProps } from '@nuxt/ui/components/Alert.vue'
+
 defineOptions({ inheritAttrs: false })
 
 interface Props {
@@ -20,9 +22,9 @@ interface Props {
   /** 方向 */
   orientation?: 'vertical' | 'horizontal'
   /** 是否顯示關閉按鈕 */
-  close?: boolean | any
+  close?: AlertProps['close']
   /** 自定義 UI 配置 */
-  ui?: Record<string, any>
+  ui?: AlertProps['ui']
 }
 
 const props = withDefaults(defineProps<Props>(), {

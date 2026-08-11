@@ -15,7 +15,7 @@ interface Props {
   variant?: 'solid' | 'soft' | 'outline'
 }
 
-const props = withDefaults(defineProps<Props>(), {
+withDefaults(defineProps<Props>(), {
   size: 'md',
   variant: 'soft',
 })

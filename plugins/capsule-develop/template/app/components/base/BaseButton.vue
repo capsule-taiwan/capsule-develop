@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { ButtonProps } from '@nuxt/ui/components/Button.vue'
 /**
  * BaseButton - 按鈕元件的基礎封裝
  * 封裝 UButton，提供統一的按鈕介面
@@ -32,7 +33,7 @@ interface Props {
   /** 頭像 */
   avatar?: { src: string; alt: string }
   /** 自定義 UI 配置 */
-  ui?: Record<string, any>
+  ui?: ButtonProps['ui']
 }
 
 const props = withDefaults(defineProps<Props>(), {

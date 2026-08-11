@@ -31,24 +31,21 @@ export const useSupabaseClient = (): ReturnType<typeof createClient<Database>> =
     
     // 客戶端使用：明確指定使用瀏覽器的 fetch，避免引入 server-side 專用組件
     // 在客戶端環境中，明確使用瀏覽器的 fetch API
-    const clientOptions: any = {
+    // 一次組好，不要先宣告成 any 再往上加欄位——那樣型別就消失了
+    const isBrowser = typeof window !== 'undefined'
+    const clientOptions = {
       auth: {
         persistSession: true,
-        autoRefreshToken: true
-      }
+        autoRefreshToken: true,
+        // storage 只在瀏覽器端有；SSR 沒有 localStorage
+        ...(isBrowser ? { storage: window.localStorage } : {})
+      },
+      // 明確指定瀏覽器的 fetch，避免打包時被換成 node-fetch
+      ...(isBrowser ? { global: { fetch: window.fetch.bind(window) } } : {})
     }
-    
-    // 只在客戶端環境中設定 storage 和 fetch
-    if (typeof window !== 'undefined') {
-      clientOptions.auth.storage = window.localStorage
-      // 明確指定使用瀏覽器的 fetch，避免使用 node-fetch
-      clientOptions.global = {
-        fetch: window.fetch.bind(window)
-      }
-      console.log('[SupabaseClient] Client-side config: localStorage enabled, fetch bound to window')
-    } else {
-      console.log('[SupabaseClient] Server-side config: no localStorage')
-    }
+    console.log(isBrowser
+      ? '[SupabaseClient] Client-side config: localStorage enabled, fetch bound to window'
+      : '[SupabaseClient] Server-side config: no localStorage')
     
     supabaseClient = createClient<Database>(
       config.public.supabaseUrl,

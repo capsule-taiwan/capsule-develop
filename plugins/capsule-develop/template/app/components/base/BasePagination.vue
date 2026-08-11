@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { PaginationProps } from '@nuxt/ui/components/Pagination.vue'
 /**
  * BasePagination - 分頁元件的基礎封裝
  * 封裝 UPagination，提供統一的分頁介面
@@ -30,7 +31,7 @@ interface Props {
   /** 是否禁用 */
   disabled?: boolean
   /** 自定義 UI 配置 */
-  ui?: Record<string, any>
+  ui?: PaginationProps['ui']
 }
 
 const props = defineProps<Props>()

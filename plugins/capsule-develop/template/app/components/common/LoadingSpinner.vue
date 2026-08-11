@@ -9,8 +9,6 @@
 interface Props {
   /** 大小（寬度和高度） */
   size?: number | string
-  /** 自訂 class */
-  class?: string
 }
 
 withDefaults(defineProps<Props>(), {
@@ -19,7 +17,7 @@ withDefaults(defineProps<Props>(), {
 </script>
 
 <template>
-  <div class="flex items-center justify-center" :class="class">
+  <div class="flex items-center justify-center">
     <svg 
       :width="size" 
       :height="size"
