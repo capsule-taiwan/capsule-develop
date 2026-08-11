@@ -37,7 +37,7 @@
 
 ## 開始前你需要（Step 0）
 
-作業系統 Windows 或 macOS 皆可。**照下面的順序做**，三種安裝方式（桌面版／終端機／IDE）都一樣。
+作業系統 Windows 或 macOS 皆可。**照下面的順序做**，三種安裝方式（VS Code／桌面版／終端機）都一樣。
 
 > 📌 **這是整個流程裡唯一需要你自己動手裝東西的地方。** 做完之後，從頭到尾都只要「跟 Claude 說話」——不用再打指令、不用改設定檔、不用碰終端機。
 >
@@ -83,18 +83,34 @@
 
 工具箱只要裝一次，看你用哪種 Claude Code（圖解步驟見 <https://capsule-taiwan.github.io/capsule-develop/#install>）：
 
-### 🖥️ Claude 桌面版 App（用點的，推薦給非工程師）
-訊息輸入框旁 **＋ → Plugins → Browse plugins** → 在 Directory 右上角 **＋（Add marketplace）→ Add from a repository** → URL 貼 `capsule-taiwan/capsule-develop` → **Sync** → 找到 **CAPSULE Develop** 卡片，安裝並啟用。
+### 🧩 VS Code（推薦，先看這個）
+
+桌面版 App 目前有些狀況、純終端機對非工程師又太硬，**VS Code 是現在最順的一條路**。
+
+1. 沒有 VS Code 的話先到 <https://code.visualstudio.com> 下載安裝。
+2. 在 VS Code 的擴充套件（Extensions）搜尋 **Claude Code**，安裝。
+3. 開啟 Claude Code 面板，貼這兩行：
+   ```
+   /plugin marketplace add https://github.com/capsule-taiwan/capsule-develop.git
+   /plugin install capsule-develop@capsule-tools
+   ```
+4. 照提示 **Restart**，就裝好了。
+
+（Cursor、JetBrains 系列同理，都有 Claude Code 擴充套件。）
+
+### 🖥️ Claude 桌面版 App（用點的）
+
+訊息輸入框旁 **＋ → Plugins → Browse plugins** → 在 Directory 右上角 **＋（Add marketplace）→ Add from a repository** → URL 貼 `https://github.com/capsule-taiwan/capsule-develop.git` → **Sync** → 找到 **CAPSULE Develop** 卡片，安裝並啟用。
+
+> ⚠️ Windows 上桌面版的 **Code 分頁需要先裝好 git** 才打得開（官方文件明載）。裝不起來或看不到 Plugins 面板，改走上面的 VS Code。
 
 ### ⌨️ 終端機（CLI）
+
 ```
 /plugin marketplace add https://github.com/capsule-taiwan/capsule-develop.git
 /plugin install capsule-develop@capsule-tools
 ```
-> `/plugin` 只有**終端機版** Claude Code 能用；桌面版 App 的聊天打不了，請走上面「用點的」。
-
-### 🧩 IDE（VS Code / Cursor / JetBrains）
-用 Claude Code 擴充套件內建的面板或終端機，貼上面終端機那兩行；或直接用下面的 settings.json 方式。
+> `/plugin` 只有**終端機版**與 **IDE 版**能打；桌面版 App 的聊天框打不了。
 
 ### ✅ 或：IT 統一掛好（大家打開就有，完全不用自己裝）
 在共用 repo 的 `.claude/settings.json` 加這段，成員打開後自動生效：
@@ -113,7 +129,7 @@
 
 ## 開始用
 
-裝好後，在一個空資料夾開 Claude Code，**直接跟它說「幫我開一個新專案」**（或打 `/new-project`）。它會問你專案名稱、模組代號，然後長出骨架、引導你建立自己的免費 Supabase 專案、起本地開發伺服器。之後你只要用一句話描述想要的功能，Claude 就會挑對的技能帶你做；做完 `/check` 通過就上線。
+裝好後，找一個你放得住東西的地方（例如「文件」底下）開 Claude Code，**直接跟它說「幫我開一個新專案」**（或打 `/new-project`）。**它會自己建一個以專案代號命名的資料夾**，不會把檔案灑在你原本的資料夾裡。接著它會問你專案名稱、模組代號，然後長出骨架、引導你建立自己的免費 Supabase 專案、起本地開發伺服器。之後你只要用一句話描述想要的功能，Claude 就會挑對的技能帶你做；做完 `/check` 通過就上線。
 
 > 你不用背指令。技能都能由 Claude 從你的白話自動觸發（`/new-project`、`/deploy` 等打斜線也行，但不是必須）。
 
