@@ -9,7 +9,9 @@
 ```
 你改東西 → /check 全綠 → commit → push 到 GitHub
                                       ↓
-                    GitHub Actions：型別檢查 → 測試 → 打包 → 部署
+                    GitHub Actions：型別檢查 → 測試（綠了才算數）
+                                      ↓
+                    Claude 把新版放上 Cloudflare Pages
                                       ↓
                         https://<專案代號>.pages.dev（網址不變）
 ```
@@ -23,19 +25,26 @@ wrangler 可以把打包好的檔案從你電腦直接丟上 Cloudflare，網站
 所以這個專案的護欄會擋掉「還沒 push 就部署」。被擋是刻意的，不要繞過。
 流水線的定義在 `.github/workflows/deploy.yml`，它屬於平台維護區，不要改。
 
-## 上線需要的設定（`/deploy` 第一次會幫你設好）
+## 你要做的事：按兩次「允許」
 
-打包是在 GitHub 上做的，所以這些值要放在 GitHub，不是只放在你電腦的 `.env`：
+**你不用去任何後台產金鑰。** 第一次上線時，Claude 會請你在對話框打這兩行（前面的驚嘆號不能省）：
 
-| 放在哪 | 名稱 | 是什麼 |
-|---|---|---|
-| Secret | `CLOUDFLARE_API_TOKEN` | Cloudflare 的鑰匙，用 "Edit Cloudflare Pages" 範本產 |
-| Secret | `CLOUDFLARE_ACCOUNT_ID` | 你的 Cloudflare 帳號編號 |
-| Secret | `NUXT_PUBLIC_SUPABASE_URL` | 你的 Supabase 網址 |
-| Secret | `NUXT_PUBLIC_SUPABASE_ANON_KEY` | 公開等級的前端金鑰（不是萬能鑰匙） |
-| Variable | `NUXT_PUBLIC_APP_NAME` | 顯示在畫面上的中文名 |
+```
+! gh auth login --web --git-protocol https --skip-ssh-key --scopes repo,workflow,read:org
+! npx --yes wrangler@4 login
+```
 
-`.env` 已經被 gitignore，不會跟著程式碼上 GitHub。
+各自會開一個瀏覽器頁面，登入後按 **Authorize** 或 **Allow**，關掉回來就好。
+兩個帳號都可以直接用 GitHub 登入，不用另辦。之後每次上線都不用再登入一次。
+
+`.env` 已經被 gitignore，你的 Supabase 金鑰不會跟著程式碼上 GitHub。
+
+### 想要「push 完全不用管、自動上線」
+
+那需要一組在 Cloudflare 後台產的 API token 放進 GitHub secrets——那個沒有 CLI 可以代辦。
+需要的話請 IT 幫忙設 `CLOUDFLARE_API_TOKEN`、`CLOUDFLARE_ACCOUNT_ID`、
+`NUXT_PUBLIC_SUPABASE_URL`、`NUXT_PUBLIC_SUPABASE_ANON_KEY` 與變數 `NUXT_PUBLIC_APP_NAME`，
+設好之後流水線裡的部署步驟就會自動生效。沒設也不會讓流水線變紅，只是略過。
 
 ## 想看上線跑到哪了
 
@@ -46,8 +55,8 @@ gh run watch --exit-status   # 等這次上線跑完
 gh run view --log-failed     # 失敗時看是哪一步、為什麼
 ```
 
-失敗最常見的三種：GitHub 上的金鑰沒設齊、型別檢查紅了、測試沒過。前一種回去補設定，
-後兩種在本機修到 `/check` 全綠再 push。**不要為了讓它變綠而把測試刪掉。**
+失敗最常見的兩種：型別檢查紅了、測試沒過。都是在本機修到 `/check` 全綠再 push。
+**不要為了讓它變綠而把測試刪掉。**
 
 ## 上線後一定要做：把線上網址加進 Supabase 登入白名單
 

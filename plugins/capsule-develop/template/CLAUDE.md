@@ -18,8 +18,9 @@
 6. **不改平台區**：`app/components/base/`、`app/components/common/`、`app/composables/`（核心那幾支）、`app/layouts/`、`supabase/migrations/001`–`009`、`.claude/`、建置設定、本檔。想改 → 請使用者開 issue 給平台團隊（IT）改進範本。（護欄會自動擋這些檔）
 7. **秘密只放 `.env`**（已 gitignore）或 GitHub 的 secret 設定。程式碼與版控裡永遠沒有金鑰——包含 service account 的 JSON 金鑰檔，那種東西一旦進版控就等於公開。
    **已經進過版控的金鑰，刪掉不算處理完**：就算 repo 是 private、就算事後刪掉那個 commit，那把鑰匙都要當成已經外洩，**立刻去原服務作廢重發**，再把新值填回 `.env` 與 `gh secret`。
-8. **上線只走 GitHub**：改動一律 commit、push，由 `.github/workflows/deploy.yml` 自動檢查並部署。
-   **不要從本機直接 `wrangler pages deploy`。** 那樣網站會更新，但 GitHub 上的程式碼跟線上跑的東西會對不起來，之後沒人查得到線上那一版是什麼、也退不回去。護欄會擋掉「還沒 push 就部署」。流水線失敗就去修失敗的原因，不要改掉或關掉那個 workflow（它是平台區）。
+8. **線上跑什麼，GitHub 就要有什麼**：上線順序固定是 commit、push、等 `.github/workflows/deploy.yml` 變綠，最後才把新版放上 Cloudflare。
+   **不要跳過 push 直接上傳。** 那樣網站會更新，但 GitHub 上的程式碼跟線上跑的東西會對不起來，之後沒人查得到線上那一版是什麼、也退不回去。護欄會擋掉「還沒 push 就部署」。流水線紅了就去修失敗的原因，不要改掉或關掉那個 workflow（它是平台區）。
+   **也不要叫使用者去後台產金鑰**：GitHub 用 `gh auth login`、Cloudflare 用 `wrangler login`，兩個都是瀏覽器跳出來按一次「允許」就好。
 9. **要跟 Google Sheet 來往，一律走 IT 給的 service account**。不要用使用者個人的 Google 帳號授權，也不要自己去 Google Cloud 開一組。使用者說要接 Sheet 時，請他跟 IT 說「要接哪一份、要讀還是要寫」，由 IT 產出並提供設定方式。
    建議（非強制）的分工：**輸入端做在系統**（擋錯值、選項統一、留修改紀錄、分權限），**輸出端寫到 Sheet**（大家本來就會篩選與樞紐，主管想換角度自己拉）。使用者的情境反過來比較順就反過來，不要硬套。
 
@@ -54,7 +55,7 @@ docs/specs/*.md
 ## 黃金路徑（每個新功能）
 1. `/task-brief` 訪談需求 → 寫 `docs/specs/<功能>.md`
 2. `/new-feature`：照 `items` 範例一次長出整個模組（migration + 型別 + Repository + composable + 頁面 + 表單 + manifest + 測試）。它內部會呼叫 `/next-migration` 取號建 migration，並用 access token 打 Supabase Management API 套進你自己的資料庫（免 login/link）——你不用先單獨跑 `/next-migration`。
-3. `/check` 全綠 → `/deploy`（會幫你 commit、push，GitHub 接手檢查與上線）
+3. `/check` 全綠 → `/deploy`（會幫你 commit、push，等 GitHub 檢查通過，再更新網站）
 
 > 各層細節（頁殼 `BaseDashboardPanel` → isLoading/error/EmptyState/主內容、Form 只 `emit('submit')` 不呼叫 API、非同步按鈕 `:loading`、列表走 `list_<模組>` RPC、整合測試照 `tests/integration/list-items-rpc.test.ts`）都由 `/new-feature` 照 `items` 範例產出；想微調時再對照 `items` 那一層改。
 

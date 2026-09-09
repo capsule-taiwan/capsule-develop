@@ -1,15 +1,21 @@
-name: 上線
+name: 檢查與上線
 
-# 這個檔案是這個 MVP 唯一的上線方式。
+# 這條流水線是這個 MVP 的品質關卡。
 #
-# 為什麼一定要走這裡，而不是從自己電腦直接上傳：
-#   從本機直接把打包好的檔案丟上 Cloudflare，網站是會更新，但 GitHub 上的程式碼
+# 為什麼存在：
+#   從自己電腦直接把打包好的檔案丟上 Cloudflare，網站是會更新，但 GitHub 上的程式碼
 #   跟線上跑的東西會慢慢對不起來。等到有人要接手、要查「這行為什麼變成這樣」、
-#   或是要退回上一版的時候，才會發現版本紀錄裡根本沒有線上那份程式碼。
-#   走這條流水線，線上跑的每一版都對得到一個 commit，退版就是退到那個 commit。
+#   或是要退回上一版的時候，才會發現版本紀錄裡根本沒有線上那一份。
 #
-# 流程：push 上 GitHub → 這裡自動檢查（型別、測試）→ 打包 → 部署到 Cloudflare Pages。
-# 檢查沒過就不會上線，所以壞掉的版本進不到同事面前。
+# 規則：**要上線的東西一定要先 push 上來、而且這條流水線要是綠的。**
+#   本機的護欄（guard-deploy）會擋掉「還沒 push 就部署」，/deploy 會等這裡跑完才上傳。
+#
+# 自動上線（選配）：
+#   預設只做檢查，部署由 /deploy 在本機用 wrangler 完成——那條路使用者只要在瀏覽器
+#   按一次「允許」，不用自己去後台產金鑰。
+#   想要「push 完全不用管、自動上線」的話，請 IT 幫忙在這個 repo 設兩個 secret
+#   （CLOUDFLARE_API_TOKEN、CLOUDFLARE_ACCOUNT_ID）與兩個給打包用的值，
+#   設好之後下面的部署步驟就會自動生效。沒設就只是略過，不會讓流水線變紅。
 #
 # 這個檔案由平台團隊維護，受護欄保護。要調整請開 issue 給 IT。
 
@@ -20,11 +26,11 @@ on:
 
 concurrency:
   group: deploy
-  cancel-in-progress: false # 兩次部署不要打架，排隊跑完
+  cancel-in-progress: false # 兩次不要打架，排隊跑完
 
 jobs:
   deploy:
-    name: 檢查並上線
+    name: 檢查，設定齊全就順便上線
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -35,27 +41,6 @@ jobs:
           node-version: '22'
           cache: npm
 
-      # 缺設定就早點失敗，訊息寫給非工程師看。
-      # 少了這一步，build 會「成功」但產出一個連不上資料庫的網站，
-      # 使用者只會看到一片空白，不知道是設定沒填。
-      - name: 確認上線設定都填好了
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          SUPABASE_URL: ${{ secrets.NUXT_PUBLIC_SUPABASE_URL }}
-          SUPABASE_ANON_KEY: ${{ secrets.NUXT_PUBLIC_SUPABASE_ANON_KEY }}
-        run: |
-          missing=""
-          [ -n "$CLOUDFLARE_API_TOKEN" ]  || missing="$missing CLOUDFLARE_API_TOKEN"
-          [ -n "$CLOUDFLARE_ACCOUNT_ID" ] || missing="$missing CLOUDFLARE_ACCOUNT_ID"
-          [ -n "$SUPABASE_URL" ]          || missing="$missing NUXT_PUBLIC_SUPABASE_URL"
-          [ -n "$SUPABASE_ANON_KEY" ]     || missing="$missing NUXT_PUBLIC_SUPABASE_ANON_KEY"
-          if [ -n "$missing" ]; then
-            echo "上線設定還缺這幾項：$missing"
-            echo "請在 Claude Code 裡跑 /deploy，它會問你要金鑰並自動補上。"
-            exit 1
-          fi
-
       - name: 安裝套件
         run: npm ci
 
@@ -65,7 +50,23 @@ jobs:
       - name: 單元測試
         run: npm test
 
+      # 以下是選配的自動上線。沒設定就跳過，流水線照樣是綠的。
+      - name: 看看有沒有開自動上線
+        id: cfg
+        env:
+          CF_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CF_ACCOUNT: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          SB_URL: ${{ secrets.NUXT_PUBLIC_SUPABASE_URL }}
+          SB_KEY: ${{ secrets.NUXT_PUBLIC_SUPABASE_ANON_KEY }}
+        run: |
+          if [ -n "$CF_TOKEN" ] && [ -n "$CF_ACCOUNT" ] && [ -n "$SB_URL" ] && [ -n "$SB_KEY" ]; then
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: 打包
+        if: steps.cfg.outputs.ready == 'true'
         env:
           # SPA 打包時就把這兩個值烤進 HTML，所以一定要在這一步給。
           # 這兩把都是「公開等級」的前端金鑰，不是萬能鑰匙。
@@ -75,6 +76,7 @@ jobs:
         run: npm run generate
 
       - name: 部署到 Cloudflare Pages
+        if: steps.cfg.outputs.ready == 'true'
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
@@ -83,8 +85,6 @@ jobs:
           PROJECT=$(node -p "require('./package.json').name")
           echo "專案代號：$PROJECT"
 
-          # 第一次跑的時候 Pages 專案還不存在。已存在的話這行會失敗，忽略即可，
-          # 真的是金鑰有問題的話，下一步的 deploy 會報出真正的錯。
           npx --yes wrangler@4 pages project create "$PROJECT" --production-branch main \
             || echo "（Pages 專案已存在，略過建立）"
 
@@ -94,3 +94,10 @@ jobs:
             --project-name "$PROJECT" --branch=main --commit-dirty=true
 
           echo "網址：https://$PROJECT.pages.dev"
+
+      - name: 沒開自動上線的說明
+        if: steps.cfg.outputs.ready != 'true'
+        run: |
+          echo "檢查都過了。這個專案沒有開「push 就自動上線」，所以這裡不做部署。"
+          echo "要讓網站更新，回到 Claude Code 跑 /deploy——它會用你在瀏覽器授權過的"
+          echo "Cloudflare 帳號直接上傳，你不用自己去後台產任何金鑰。"

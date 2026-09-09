@@ -127,11 +127,25 @@ cp -r "${CLAUDE_PLUGIN_ROOT}/template/." .
    git add -A
    git commit -m "chore: scaffold MVP"
    ```
-2. **請使用者產一次 GitHub token**：<https://github.com/settings/tokens/new> → 勾 **`repo`** 與 **`workflow`** 兩個權限 → 期限選 90 天 → 產生 → 複製貼回聊天。
-   - **`workflow` 一定要勾。** 沒勾的話推不上 `.github/workflows/deploy.yml`，自動上線就不會存在，GitHub 會回一個看不懂的 403。
-3. **其餘你做**：
+2. **讓使用者用瀏覽器授權 GitHub。不要叫他去後台產 token。**
+   先看有沒有登入過：
    ```bash
-   gh auth login --with-token   # 把 token 從 stdin 餵進去
+   gh auth status
+   ```
+   已經登入且權限含 `workflow` 就跳過這一步。沒有的話，**請使用者在對話框裡打這一行**
+   （前面的驚嘆號不能省，它會讓指令在他自己的視窗裡跑，瀏覽器才彈得出來）：
+   ```
+   ! gh auth login --web --git-protocol https --skip-ssh-key --scopes repo,workflow,read:org
+   ```
+   跟他說會發生什麼事：畫面會出現一組**一次性代碼**，按 Enter 之後瀏覽器會開 GitHub 的授權頁，
+   把代碼貼進去、按 Authorize，就可以關掉回來。整個過程他不用複製任何金鑰。
+   - **`--scopes` 裡的 `workflow` 不能省。** 少了它推不上 `.github/workflows/deploy.yml`，
+     GitHub 會回一個看不懂的 403，而且錯誤訊息完全不會提到權限。
+   - 這台機器開不了瀏覽器（遠端、沒有桌面環境）才退回 `gh auth login --with-token`。
+     那是備案，不是預設。
+3. **確認登入成功之後，其餘你做**：
+   ```bash
+   gh auth status   # 確認已登入、scopes 有 workflow
    gh repo create <專案代號> --private --source=. --remote=origin --push
    ```
    - **一律 `--private`**：這是公司內部工具的程式碼，不要開公開。
@@ -142,7 +156,7 @@ cp -r "${CLAUDE_PLUGIN_ROOT}/template/." .
 
 ## 步驟 7：先上線（不要等登入）
 
-跑 `/deploy`。它會請使用者產一次 Cloudflare 憑證，把上線需要的設定寫進 GitHub，然後由 GitHub Actions 自動打包、部署到他自己的 Cloudflare Pages（免費）。Cloudflare 一樣可以**用 GitHub 帳號登入**。
+跑 `/deploy`。第一次它會請使用者打一行 `! npx --yes wrangler@4 login`，瀏覽器跳出來按一次 **Allow** 就完成授權——**不要叫他去 Cloudflare 後台產金鑰**。Cloudflare 一樣可以**用 GitHub 帳號登入**，不用另辦。之後 `/deploy` 會自己打包、上傳到他的 Cloudflare Pages（免費）。
 
 上線之後他就有一個 `https://<專案代號>.pages.dev` 的網址。現在打開會停在登入頁——沒關係，重點是**東西已經在線上了**，之後每次更新只要 commit、push，網址不變。
 
@@ -169,6 +183,6 @@ cp -r "${CLAUDE_PLUGIN_ROOT}/template/." .
 
 ## 步驟 10：交棒
 
-告訴使用者下一步：`/task-brief` 談需求 → `/new-feature` 開發 → `/check` 檢查 → `/deploy` 上線（會自動 commit、push，GitHub 接手）。
+告訴使用者下一步：`/task-brief` 談需求 → `/new-feature` 開發 → `/check` 檢查 → `/deploy` 上線（會自動 commit、push、等 GitHub 檢查通過，再更新網站）。
 
 全程遵守專案根目錄 `CLAUDE.md` 的回收契約。

@@ -45,7 +45,7 @@ const HOW = [
   '正常的上線方式是這兩步：',
   '  1. git add -A && git commit -m "說明這次改了什麼"',
   '  2. git push',
-  'push 之後 GitHub 會自動檢查並部署，網址不變。到 repo 的 Actions 分頁可以看進度。',
+  'push 完等 GitHub 的檢查變綠（gh run watch --exit-status），再上傳就沒問題了。網址不變。',
 ].join('\n')
 
 /** 在目前資料夾跑一個 git 指令，回傳 { ok, out } */

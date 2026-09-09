@@ -28,7 +28,7 @@
 | `/new-feature` | 照著範例模組（items）長出你要的新功能（列表/表單/權限/測試一整套） |
 | `/next-migration` | 幫你取號、產生資料庫變更檔的骨架 |
 | `/check` | 跑測試 + 型別檢查 + 契約檢查，全綠才算完成 |
-| `/deploy` | 上線：存檔、推上 GitHub，由 GitHub Actions 自動檢查並部署到你自己的 Cloudflare Pages（免費） |
+| `/deploy` | 上線：存檔、推上 GitHub，等檢查通過，再把新版放上你自己的 Cloudflare Pages（免費） |
 | `/connect-login` | 拿到工程師給的登入金鑰後，一鍵接上公司 Google 登入 |
 | `/graduate` | 產生「畢業申請包」，交給平台團隊審查是否收進母艦 |
 | `/update` | 把工具箱更新到最新版（開場若偵測到有新版會自動提醒你） |
@@ -37,8 +37,8 @@
 
 ### 上線一律走 GitHub
 
-每個 MVP 的程式碼都在自己的 GitHub private repo 裡，上線是：`/check` 全綠 → commit → push →
-GitHub Actions 自動跑型別檢查與測試 → 打包 → 部署到 Cloudflare Pages。
+每個 MVP 的程式碼都在自己的 GitHub private repo 裡，上線順序固定：`/check` 全綠 → commit → push →
+GitHub Actions 跑型別檢查與測試 → **綠了才** 把新版放上 Cloudflare Pages。
 
 **不走「從本機直接上傳」那條路。** 那樣網站會更新，但 GitHub 上的程式碼跟線上跑的東西會對不起來——
 之後要接手、要查「這個行為什麼時候改的」、或要退回上一版時，版本紀錄裡根本沒有線上那一份。
@@ -146,8 +146,9 @@ GitHub Actions 自動跑型別檢查與測試 → 打包 → 部署到 Cloudflar
 
 > **先上線，登入後面接。** 跑完 `/new-project` 就直接 `/deploy`——你會拿到一個真的打得開的網址（`*.pages.dev`），這時候它會停在登入頁，那是正常的。
 >
-> `/new-project` 過程中會請你產一次 **GitHub token**（<https://github.com/settings/tokens/new>，勾 `repo` 與 `workflow` 兩項）。
-> Claude 用它幫你把程式碼放上 GitHub、設好自動上線，之後你每次改完只要說一聲「上線」，它會存檔、推上去，GitHub 接手。
+> **你不用去任何後台產金鑰。** `/new-project` 與 `/deploy` 會請你在對話框打
+> `! gh auth login --web ...` 與 `! npx wrangler login`，各自跳出瀏覽器按一次「允許」就好，之後不用再登入。
+> 之後每次改完只要說一聲「上線」，Claude 會存檔、推上 GitHub、等檢查通過，再把新版放上網站。
 >
 > 登入採**公司 Google 帳號**（限 @capsulecorporation.cc）。把**專案代號**與**你的 Supabase 網址**給工程師（IT），他會在 GCP 產一組這個專案專屬的金鑰交給你。**拿到金鑰之後貼給 Claude、打 `/connect-login`，它會自動接好**——不用再回頭問任何人，金鑰交到你手上就是開通了。**第一個登入的人是管理員。**
 

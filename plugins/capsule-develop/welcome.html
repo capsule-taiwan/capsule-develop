@@ -609,7 +609,7 @@
       <p data-i18n="deploy.p">MVP 是純靜態網站，Cloudflare Pages 免費層綽綽有餘。一次設定 Cloudflare 金鑰，之後每次更新只要再跑一次 <code style="font-family:var(--mono)">/deploy</code>，網址不變。</p>
     </div>
     <div class="grid g2">
-      <div class="card reveal"><div class="ic">🌐</div><h3 data-i18n="deploy.c1h">Cloudflare Pages（免費）</h3><p data-i18n="deploy.c1p">跑 <code style="font-family:var(--mono)">/deploy</code>：你產一次 Cloudflare 金鑰，Claude 就用它把網站上傳，給你一個 <code style="font-family:var(--mono)">*.pages.dev</code> 網址。要更新就再跑一次。</p></div>
+      <div class="card reveal"><div class="ic">🌐</div><h3 data-i18n="deploy.c1h">Cloudflare Pages（免費）</h3><p data-i18n="deploy.c1p">跑 <code style="font-family:var(--mono)">/deploy</code>：瀏覽器跳出來按一次「允許」授權 Cloudflare，Claude 就會把網站上傳，給你一個 <code style="font-family:var(--mono)">*.pages.dev</code> 網址。<b style="color:var(--ink)">你不用自己去後台產金鑰。</b>要更新就再跑一次，網址不變。</p></div>
       <div class="card reveal"><div class="ic">🔒</div><h3 data-i18n="deploy.c2h">只有公司的人進得來</h3><p data-i18n="deploy.c2p">登入採<b style="color:var(--ink)">公司 Google 帳號</b>（限 @capsulecorporation.cc），資料也逐筆受保護。上線後只有公司同事登得進去、看得到資料，不用另外設定。</p></div>
     </div>
   </section>
@@ -782,7 +782,7 @@
         'guards.g3p': 'Blocks dangerous git operations that overwrite history and are hard to undo.',
         'deploy.eyebrow': 'All free', 'deploy.h2': 'Ship to your own URL',
         'deploy.p': 'The MVP is a pure static site, so Cloudflare Pages’ free tier is more than enough. Set up a Cloudflare key once; after that, each update is just another <code style="font-family:var(--mono)">/deploy</code> — same URL.',
-        'deploy.c1h': 'Cloudflare Pages (free)', 'deploy.c1p': 'Run <code style="font-family:var(--mono)">/deploy</code>: you create a Cloudflare key once, Claude uploads the site with it and gives you a <code style="font-family:var(--mono)">*.pages.dev</code> URL. To update, run it again.',
+        'deploy.c1h': 'Cloudflare Pages (free)', 'deploy.c1p': 'Run <code style="font-family:var(--mono)">/deploy</code>: a browser pops up, you click Allow once, and Claude uploads the site and gives you a <code style="font-family:var(--mono)">*.pages.dev</code> URL. <b style="color:var(--ink)">You never create a key in a dashboard.</b> To update, run it again — the URL stays the same.',
         'deploy.c2h': 'Only company people get in', 'deploy.c2p': 'Login uses <b style="color:var(--ink)">company Google accounts</b> (only @capsulecorporation.cc), and data is protected row by row. Once live, only company colleagues can log in and see data — no extra setup.',
         'inside.eyebrow': 'What’s already in the template', 'inside.h2': 'You’re not starting from scratch',
         'inside.p': 'A new project comes out as a working system, with a complete example feature <code>items</code> to copy from.',
@@ -910,7 +910,7 @@
         'guards.g3p': '履歴を上書きする復元困難な危険な git 操作をブロック。',
         'deploy.eyebrow': 'すべて無料', 'deploy.h2': '自分の URL へ公開',
         'deploy.p': 'MVP は純粋な静的サイトなので、Cloudflare Pages の無料枠で十分。Cloudflare のキーは一度だけ設定。以後の更新は <code style="font-family:var(--mono)">/deploy</code> をもう一度実行するだけ、URL は変わりません。',
-        'deploy.c1h': 'Cloudflare Pages（無料）', 'deploy.c1p': '<code style="font-family:var(--mono)">/deploy</code> を実行：Cloudflare のキーを一度作れば、Claude がそれでサイトをアップロードし、<code style="font-family:var(--mono)">*.pages.dev</code> の URL を発行。更新はもう一度実行するだけ。',
+        'deploy.c1h': 'Cloudflare Pages（無料）', 'deploy.c1p': '<code style="font-family:var(--mono)">/deploy</code> を実行：ブラウザが開くので一度「許可」を押すだけ。Claude がサイトをアップロードし、<code style="font-family:var(--mono)">*.pages.dev</code> の URL を発行します。<b style="color:var(--ink)">ダッシュボードでキーを作る必要はありません。</b>更新はもう一度実行するだけ、URL は変わりません。',
         'deploy.c2h': '入れるのは社内の人だけ', 'deploy.c2p': 'ログインは<b style="color:var(--ink)">会社 Google アカウント</b>（@capsulecorporation.cc のみ）、データも 1 行ずつ保護。公開後は社内の同僚だけがログインしデータを見られます——追加設定は不要。',
         'inside.eyebrow': 'テンプレートに最初からあるもの', 'inside.h2': 'ゼロからではありません',
         'inside.p': '新しいプロジェクトは生成した時点で動くシステム。まねできる完全なサンプル機能 <code>items</code> 付き。',

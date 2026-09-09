@@ -87,6 +87,12 @@ winget / brew / 官方安裝包都要跑一兩分鐘。趁這個空檔跟使用�
 
 已經有帳號就跳過。這不是環境檢查的一部分，純粹是利用等待時間。
 
+## 2D. 順便看一眼登入狀態（不是必要，但先看比較好）
+
+`gh auth status` 與（在 MVP 資料夾裡）`npx --no-install wrangler --version` 可以看出使用者有沒有登入過。
+沒登入不用在這裡處理——`/new-project` 與 `/deploy` 會在需要的時候請他用瀏覽器授權一次。
+**不管到哪一步，都不要叫他自己去 GitHub 或 Cloudflare 後台產 token。**
+
 ## 3. 驗證
 - **請使用者關掉再重開 Claude Code（或終端機）**，讓 PATH 生效。
 - 重跑：`node -v` ≥ v20、`git --version` 與 `gh --version` 都有輸出。都通過才算完成。
