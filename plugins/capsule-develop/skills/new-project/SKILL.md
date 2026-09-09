@@ -17,13 +17,34 @@ allowed-tools: Bash, Read, Write, Edit, PowerShell
 
 **程式碼一定要在 GitHub 上。** 上線走 GitHub 自動部署，不從本機直接上傳。理由與規則見步驟 6。
 
-## 步驟 0：環境與帳號
+## 步驟 0：環境全面檢查（沒有全綠，不要往下走）
 
-- 跑 `node --version`（需 v20+）與 `git --version`。缺任何一個，先用 `/doctor` 幫使用者裝好再繼續。
-- 跑 `gh --version`。沒有的話一樣用 `/doctor` 裝（步驟 6 要用它建 repo）。
-- **確認他有 GitHub 帳號**（<https://github.com>，免費）。等一下 GitHub、Supabase 與 Cloudflare 全部都用得到，Supabase 與 Cloudflare 可以直接用 GitHub 登入，不用再各辦一組帳號密碼。沒有的話請他現在辦一個，一分鐘的事。
-- **先看清楚現在在哪**：跑 `pwd`（Windows 的 PowerShell 是 `Get-Location`）。使用者多半是隨手開一個視窗就開始了，很可能人在家目錄、桌面、下載資料夾，甚至磁碟根目錄。**不要在那裡直接開專案**——步驟 2 會處理。
-- **如果目前資料夾已經是一個 MVP**（同時有 `CLAUDE.md` 與 `package.json`）：停下來問清楚。他要的多半是 `/new-feature`（在現有專案加功能），不是再開一個新專案。
+**一次把所有環境檢查跑完再開始，不要邊做邊發現缺東西。** 最傷的情況是：Supabase 都建好了、
+資料表也跑完了，走到步驟 6 才發現這台沒有 `gh`——前面那十幾分鐘白等，使用者也搞不懂為什麼卡住。
+
+一次跑完下面每一項，把結果整理成一張表給使用者看：
+
+| 檢查 | 怎麼查 | 合格標準 |
+|---|---|---|
+| Node.js | `node --version` | v20 以上 |
+| git | `git --version`（**macOS 有假綠燈陷阱，照 `/doctor` 的方式判斷**） | 有輸出 |
+| GitHub CLI | `gh --version` | 有輸出 |
+| GitHub 帳號 | 問使用者 | 已經有一個 |
+| 目前位置 | `pwd`（PowerShell 用 `Get-Location`） | 知道就好，不在這裡開專案 |
+| 這裡是不是已經是 MVP | 有沒有同時存在 `CLAUDE.md` 與 `package.json` | 不是 |
+
+規則：
+
+- **任何一項不合格就停在這裡**，用 `/doctor` 補齊，補完請使用者關掉視窗重開，再驗一次。
+  **不要「先做前面幾步、缺的之後再說」**——這三個工具在這條流程裡每一個都是必要的。
+- **沒有 GitHub 帳號**就請他現在辦（<https://github.com>，免費、一分鐘）。等一下 GitHub、Supabase
+  與 Cloudflare 全部都用得到，後兩者可以直接用 GitHub 登入，不用再各辦一組帳號密碼。
+- **目前位置**只是要知道等一下資料夾會建在哪。使用者多半是隨手開一個視窗就開始了，很可能人在家目錄、
+  桌面、下載資料夾，甚至磁碟根目錄。**不要在那裡直接開專案**——步驟 2 會建新資料夾。
+- **目前資料夾已經是一個 MVP**：停下來問清楚。他要的多半是 `/new-feature`（在現有專案加功能），
+  不是再開一個新專案。
+
+全部綠燈，用一句話告訴使用者「環境沒問題，我們開始」，再進步驟 1。
 
 ## 步驟 1：訪談（業務選擇題）
 
@@ -42,7 +63,10 @@ allowed-tools: Bash, Read, Write, Edit, PowerShell
 可以給兩階段建議：「先用試算表跑一個月，開始撞資料或要控權限，我們再把它做成系統。」
 使用者聽完仍然要做，就記下他的理由，照做——他可能有你不知道的脈絡。
 
-## 步驟 2：建一個專案資料夾，再把範本放進去
+## 步驟 2：建一個專案資料夾，之後所有事情都在裡面做
+
+**先建資料夾、`cd` 進去，再開始動任何檔案。** 從這一步之後，安裝、設定、跑指令、建版控、上線，
+全部都在這個資料夾裡發生，不要有任何東西掉在外面。
 
 **一律建立新資料夾，不要把範本倒進當前資料夾。** 範本有 90 幾個檔案，其中 `README.md`、`package.json`、`.gitignore`、`.env.example` 都是常見檔名——直接倒進一個已經有東西的資料夾，會蓋掉使用者原本的檔案，而且他不會發現。
 
@@ -70,13 +94,21 @@ cp -r "${CLAUDE_PLUGIN_ROOT}/template/." .
 
 ## 步驟 4：接上 Supabase（一次 token，其餘你全自動）
 
-1. 請使用者到 <https://supabase.com> 登入（**按 Continue with GitHub 最快**），按 **New project** 建一個（取名、區域選 Southeast Asia (Singapore)、設一組 DB 密碼）。等約 1 分鐘。
-2. 請使用者產一個 **access token**（一次就好）：<https://supabase.com/dashboard/account/tokens> → **Generate new token** → 複製貼回聊天。**這把 token 之後接登入還會用到，請他自己留著。**
-3. 之後**全部你做**（`export SUPABASE_ACCESS_TOKEN=<token>`）：
+1. 請使用者到 <https://supabase.com> 登入，**按 Continue with GitHub 最快**。
+2. **先建一個組織（Organization），不要一上來就叫他按 New project。** Supabase 的專案一定要放在某個組織底下，
+   第一次註冊的人手上還沒有組織，直接找 New project 會卡住。
+   - 已經有組織 → 直接用現有的，跳到下一步。
+   - 還沒有 → 請他建一個：**Name** 填公司名或自己的名字、**Type** 選 Company 或 Personal 都可以、**Plan 選 Free**。
+   - 提醒一句：免費方案每個組織能同時開的專案數量有上限，滿了就再開一個組織，或把不用的舊專案暫停。實際上限以 Supabase 網站當下顯示的為準。
+3. **在那個組織底下**按 **New project**：取名、**Database Password** 設一組並請他自己記下來、**Region** 選
+   Southeast Asia (Singapore)。等約 1 分鐘讓它建好。
+4. 請使用者產一個 **access token**（一次就好）：<https://supabase.com/dashboard/account/tokens> → **Generate new token** → 複製貼回聊天。**這把 token 之後接登入還會用到，請他自己留著。**
+5. 之後**全部你做**（`export SUPABASE_ACCESS_TOKEN=<token>`）：
    - 取專案 ref（從 URL `https://<ref>.supabase.co`，或 `GET https://api.supabase.com/v1/projects`）。
    - 取 anon/publishable 金鑰：`GET https://api.supabase.com/v1/projects/<ref>/api-keys`，連同 URL 寫進 `.env`。
    - 建資料表：把 `supabase/migrations/` 的每個 `.sql`（依檔名順序）用 `POST https://api.supabase.com/v1/projects/<ref>/database/query` 送出（body `{"query":"<SQL>"}`，header 帶 access token）。這條免 login/link/DB 密碼；之後 `/new-feature`、`/next-migration` 套新 migration 也走同一條，不要叫使用者去 `supabase login/link`。
    - Google 登入這時候還沒辦法設——金鑰要跟工程師拿（步驟 8）。其餘照做，不用等。
+   - 這個帳號底下有多個專案時，**一定要確認 ref 是這次新建的那一個**，套錯專案會把別的 MVP 的資料表弄亂。
 
 ## 步驟 5：安裝與啟動
 

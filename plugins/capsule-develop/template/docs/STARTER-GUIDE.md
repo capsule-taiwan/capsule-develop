@@ -3,7 +3,7 @@
 > 最省事的用法：全程讓 Claude 用技能帶你做。你幾乎不用自己打指令，照 `/new-project` → `/task-brief` → `/new-feature` → `/check` → `/deploy` 走即可。下面是背後發生的事，看不懂可以略過。
 
 ## 起步（`/new-project` 會自動幫你做完）
-1. 到 https://supabase.com 用自己的帳號建一個免費專案（設一組 DB 密碼、區域選 Singapore）。
+1. 到 https://supabase.com 登入（用 GitHub 最快）。**先建一個組織（Organization），方案選 Free**——專案一定要放在組織底下，第一次註冊的人還沒有組織。接著在那個組織裡按 New project（設一組 DB 密碼、區域選 Singapore）。
 2. 產一次 Supabase access token 貼給 Claude。**之後接資料庫、建表全部 Claude 用這把 token 自動做**——你不用自己 `supabase login/link`、也不用手貼金鑰或 SQL。
 3. Claude 會寫好 `.env`、把範例資料表套進你的 Supabase、把本機開發環境跑起來。
 
