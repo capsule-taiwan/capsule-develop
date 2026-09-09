@@ -150,7 +150,7 @@ GitHub Actions 跑型別檢查與測試 → **綠了才** 把新版放上 Cloudf
 > `! gh auth login --web ...` 與 `! npx wrangler login`，各自跳出瀏覽器按一次「允許」就好，之後不用再登入。
 > 之後每次改完只要說一聲「上線」，Claude 會存檔、推上 GitHub、等檢查通過，再把新版放上網站。
 >
-> 登入採**公司 Google 帳號**（限 @capsulecorporation.cc）。把**專案代號**與**你的 Supabase 網址**給工程師（IT），他會在 GCP 產一組這個專案專屬的金鑰交給你。**拿到金鑰之後貼給 Claude、打 `/connect-login`，它會自動接好**——不用再回頭問任何人，金鑰交到你手上就是開通了。**第一個登入的人是管理員。**
+> 登入採**公司 Google 帳號**（限 @capsulecorporation.cc）。把**專案代號**、**你的 Supabase 網址**與 **callback URL**（Supabase 網址後面接 `/auth/v1/callback`）給工程師（IT），他會在 GCP 產一組這個專案專屬的金鑰交給你。Claude 會把這三個值整理好給你，你不用自己拼。**拿到金鑰之後貼給 Claude、打 `/connect-login`，它會自動接好**——不用再回頭問任何人，金鑰交到你手上就是開通了。**第一個登入的人是管理員。**
 
 ## 孵化器模型（為什麼這樣設計）
 

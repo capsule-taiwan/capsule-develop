@@ -1,13 +1,13 @@
 ---
 name: enable-login
-description: （平台團隊 / IT 用）幫一個 MVP 專案產生專屬的 Google 登入金鑰。當有同事帶著他的專案代號與 Supabase 網址來要登入時使用。
+description: （平台團隊 / IT 用）幫一個 MVP 專案產生專屬的 Google 登入金鑰。當有同事帶著他的專案代號、Supabase 網址與 callback URL 來要登入時使用。
 disable-model-invocation: true
 allowed-tools: Bash, PowerShell
 ---
 
 # 產生這個 MVP 的 Google 登入金鑰（IT 用）
 
-同事把 MVP 做到「看得到登入頁」之後，會帶著 **專案代號** 與 **Supabase 網址** 來找你。你在 GCP 產一組這個專案專屬的 OAuth client，把 **client ID 與 secret 交給他**——就結束了。
+同事把 MVP 做到「看得到登入頁」之後，會帶著 **專案代號**、**Supabase 網址** 與 **callback URL** 來找你。你在 GCP 產一組這個專案專屬的 OAuth client，把 **client ID 與 secret 交給他**——就結束了。
 
 > **金鑰交出去之後，剩下的由他那邊的 Claude 用 `/connect-login` 自動寫進他自己的 Supabase。**
 > 你不需要、也不應該跟他要 Supabase access token——那把 token 能對他的整個專案做任何事，
@@ -20,6 +20,8 @@ allowed-tools: Bash, PowerShell
 ## 你需要
 
 - 該專案的 **Supabase 網址**（`https://<ref>.supabase.co`）→ 取出 ref。
+- 該專案的 **callback URL**（`https://<ref>.supabase.co/auth/v1/callback`）——步驟 2 要原封不動貼進
+  Authorized redirect URIs 的那一條。同事應該會一起給你；沒給就自己從 ref 組出來，並跟他核對一次。
 - 該 MVP 的 **專案代號**（用來命名 OAuth client，例如 `shipping-console`）。
 - 在 GCP 專案 `capsule-mvp-auth`（或你們實際用的那個）有建立憑證的權限。該專案的 **Internal 同意畫面必須已經設好**——沒有的話先照 `docs/GCP-OAUTH-SETUP.md` 做一次性設定。
 
@@ -33,8 +35,10 @@ allowed-tools: Bash, PowerShell
    - **Application type** = `Web application`
    - **Name** = `mvp-<專案代號>`（例：`mvp-shipping-console`）—— 命名要看得出是哪個 MVP，撤銷時才找得到
    - **Authorized JavaScript origins**：留空（登入走 Supabase 伺服器端，不需要）
-   - **Authorized redirect URIs** → ADD URI → `https://<ref>.supabase.co/auth/v1/callback`
-     （**只加這一條**。這組 client 專屬於這個 MVP）
+   - **Authorized redirect URIs** → ADD URI → 貼上同事給的 **callback URL**：
+     `https://<ref>.supabase.co/auth/v1/callback`
+     （**只加這一條**。這組 client 專屬於這個 MVP。用複製貼上，不要手打——大小寫或少一個字元
+     都會變成 `redirect_uri_mismatch`，而那個錯誤訊息不會告訴你是哪裡不一樣）
    - **Create** → 複製 **Client ID** 與 **Client secret**
 
    ℹ️ 同意畫面不用再設 —— 它是 GCP 專案層級的，這組新 client 自動套用既有的 Internal 限制。

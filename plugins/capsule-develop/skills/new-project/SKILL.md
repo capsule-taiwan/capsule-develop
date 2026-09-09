@@ -164,10 +164,15 @@ cp -r "${CLAUDE_PLUGIN_ROOT}/template/." .
 
 ## 步驟 8：跟工程師拿登入金鑰
 
-請使用者把下面兩樣**貼給工程師 / IT**：
+請使用者把下面三樣**貼給工程師 / IT**。**你要把值直接組好給他，不要叫他自己拼**：
 
 - 專案代號（例如 `shipping-console`）
 - 他的 Supabase 網址：`https://<ref>.supabase.co`
+- **Callback URL（授權導回網址）：`https://<ref>.supabase.co/auth/v1/callback`**
+
+Callback URL 是 IT 在 Google 那邊要填進 **Authorized redirect URIs** 的那一條，少了它登入會失敗，
+而且錯誤訊息是 `redirect_uri_mismatch`，看起來像使用者做錯什麼。它就是 Supabase 網址後面接
+`/auth/v1/callback`，你直接組好整條貼給他，少一次來回也少一次打錯的機會。
 
 工程師會在 GCP 產一組這個專案專屬的 Google OAuth 金鑰（client ID + secret）交給他。**一案一組，不共用。**
 

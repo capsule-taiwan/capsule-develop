@@ -118,5 +118,5 @@ fi
 
 echo ""
 echo "完成！建議直接讓 Claude 用 /new-project 帶你做剩下的（接 Supabase、建表、跑起來都自動）。"
-echo "登入採公司 Google 帳號，且要由工程師跑 /enable-login 開通後才能登入（把你的 Supabase 網址給 IT）。"
+echo "登入採公司 Google 帳號，且要由工程師跑 /enable-login 開通後才能登入（把你的 Supabase 網址與 callback URL 給 IT，callback 就是網址後面接 /auth/v1/callback）。"
 echo "第一個用公司 Google 登入的人 = 管理員。"
