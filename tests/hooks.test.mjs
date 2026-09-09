@@ -10,18 +10,19 @@
  * 全過 exit 0；有失敗 exit 1（可直接接 CI）。
  */
 import { spawnSync } from 'node:child_process'
-import { mkdtempSync } from 'node:fs'
+import { mkdtempSync, writeFileSync } from 'node:fs'
 import { join, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { tmpdir } from 'node:os'
 
 const HOOKS = join(dirname(fileURLToPath(import.meta.url)), '..', 'plugins', 'capsule-develop', 'hooks')
 
-/** 跑一個 hook，回傳 { denied, reason } */
-function run(hook, payload, env = {}) {
+/** 跑一個 hook，回傳 { denied, reason }。cwd 給 guard-deploy 用（它要看那個資料夾的 git 狀態） */
+function run(hook, payload, env = {}, cwd = undefined) {
   const r = spawnSync(process.execPath, [join(HOOKS, hook)], {
     input: JSON.stringify(payload),
     encoding: 'utf8',
+    cwd,
     env: { ...process.env, ...env },
   })
   if (r.error) return { denied: false, reason: `SPAWN ERROR: ${r.error.message}`, crashed: true }
@@ -95,6 +96,12 @@ B('guard-platform-area.mjs', 'nuxt.config（相對路徑）★迴歸', write('nu
 B('guard-platform-area.mjs', 'eslint.config（相對路徑）★迴歸', write('eslint.config.mjs'))
 B('guard-platform-area.mjs', 'CLAUDE.md（相對路徑）', write('CLAUDE.md'))
 
+// 上線流水線：關掉 CI 就等於回到「直接推 code 上線」，一定要擋
+B('guard-platform-area.mjs', '上線流水線（絕對路徑）', write('/proj/.github/workflows/deploy.yml'))
+B('guard-platform-area.mjs', '上線流水線（相對路徑）', write('.github/workflows/deploy.yml'))
+B('guard-platform-area.mjs', '上線流水線（Windows 反斜線）', write('C:\\proj\\.github\\workflows\\deploy.yml'))
+B('guard-platform-area.mjs', '偷加一個新 workflow', write('/proj/.github/workflows/quick-deploy.yml'))
+
 // 自己模組的檔案不該被擋
 A('guard-platform-area.mjs', '自己的頁面', write('/proj/app/pages/assets/index.vue'))
 A('guard-platform-area.mjs', '自己的元件', write('/proj/app/components/assets/AssetForm.vue'))
@@ -102,6 +109,7 @@ A('guard-platform-area.mjs', '自己的 composable', write('/proj/app/composable
 A('guard-platform-area.mjs', '自己的 migration（010+）', write('/proj/supabase/migrations/012_assets.sql'))
 A('guard-platform-area.mjs', '自己的 manifest', write('/proj/app/modules/assets.manifest.ts'))
 A('guard-platform-area.mjs', '沒有 file_path', { tool_name: 'Write', tool_input: {} })
+A('guard-platform-area.mjs', '.github 底下的非 workflow 檔', write('/proj/.github/ISSUE_TEMPLATE.md'))
 
 // ─────────────────────────── guard-prod ──────────────────────────
 B('guard-prod.mjs', '正式機 DB 連線字串', bash('echo $PROD_DB_URL'))
@@ -122,6 +130,60 @@ A('guard-prod.mjs', '只是「提到」service account（文件、說明）',
   write('/proj/docs/specs/sheet.md', '接 Sheet 要跟 IT 拿一組 service account，不要自己開。'))
 A('guard-prod.mjs', '.env 放 service account 檔名（不是金鑰內容）',
   write('/proj/.env', 'GOOGLE_SA_KEY_PATH=./secrets/sa.json'))
+
+// ─────────────────────────── guard-deploy ────────────────────────
+// 這條護欄的存在理由：AI 直接把 code 推上環境，GitHub 的版本紀錄裡卻沒有線上那一份。
+// 只有「工作區乾淨、而且全部推上 GitHub」時才放行本機部署。
+const DEPLOY = 'npx --yes wrangler@4 pages deploy .output/public --project-name x --branch=main'
+const GITCFG = ['-c', 'user.email=t@example.com', '-c', 'user.name=t', '-c', 'commit.gpgsign=false']
+
+function sh(cwd, ...args) {
+  return spawnSync(args[0], args.slice(1), { cwd, encoding: 'utf8' })
+}
+
+/** 造一個處在指定狀態的暫存 repo，回傳路徑 */
+function mkRepo({ git = true, remote = false, pushed = false, dirty = false } = {}) {
+  const dir = mkdtempSync(join(tmpdir(), 'capsule-deploy-'))
+  if (!git) return dir
+  sh(dir, 'git', 'init', '-b', 'main')
+  writeFileSync(join(dir, 'a.txt'), 'hello')
+  sh(dir, 'git', ...GITCFG, 'add', '-A')
+  sh(dir, 'git', ...GITCFG, 'commit', '-m', 'init')
+  if (remote) {
+    const bare = mkdtempSync(join(tmpdir(), 'capsule-remote-'))
+    sh(bare, 'git', 'init', '--bare')
+    sh(dir, 'git', 'remote', 'add', 'origin', bare)
+    if (pushed) sh(dir, 'git', ...GITCFG, 'push', '-u', 'origin', 'main')
+  }
+  if (dirty) writeFileSync(join(dir, 'b.txt'), '還沒 commit 的改動')
+  return dir
+}
+
+function deployCase(label, dir, expect) {
+  const r = run('guard-deploy.mjs', bash(DEPLOY), {}, dir)
+  const got = r.crashed ? r.reason : r.denied ? 'deny' : 'allow'
+  cases.push({
+    hook: 'guard-deploy.mjs',
+    label,
+    expect,
+    _pre: { ok: !r.crashed && (expect === 'deny') === r.denied, got },
+  })
+}
+
+if (sh(process.cwd(), 'git', '--version').status === 0) {
+  deployCase('沒有版控就想部署', mkRepo({ git: false }), 'deny')
+  deployCase('有版控但沒接 GitHub', mkRepo({ remote: false }), 'deny')
+  deployCase('有改動還沒 commit', mkRepo({ remote: true, pushed: true, dirty: true }), 'deny')
+  deployCase('commit 了但沒 push（沒有 upstream）', mkRepo({ remote: true, pushed: false }), 'deny')
+  deployCase('乾淨且已全部推上 GitHub ★唯一放行', mkRepo({ remote: true, pushed: true }), 'allow')
+} else {
+  console.log('  （跳過 guard-deploy：這台沒有 git）')
+}
+
+// 不該誤擋的：不是「上傳上線」的指令
+A('guard-deploy.mjs', 'wrangler 建專案（不是部署）', bash('npx --yes wrangler@4 pages project create x'))
+A('guard-deploy.mjs', 'wrangler whoami', bash('npx --yes wrangler whoami'))
+A('guard-deploy.mjs', '一般指令', bash('npm run dev'))
 
 // ─────────────────────────── welcome ─────────────────────────────
 // CLAUDE_PLUGIN_ROOT 指到空的暫存目錄 → 找不到 welcome.html → 不會真的開瀏覽器

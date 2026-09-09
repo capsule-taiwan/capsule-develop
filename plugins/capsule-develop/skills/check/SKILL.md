@@ -1,12 +1,13 @@
 ---
 name: check
-description: 跑專案的品質檢查（單元測試、整合測試、型別檢查），並回報結果。當使用者做完一段改動、想確認有沒有壞、或準備部署前使用。
+description: 跑專案的品質檢查（單元測試、整合測試、型別檢查、契約與金鑰自檢），並回報結果。當使用者做完一段改動、想確認有沒有壞、或準備部署前使用。
 allowed-tools: Bash, Read, Grep, PowerShell
 ---
 
 # 品質檢查
 
 依序跑，把結果用非技術語言回報給使用者（哪些過、哪些沒過、沒過的白話說是什麼問題）。
+講法照 `${CLAUDE_PLUGIN_ROOT}/docs/GLOSSARY.md`。
 
 ## 1. 單元測試
 ```bash
@@ -26,10 +27,27 @@ npm run typecheck
 - 這是全新專案，型別檢查**沒有既有錯誤**，所以 exit code 可信：紅了就是這次改動弄壞的，要修到綠。
 
 ## 4. 契約自檢（快速掃一遍回收契約）
-- 有沒有動到平台區（`components/base`、`components/common`、`composables/core`、`001`-`009` migration、`.claude`）？不該動。
+- 有沒有動到平台區（`components/base`、`components/common`、`composables/core`、`001`-`009` migration、`.claude`、`.github/workflows`）？不該動。
 - 新頁面/元件有沒有用 `U*` 原生元件或手刻表格/彈窗？應改用 `components/base/*`。
 - 新表是不是 `<mod>_` 前綴、有沒有開 RLS？
-- 秘密有沒有不小心寫進非 `.env` 的檔？
+- 規格文件（`docs/specs/*.md`）跟實際做出來的東西還對得起來嗎？需求改過就先改文件。
+
+## 5. 金鑰自檢（每次都做，這一項不能省）
+- **秘密有沒有寫進 `.env` 以外的檔？** 掃一遍這次改動的檔案，找 `service_role`、`sbp_`、`SUPABASE_SERVICE_KEY`、`CLOUDFLARE_API_TOKEN`、`ghp_`、`-----BEGIN`、以及任何看起來像長串亂碼的常數。
+- **真的找到了**：不要只是把它刪掉就當沒事。**已經進過版控的金鑰等於已經外洩**——就算之後刪掉、就算 repo 是 private，那把鑰匙也必須當成公開的。
+  正確處置是**立刻作廢重發**：
+  - Supabase access token → <https://supabase.com/dashboard/account/tokens> 撤銷舊的、產新的
+  - Cloudflare API token → dashboard 的 API Tokens 頁 Roll / Delete
+  - GitHub token → <https://github.com/settings/tokens> 撤銷
+  - service_role key → Supabase 專案的 API 設定頁 rotate
+  然後把新的值填回 `.env`（本機）與 `gh secret set`（GitHub），並跟使用者說清楚為什麼要重發。
+- 還沒 commit 就發現的話，刪掉、確認 `.gitignore` 有擋住就好，不用重發。
+
+## 6. 上線前狀態（要 `/deploy` 的話順手看一下）
+```bash
+git status --porcelain
+```
+有東西代表還沒存檔。上線一律走 GitHub（commit → push → 自動部署），不從本機直接上傳。
 
 ## 回報
 - 全綠 → 告訴使用者「檢查都過了，可以 `/deploy` 上線，或繼續做下一個功能」。

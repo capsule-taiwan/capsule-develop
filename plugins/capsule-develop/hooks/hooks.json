@@ -73,6 +73,13 @@
             "if": "Bash(*supabase_pro*)",
             "timeout": 10,
             "command": "command -v node >/dev/null 2>&1 || { echo '偵測到公司正式機 Supabase 的識別字。你的 MVP 是獨立沙盒，不該接觸公司正式或測試系統，這個操作已被擋下。如果你覺得真的需要，請找平台團隊（IT）。' >&2; exit 2; }; exec node \"${CLAUDE_PLUGIN_ROOT}/hooks/guard-prod.mjs\""
+          },
+          {
+            "type": "command",
+            "shell": "bash",
+            "if": "Bash(*wrangler*)",
+            "timeout": 10,
+            "command": "command -v node >/dev/null 2>&1 || { echo '這台電腦還沒有安裝 Node.js，capsule-develop 的上線護欄無法運作。為了避免把 GitHub 上沒有的程式碼推上線，這個部署指令先擋下來了。請先執行 /doctor 把環境裝好，再繼續。' >&2; exit 2; }; exec node \"${CLAUDE_PLUGIN_ROOT}/hooks/guard-deploy.mjs\""
           }
         ]
       },

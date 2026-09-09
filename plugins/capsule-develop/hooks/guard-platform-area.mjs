@@ -41,10 +41,19 @@ const PLATFORM = [
   //    只寫 \/ 會靜默放行。下面 CLAUDE.md 那條本來就是對的寫法，這裡對齊。
   { re: /(^|\/)(nuxt\.config|eslint\.config|vitest[^/]*\.config)\.(ts|mjs|js)$/, what: '建置/檢查設定檔' },
   { re: /(^|\/)CLAUDE\.md$/, what: '回收契約（CLAUDE.md）' },
+  // 上線流水線。這條擋的是「AI 為了快，把 CI 關掉、改成從本機直接部署」——
+  // 那正是「線上跑的程式碼在 GitHub 上查不到」的來源。
+  {
+    re: /(^|\/)\.github\/workflows\//,
+    what: '自動上線流水線（.github/workflows）',
+    why: '這個檔案決定「要上線就得先進 GitHub」。改掉或關掉它，線上就會開始跑版本紀錄裡沒有的程式碼，之後沒人查得到、也退不回來。\n流水線失敗的話，請去修失敗的原因（讀 GitHub Actions 的 log），不要改這個檔案繞過。',
+  },
 ]
 
 for (const p of PLATFORM) {
   if (p.re.test(raw)) {
+    // 有 why 的規則用它自己的說明，講清楚「為什麼這一條特別重要」
+    if (p.why) deny(`「${p.what}」屬於平台共用區，依回收契約不可在 MVP 內修改。\n${p.why}\n真的需要調整，請停下來，請使用者開一個 issue 給平台團隊（IT）。`)
     deny(`「${p.what}」屬於平台共用區，依回收契約第 6 條不可在 MVP 內修改（改了會讓未來回收進母艦變困難）。\n如果你覺得這個共用元件需要調整，請停下來，請使用者開一個 issue 給平台團隊（IT）來改進範本——這樣所有 MVP 都受惠。\n你自己模組的檔案（pages/<你的模組>/、components/<你的模組>/、你自己的 migration）不受此限。`)
   }
 }

@@ -22,18 +22,27 @@
 
 | 技能 | 做什麼 |
 |---|---|
-| `/doctor` | 檢查並自動裝好 Node.js 與 git（新電腦第一次先跑這個） |
-| `/new-project` | 一鍵長出一個新專案骨架（Nuxt + Supabase + 內建 UI/權限/範例模組），自帶回收契約 |
+| `/doctor` | 檢查並自動裝好 Node.js、git 與 GitHub CLI（新電腦第一次先跑這個） |
+| `/new-project` | 一鍵長出一個新專案骨架（Nuxt + Supabase + 內建 UI/權限/範例模組），建好 GitHub repo 與自動上線流水線，自帶回收契約 |
 | `/task-brief` | 用業務語言訪談你的需求，寫成規格文件 |
 | `/new-feature` | 照著範例模組（items）長出你要的新功能（列表/表單/權限/測試一整套） |
 | `/next-migration` | 幫你取號、產生資料庫變更檔的骨架 |
 | `/check` | 跑測試 + 型別檢查 + 契約檢查，全綠才算完成 |
-| `/deploy` | 部署到你自己的 Cloudflare Pages（免費） |
+| `/deploy` | 上線：存檔、推上 GitHub，由 GitHub Actions 自動檢查並部署到你自己的 Cloudflare Pages（免費） |
 | `/connect-login` | 拿到工程師給的登入金鑰後，一鍵接上公司 Google 登入 |
 | `/graduate` | 產生「畢業申請包」，交給平台團隊審查是否收進母艦 |
 | `/update` | 把工具箱更新到最新版（開場若偵測到有新版會自動提醒你） |
 
-安裝後還會自動載入護欄（hooks），擋掉危險操作與「改到平台共用檔」。
+安裝後還會自動載入護欄（hooks），擋掉危險操作、「改到平台共用檔」，以及**把 GitHub 上沒有的程式碼推上線**。
+
+### 上線一律走 GitHub
+
+每個 MVP 的程式碼都在自己的 GitHub private repo 裡，上線是：`/check` 全綠 → commit → push →
+GitHub Actions 自動跑型別檢查與測試 → 打包 → 部署到 Cloudflare Pages。
+
+**不走「從本機直接上傳」那條路。** 那樣網站會更新，但 GitHub 上的程式碼跟線上跑的東西會對不起來——
+之後要接手、要查「這個行為什麼時候改的」、或要退回上一版時，版本紀錄裡根本沒有線上那一份。
+護欄（`guard-deploy`）會擋掉還沒 push 就部署，上線流水線本身也列為平台區、不可修改。
 
 ## 開始前你需要（Step 0）
 
@@ -53,16 +62,18 @@
 
 > 已經有 GitHub 帳號就跳過。裝下面的東西要等一下下，趁那個空檔辦剛好。
 
-### 2. 裝 git 與 Node.js（LTS）
+### 2. 裝 git、Node.js（LTS）與 GitHub CLI
 
-這兩個之後開發一定會用到——Node 用來跑你的專案，git 用來做版控（`/new-project` 會自動幫你建立版本紀錄，之後想備份到自己的 GitHub 也是靠它）。**先裝好，不要留到後面**。
+三個之後開發一定會用到——Node 用來跑你的專案，git 用來做版控，GitHub CLI（`gh`）讓 Claude 幫你把
+程式碼放上 GitHub 並設定自動上線。**先裝好，不要留到後面**。
 
 - **Windows**（PowerShell）：
   ```
   winget install Git.Git --accept-package-agreements --accept-source-agreements
   winget install OpenJS.NodeJS.LTS --accept-package-agreements --accept-source-agreements
+  winget install GitHub.cli --accept-package-agreements --accept-source-agreements
   ```
-- **macOS**：`xcode-select --install`（git）＋ 到 <https://nodejs.org> 下載 **LTS** 安裝包。有 Homebrew 的話一行搞定：`brew install node git`。
+- **macOS**：`xcode-select --install`（git）＋ 到 <https://nodejs.org> 下載 **LTS** 安裝包 ＋ 到 <https://cli.github.com> 下載 gh。有 Homebrew 的話一行搞定：`brew install node git gh`。
 - 裝完**關掉所有終端機視窗再重開**，讓 PATH 生效。
 
 > ⚠️ **電腦上已經有舊版 Node（v18 以下）的話，一定要升級到 LTS。** 舊版 Node 可能讓 Claude Code 連登入都失敗，而那時候 `/doctor` 還救不了你（你根本進不去）。不確定的話打 `node --version` 看一眼。
@@ -134,6 +145,9 @@
 > 你不用背指令。技能都能由 Claude 從你的白話自動觸發（`/new-project`、`/deploy` 等打斜線也行，但不是必須）。
 
 > **先上線，登入後面接。** 跑完 `/new-project` 就直接 `/deploy`——你會拿到一個真的打得開的網址（`*.pages.dev`），這時候它會停在登入頁，那是正常的。
+>
+> `/new-project` 過程中會請你產一次 **GitHub token**（<https://github.com/settings/tokens/new>，勾 `repo` 與 `workflow` 兩項）。
+> Claude 用它幫你把程式碼放上 GitHub、設好自動上線，之後你每次改完只要說一聲「上線」，它會存檔、推上去，GitHub 接手。
 >
 > 登入採**公司 Google 帳號**（限 @capsulecorporation.cc）。把**專案代號**與**你的 Supabase 網址**給工程師（IT），他會在 GCP 產一組這個專案專屬的金鑰交給你。**拿到金鑰之後貼給 Claude、打 `/connect-login`，它會自動接好**——不用再回頭問任何人，金鑰交到你手上就是開通了。**第一個登入的人是管理員。**
 

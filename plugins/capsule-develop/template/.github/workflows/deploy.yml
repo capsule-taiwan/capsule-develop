@@ -1,0 +1,96 @@
+name: 上線
+
+# 這個檔案是這個 MVP 唯一的上線方式。
+#
+# 為什麼一定要走這裡，而不是從自己電腦直接上傳：
+#   從本機直接把打包好的檔案丟上 Cloudflare，網站是會更新，但 GitHub 上的程式碼
+#   跟線上跑的東西會慢慢對不起來。等到有人要接手、要查「這行為什麼變成這樣」、
+#   或是要退回上一版的時候，才會發現版本紀錄裡根本沒有線上那份程式碼。
+#   走這條流水線，線上跑的每一版都對得到一個 commit，退版就是退到那個 commit。
+#
+# 流程：push 上 GitHub → 這裡自動檢查（型別、測試）→ 打包 → 部署到 Cloudflare Pages。
+# 檢查沒過就不會上線，所以壞掉的版本進不到同事面前。
+#
+# 這個檔案由平台團隊維護，受護欄保護。要調整請開 issue 給 IT。
+
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch: # 也可以到 Actions 分頁手動按一次
+
+concurrency:
+  group: deploy
+  cancel-in-progress: false # 兩次部署不要打架，排隊跑完
+
+jobs:
+  deploy:
+    name: 檢查並上線
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      # 缺設定就早點失敗，訊息寫給非工程師看。
+      # 少了這一步，build 會「成功」但產出一個連不上資料庫的網站，
+      # 使用者只會看到一片空白，不知道是設定沒填。
+      - name: 確認上線設定都填好了
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          SUPABASE_URL: ${{ secrets.NUXT_PUBLIC_SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.NUXT_PUBLIC_SUPABASE_ANON_KEY }}
+        run: |
+          missing=""
+          [ -n "$CLOUDFLARE_API_TOKEN" ]  || missing="$missing CLOUDFLARE_API_TOKEN"
+          [ -n "$CLOUDFLARE_ACCOUNT_ID" ] || missing="$missing CLOUDFLARE_ACCOUNT_ID"
+          [ -n "$SUPABASE_URL" ]          || missing="$missing NUXT_PUBLIC_SUPABASE_URL"
+          [ -n "$SUPABASE_ANON_KEY" ]     || missing="$missing NUXT_PUBLIC_SUPABASE_ANON_KEY"
+          if [ -n "$missing" ]; then
+            echo "上線設定還缺這幾項：$missing"
+            echo "請在 Claude Code 裡跑 /deploy，它會問你要金鑰並自動補上。"
+            exit 1
+          fi
+
+      - name: 安裝套件
+        run: npm ci
+
+      - name: 型別檢查
+        run: npm run typecheck
+
+      - name: 單元測試
+        run: npm test
+
+      - name: 打包
+        env:
+          # SPA 打包時就把這兩個值烤進 HTML，所以一定要在這一步給。
+          # 這兩把都是「公開等級」的前端金鑰，不是萬能鑰匙。
+          NUXT_PUBLIC_SUPABASE_URL: ${{ secrets.NUXT_PUBLIC_SUPABASE_URL }}
+          NUXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NUXT_PUBLIC_SUPABASE_ANON_KEY }}
+          NUXT_PUBLIC_APP_NAME: ${{ vars.NUXT_PUBLIC_APP_NAME }}
+        run: npm run generate
+
+      - name: 部署到 Cloudflare Pages
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          # 專案代號 = package.json 的 name，跟資料表前綴、網址名是同一個
+          PROJECT=$(node -p "require('./package.json').name")
+          echo "專案代號：$PROJECT"
+
+          # 第一次跑的時候 Pages 專案還不存在。已存在的話這行會失敗，忽略即可，
+          # 真的是金鑰有問題的話，下一步的 deploy 會報出真正的錯。
+          npx --yes wrangler@4 pages project create "$PROJECT" --production-branch main \
+            || echo "（Pages 專案已存在，略過建立）"
+
+          # --branch=main 一定要帶：不帶的話，若這個 repo 的分支叫 master，
+          # Cloudflare 會當成「預覽部署」，乾淨的 <專案代號>.pages.dev 根網址不會更新。
+          npx --yes wrangler@4 pages deploy .output/public \
+            --project-name "$PROJECT" --branch=main --commit-dirty=true
+
+          echo "網址：https://$PROJECT.pages.dev"

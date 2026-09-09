@@ -14,7 +14,9 @@ allowed-tools: Bash, Read, PowerShell
 2. 同時用**業務語言**跟使用者講重點（不要只丟網頁）：
    - 這是一個孵化器工具箱：你用 Claude 開發一個自己的內部工具 MVP，用你自己的免費資料庫與網址，跟公司系統完全隔離；大部分工具會一直是它自己，那樣就很有價值；真的長很大、變成公司關鍵流程時，才需要考慮讓 IT 收進母艦。
    - 三階段：種子範本 → 你的膠囊 MVP（你在這）→ 回收進母艦（**少數情況才會走到**）。
-   - 如果他還沒有 GitHub 帳號，提醒他先辦一個（免費、一分鐘）：之後 Supabase 與 Cloudflare 都能直接用 GitHub 登入，省掉兩組帳號密碼。
+   - 如果他還沒有 GitHub 帳號，提醒他先辦一個（免費、一分鐘）：你的程式碼會放在自己的 GitHub private repo，而且 Supabase 與 Cloudflare 都能直接用 GitHub 登入，省掉兩組帳號密碼。
+   - **上線是走 GitHub 的**：改完東西，Claude 幫你存檔、送上 GitHub，GitHub 自動檢查沒問題才更新網站。所以線上跑的每一版都查得到、退得回去。
    - 你會用到的指令：/new-project（開新專案）、/task-brief（講需求）、/new-feature（做功能）、/check（檢查）、/deploy（上線）。
+   - 名詞用白話講，講法照 `${CLAUDE_PLUGIN_ROOT}/docs/GLOSSARY.md`。
 
 3. 問使用者要不要現在就開一個新專案；要的話 → 引導 /new-project。

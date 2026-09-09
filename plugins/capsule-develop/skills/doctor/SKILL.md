@@ -1,6 +1,6 @@
 ---
 name: doctor
-description: 確認開發環境就緒（git、Node.js 版本），不合格就引導使用者處理。當使用者第一次使用、要 /new-project 之前、或遇到「找不到 node / git / npm」「Node 版本太舊」之類錯誤時使用。
+description: 確認開發環境就緒（git、Node.js 版本、GitHub CLI），不合格就引導使用者處理。當使用者第一次使用、要 /new-project 之前、或遇到「找不到 node / git / npm / gh」「Node 版本太舊」之類錯誤時使用。
 allowed-tools: Bash, PowerShell
 ---
 
@@ -17,6 +17,8 @@ allowed-tools: Bash, PowerShell
 ## 1. 確認現況
 - `node --version` → 需要 **v20 以上**
 - git → **Windows 與 macOS 的檢查方式不一樣，見下面**
+- `gh --version`（GitHub CLI）→ 有輸出即可。`/new-project` 用它建 repo、`/deploy` 用它設定自動上線的金鑰。
+  這個 MVP 的程式碼一定要進 GitHub、上線一定要走 GitHub 自動部署，所以 gh 跟 node、git 一樣是必要的，不是選配。
 - （選配，MVP 用得到）`npx --no-install supabase --version`
   ⚠️ 不要用 `npx supabase --version`。套件不存在時它會**現場下載整包 supabase CLI**（數十 MB），
   畫面停住好幾分鐘，使用者以為當掉了。`--no-install` 只查本機、查不到就直接失敗，這才是「偵測」。
@@ -47,11 +49,12 @@ test -x /Library/Developer/CommandLineTools/usr/bin/git && echo CLT_OK || echo C
 ### Windows（用系統內建的 winget）
 - Node.js（LTS）：`winget install OpenJS.NodeJS.LTS --accept-package-agreements --accept-source-agreements`
 - git：`winget install Git.Git --accept-package-agreements --accept-source-agreements`
-- 若 winget 不存在或失敗 → 引導手動下載：Node.js https://nodejs.org （選 LTS）、git https://git-scm.com/download/win 。
+- GitHub CLI：`winget install GitHub.cli --accept-package-agreements --accept-source-agreements`
+- 若 winget 不存在或失敗 → 引導手動下載：Node.js https://nodejs.org （選 LTS）、git https://git-scm.com/download/win 、gh https://cli.github.com 。
 
 ### macOS
-- 有 Homebrew：`brew install node git`
-- 沒有 Homebrew → 引導：Node.js 官方安裝包 https://nodejs.org （選 LTS）；git 用 `xcode-select --install`。
+- 有 Homebrew：`brew install node git gh`
+- 沒有 Homebrew → 引導：Node.js 官方安裝包 https://nodejs.org （選 LTS）；git 用 `xcode-select --install`；gh 從 https://cli.github.com 下載安裝包。
 
 **`xcode-select --install` 是非同步的，不要當成一般指令等它跑完。** 它只負責「叫出安裝視窗」就立刻返回，實際下載安裝在背景跑好幾分鐘。所以：
 
@@ -86,7 +89,7 @@ winget / brew / 官方安裝包都要跑一兩分鐘。趁這個空檔跟使用�
 
 ## 3. 驗證
 - **請使用者關掉再重開 Claude Code（或終端機）**，讓 PATH 生效。
-- 重跑：`node -v` ≥ v20、`git --version` 有輸出。都通過才算完成。
+- 重跑：`node -v` ≥ v20、`git --version` 與 `gh --version` 都有輸出。都通過才算完成。
 - 兩次嘗試後仍不通過 → 不要再重試同一招，請使用者找 IT（IT 的排查步驟在 `plugins/capsule-develop/docs/IT-TROUBLESHOOTING.md`）。
 
 ## 4. 回報
